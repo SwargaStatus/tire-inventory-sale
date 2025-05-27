@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sturgeon Tire - Inventory Clearance Sale</title>
+    <meta name="description" content="Massive tire clearance sale - up to 100% off select inventory. FREE Headway tires available!">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .stats-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat {
+            padding: 15px;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e74c3c;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .update-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            color: #856404;
+        }
+        
+        .deals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .deal-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid #e9ecef;
+        }
+        
+        .deal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .discount-free { background: #8e44ad; }
+        .discount-huge { background: #e74c3c; }
+        .discount-great { background: #f39c12; }
+        .discount-good { background: #3498db; }
+        
+        .card-content {
+            padding: 25px;
+        }
+        
+        .brand-model {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        
+        .tire-details {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+        
+        .pricing {
+            margin-bottom: 18px;
+        }
+        
+        .sale-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #27ae60;
+            margin-right: 12px;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        .free-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #8e44ad;
+            margin-right: 12px;
+        }
+        
+        .savings {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+        
+        .stock-info {
+            font-size: 13px;
+            margin-bottom: 18px;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        .stock-low { background: #ffeaa7; color: #d63031; }
+        .stock-good { background: #a8e6cf; color: #00b894; }
+        .stock-excellent { background: #74b9ff; color: #0984e3; }
+        
+        .card-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-quote {
+            flex: 1;
+            background: #3498db;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-size: 15px;
+        }
+        
+        .btn-quote:hover {
+            background: #2980b9;
+        }
+        
+        .btn-call {
+            background: #27ae60;
+            color: white;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-size: 16px;
+        }
+        
+        .btn-call:hover {
+            background: #229954;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .deals-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+        
+        .auto-update-note {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 12px;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>🔥 Massive Inventory Clearance - Up to 100% Off!</h1>
+            <p>Professional wholesale tires at unbeatable prices - Some items FREE!</p>
+            <div class="cta-buttons">
+                <a href="tel:+12049355559" class="btn btn-primary">📞 Call Now: (204) 935-5559</a>
+                <a href="mailto:sales@sturgeontire.com" class="btn btn-secondary">Get Custom Quote</a>
+            </div>
+        </div>
+        
+        <!-- Auto-update notification -->
+        <div class="auto-update-note">
+            🤖 This page automatically updates weekly with fresh deals from our inventory system
+        </div>
+        
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stats-grid">
+                <div class="stat">
+                    <span class="stat-number" id="total-items">193</span>
+                    <div class="stat-label">Items on Sale</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="big-discounts">60</span>
+                    <div class="stat-label">Items 50%+ Off</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="avg-savings">$86</span>
+                    <div class="stat-label">Average Savings</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="free-items">FREE</span>
+                    <div class="stat-label">Select Headway Tires</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="update-info">
+            ⏰ <strong>Limited Time Offer!</strong> Inventory changes weekly. Call now to reserve your tires!<br>
+            <small>Last updated: <span id="last-update">May 27, 2025</span></small>
+        </div>
+        
+        <!-- Deals Grid - This will be populated by JavaScript -->
+        <div class="deals-grid" id="deals-container">
+            <!-- Placeholder content - will be replaced by automation -->
+            <div class="deal-card">
+                <div class="discount-badge discount-free">100% OFF - FREE!</div>
+                <div class="card-content">
+                    <div class="brand-model">HEADWAY PMS01</div>
+                    <div class="tire-details">
+                        Size: 205/55R17 95VX • Multiple sizes available<br>
+                        All-season passenger tire • Premium performance
+                    </div>
+                    <div class="pricing">
+                        <span class="free-price">FREE</span>
+                        <span class="original-price">$101.51</span>
+                    </div>
+                    <div class="savings">💰 Save $101.51 per tire!</div>
+                    <div class="stock-info stock-excellent">✅ 122+ in stock</div>
+                    <div class="card-actions">
+                        <a href="tel:+12049355559" class="btn-quote">Call to Claim FREE Tires!</a>
+                        <a href="tel:+12049355559" class="btn-call">📞</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="deal-card">
+                <div class="discount-badge discount-huge">49% OFF</div>
+                <div class="card-content">
+                    <div class="brand-model">HANKOOK DL12</div>
+                    <div class="tire-details">
+                        Size: 11R22.5 14PR • Long haul drive tire<br>
+                        All-weather commercial • 14 ply rating
+                    </div>
+                    <div class="pricing">
+                        <span class="sale-price">$285</span>
+                        <span class="original-price">$556</span>
+                    </div>
+                    <div class="savings">💰 Save $271 per tire!</div>
+                    <div class="stock-info stock-low">⚠️ Only 4 left</div>
+                    <div class="card-actions">
+                        <a href="mailto:sales@sturgeontire.com?subject=Quote Request - HANKOOK DL12" class="btn-quote">Add to Quote</a>
+                        <a href="tel:+12049355559" class="btn-call">📞</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="deal-card">
+                <div class="discount-badge discount-huge">45% OFF</div>
+                <div class="card-content">
+                    <div class="brand-model">CONTINENTAL VikingContact 7</div>
+                    <div class="tire-details">
+                        Size: 225/60R17 • Premium winter tire<br>
+                        Outstanding cold weather grip
+                    </div>
+                    <div class="pricing">
+                        <span class="sale-price">$125</span>
+                        <span class="original-price">$226</span>
+                    </div>
+                    <div class="savings">💰 Save $101 per tire!</div>
+                    <div class="stock-info stock-good">✅ 23 available</div>
+                    <div class="card-actions">
+                        <a href="mailto:sales@sturgeontire.com?subject=Quote Request - Continental VikingContact" class="btn-quote">Add to Quote</a>
+                        <a href="tel:+12049355559" class="btn-call">📞</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="update-info">
+            <strong>📞 Call (204) 935-5559 now</strong> to reserve your tires or get a custom quote for your fleet!
+        </div>
+        
+    </div>
+
+    <script>
+        // Update last modified date
+        document.getElementById('last-update').textContent = new Date().toLocaleDateString();
+        
+        // Future: This is where automation will inject fresh tire data
+        console.log('Tire inventory page loaded - ready for automation!');
+    </script>
+</body>
+</html>
