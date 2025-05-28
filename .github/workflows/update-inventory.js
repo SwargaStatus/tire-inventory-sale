@@ -16,28 +16,32 @@ function readLocalCSV() {
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
   const parseLine = line => {
-    const cols = [];
-    let cur = '', inQuotes = false;
-    for (let ch of line) {
-      if (ch === '"') inQuotes = !inQuotes;
-      else if (ch === ',' && !inQuotes) {
-        cols.push(cur);
-        cur = '';
-      } else cur += ch;
-    }
-    cols.push(cur);
-    return cols;
+    /*…your existing parseLine…*/
   };
 
-  const headers = parseLine(lines[0]);
+  // 1) capture the raw headers...
+  const rawHeaders = parseLine(lines[0]);
+  // 2) then strip them down to whatever’s inside the [brackets]
+  const headers = rawHeaders.map(h => {
+    const m = h.match(/\[(.+)\]$/);
+    return m ? m[1] : h;
+  });
+
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const vals = parseLine(lines[i]);
-    if (vals.length !== headers.length) continue;
+    if (vals.length !== rawHeaders.length) continue;
+
+    // 3) build an object using the stripped-down names
     const obj = {};
-    headers.forEach((h, j) => obj[h] = vals[j]);
-    // Only include items with stock > 0
-    if ((parseInt(obj['AvailableQuantity']) || 0) > 0) rows.push(obj);
+    headers.forEach((fieldName, j) => {
+      obj[fieldName] = vals[j];
+    });
+
+    // 4) now this will work, since you do actually have obj.AvailableQuantity
+    if ((parseInt(obj['AvailableQuantity']) || 0) > 0) {
+      rows.push(obj);
+    }
   }
   return rows;
 }
