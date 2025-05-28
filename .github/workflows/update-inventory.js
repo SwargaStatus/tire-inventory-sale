@@ -345,7 +345,7 @@ function generateHTML(items) {
   
   <div class="footer">
     <a href="tel:+12049355559">Call (204) 935-5559</a>
-    <a href="mailto:sales@sturgeontire.com">Get Quote</a>
+    <a href="mailto:nileshn@sturgeontire.com">Get Quote</a>
   </div>
   
   <!-- Quote System -->
@@ -637,7 +637,7 @@ SALES RECOMMENDATIONS:
       
       setTimeout(() => {
         const subject = \`URGENT: Tire Quote - $\${totalValue.toFixed(0)} - \${name}\`;
-        const mailtoLink = \`mailto:sales@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
         
         window.open(mailtoLink, '_blank');
         
