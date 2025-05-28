@@ -212,7 +212,7 @@ function generateHTML(items) {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 0;
+      padding: 12px 0;
       border-bottom: 1px solid #eee;
     }
     
@@ -220,14 +220,30 @@ function generateHTML(items) {
       border-bottom: none;
     }
     
-    .remove-item {
-      background: #e74c3c;
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .quantity-controls button {
+      background: #3498db;
       color: white;
       border: none;
-      padding: 4px 8px;
+      width: 28px;
+      height: 28px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .quantity-controls input {
+      width: 60px;
+      text-align: center;
+      padding: 4px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
     }
     
     .quote-form {
@@ -345,7 +361,7 @@ function generateHTML(items) {
   
   <div class="footer">
     <a href="tel:+12049355559">Call (204) 935-5559</a>
-    <a href="mailto:nileshn@sturgeontire.com">Get Quote</a>
+    <a href="mailto:sales@sturgeontire.com">Get Quote</a>
   </div>
   
   <!-- Quote System -->
@@ -450,6 +466,42 @@ function generateHTML(items) {
       updateQuoteModal();
     }
 
+    // Quote quantity control functions
+    function changeQuantity(itemCode, change) {
+      const item = quoteItems.find(q => q.item === itemCode);
+      if (!item) return;
+      
+      const newQty = item.quantity + change;
+      
+      if (newQty <= 0) {
+        removeFromQuote(itemCode);
+      } else if (newQty <= item.stock) {
+        item.quantity = newQty;
+        updateQuoteModal();
+        updateQuoteCounter();
+      }
+    }
+
+    function setQuantity(itemCode, value) {
+      const item = quoteItems.find(q => q.item === itemCode);
+      if (!item) return;
+      
+      const newQty = parseInt(value) || 0;
+      
+      if (newQty <= 0) {
+        removeFromQuote(itemCode);
+      } else if (newQty <= item.stock) {
+        item.quantity = newQty;
+        updateQuoteModal();
+        updateQuoteCounter();
+      } else {
+        // Reset to max available
+        item.quantity = item.stock;
+        updateQuoteModal();
+        showNotification(`Maximum available quantity is ${item.stock}`);
+      }
+    }
+
     function updateQuoteCounter() {
       const counter = document.getElementById('quote-counter');
       const count = document.getElementById('quote-count');
@@ -480,23 +532,21 @@ function generateHTML(items) {
       }
       
       let html = '<h3>Items in Quote:</h3>';
-      let totalSavings = 0;
       
       quoteItems.forEach(item => {
-        totalSavings += item.save * item.quantity;
         html += '<div class="quote-item">'
           + '<div>'
           + '<strong>' + item.manufacturer + ' ' + item.model + '</strong><br>'
-          + 'Item: ' + item.item + ' • Qty: ' + item.quantity + '<br>'
-          + '<small>$' + item.sale + ' each (save $' + item.save + ' per tire)</small>'
+          + 'Item: ' + item.item + '<br>'
+          + '<small>Available: ' + item.stock + ' units</small>'
           + '</div>'
-          + '<button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">Remove</button>'
+          + '<div class="quantity-controls">'
+          + '<button onclick="changeQuantity(\\'' + item.item + '\\', -1)">-</button>'
+          + '<input type="number" value="' + item.quantity + '" min="1" max="' + item.stock + '" onchange="setQuantity(\\'' + item.item + '\\', this.value)">'
+          + '<button onclick="changeQuantity(\\'' + item.item + '\\', 1)">+</button>'
+          + '</div>'
           + '</div>';
       });
-      
-      html += '<div style="margin-top:15px; padding:10px; background:#f8f9fa; border-radius:4px;">'
-        + '<strong>Total Savings: $' + totalSavings + '</strong>'
-        + '</div>';
       
       container.innerHTML = html;
     }
@@ -521,54 +571,24 @@ function generateHTML(items) {
       submitBtn.disabled = true;
       
       // Calculate totals
-      const totalValue = quoteItems.reduce((sum, item) => sum + (item.sale * item.quantity), 0);
-      const totalSavings = quoteItems.reduce((sum, item) => sum + (item.save * item.quantity), 0);
+      const totalItems = quoteItems.reduce((sum, item) => sum + item.quantity, 0);
       
-      // Format tire details for email
-      const tireDetails = quoteItems.map((item, index) => 
-        \`\${index + 1}. \${item.manufacturer} \${item.model}
-Item Code: \${item.item}
-Quantity: \${item.quantity}
-Sale Price: $\${item.sale} each
-Regular Price: $\${item.reg} each  
-You Save: $\${item.save} per tire
-Stock Available: \${item.stock}
-Line Total: $\${(item.sale * item.quantity).toFixed(2)}
-────────────────────────────────\`
-      ).join('\\n\\n');
-      
-      // Create complete quote summary
-      const quoteSummary = \`TIRE QUOTE REQUEST - URGENT PRIORITY
+      // Simple quote summary for sales team
+      const quoteSummary = `TIRE QUOTE REQUEST
 
-CUSTOMER INFORMATION:
-Name: \${name}
-Email: \${email}
-Phone: \${phone || 'Not provided'}
-Company: \${company || 'Not provided'}
+CUSTOMER:
+Name: ${name}
+Email: ${email}
+Phone: ${phone || 'Not provided'}
+Company: ${company || 'Not provided'}
 
-REQUESTED TIRES:
-\${tireDetails}
+REQUESTED ITEMS:
+${quoteItems.map(item => `${item.item} - Qty: ${item.quantity}`).join('\n')}
 
-QUOTE SUMMARY:
-Total Items: \${quoteItems.length}
-Total Value: $\${totalValue.toFixed(2)}
-Your Total Savings: $\${totalSavings}
-Generated: \${new Date().toLocaleString()}
+Total Items: ${totalItems}
+Date: ${new Date().toLocaleString()}
 
-CUSTOMER NOTES:
-\${notes || 'None provided'}
-
-PRIORITY INFORMATION:
-HIGH PRIORITY - Online lead ready to purchase
-Expected Response Time: Within 2 hours
-Source: Sturgeon Tire Website
-Customer is actively shopping and comparing prices
-
-SALES RECOMMENDATIONS:
-- Customer has already selected specific tires
-- Total savings of $\${totalSavings} is a strong selling point
-- Quick response time is critical for conversion
-- Follow up via phone AND email for best results\`;
+Notes: ${notes || 'None'}`;
       
       // Prepare form data for Formspree
       const formData = new FormData();
@@ -577,16 +597,10 @@ SALES RECOMMENDATIONS:
       formData.append('phone', phone || '');
       formData.append('company', company || '');
       formData.append('notes', notes || '');
-      formData.append('tire_details', tireDetails);
-      formData.append('total_items', quoteItems.length);
-      formData.append('total_value', \`$\${totalValue.toFixed(2)}\`);
-      formData.append('total_savings', \`$\${totalSavings}\`);
+      formData.append('total_items', totalItems);
       formData.append('quote_date', new Date().toLocaleString());
       formData.append('message', quoteSummary);
-      formData.append('priority', 'HIGH');
-      formData.append('source', 'Website');
-      formData.append('lead_type', 'Hot Lead - Ready to Purchase');
-      formData.append('_subject', \`URGENT: Tire Quote - $\${totalValue.toFixed(0)} - \${name}\`);
+      formData.append('_subject', `Tire Quote - ${name} - ${totalItems} items`);
       formData.append('_replyto', email);
       
       // Send to Formspree
@@ -610,7 +624,7 @@ SALES RECOMMENDATIONS:
             updateQuoteCounter();
             closeQuoteModal();
             
-            showSuccessNotification(\`Quote sent successfully! Total value: $\${totalValue.toFixed(0)} with $\${totalSavings} in savings. We'll contact you within 2 hours.\`);
+            showSuccessNotification(`Quote sent successfully! We'll contact you soon about your ${totalItems} item request.`);
             
             // Reset button
             submitBtn.innerHTML = originalText;
@@ -622,22 +636,22 @@ SALES RECOMMENDATIONS:
         } else {
           response.json().then(data => {
             console.error('Formspree error:', data);
-            handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalValue);
+            handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalItems);
           });
         }
       })
       .catch(error => {
         console.error('Network error:', error);
-        handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalValue);
+        handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalItems);
       });
     }
 
-    function handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalValue) {
+    function handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalItems) {
       submitBtn.innerHTML = 'Opening Email Client...';
       
       setTimeout(() => {
-        const subject = \`URGENT: Tire Quote - $\${totalValue.toFixed(0)} - \${name}\`;
-        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+        const subject = `Tire Quote - ${name} - ${totalItems} items`;
+        const mailtoLink = `mailto:nileshn@sturgeontire.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(quoteSummary)}`;
         
         window.open(mailtoLink, '_blank');
         
