@@ -18,7 +18,7 @@ async function downloadCSV(url) {
 function parseCSV(csvText) {
     const lines = csvText.split('\n').filter(line => line.trim());
     
-    // More robust CSV parsing
+    // More robust CSV parsing for quoted fields
     function parseCSVLine(line) {
         const result = [];
         let current = '';
@@ -29,13 +29,13 @@ function parseCSV(csvText) {
             if (char === '"') {
                 inQuotes = !inQuotes;
             } else if (char === ',' && !inQuotes) {
-                result.push(current.trim());
+                result.push(current.trim().replace(/^"|"$/g, ''));
                 current = '';
             } else {
                 current += char;
             }
         }
-        result.push(current.trim());
+        result.push(current.trim().replace(/^"|"$/g, ''));
         return result;
     }
     
@@ -45,37 +45,34 @@ function parseCSV(csvText) {
     const tires = [];
     for (let i = 1; i < lines.length; i++) {
         const values = parseCSVLine(lines[i]);
-        if (values.length !== headers.length) continue;
+        if (values.length < headers.length) continue;
         
         const tire = {};
         headers.forEach((header, index) => {
             tire[header] = values[index] || '';
         });
         
-        // Find discount field (try multiple possible names)
-        const discountField = headers.find(h => 
-            h.includes('Discount_Percentage') || 
-            h.includes('B2B_Discount') ||
-            h.toLowerCase().includes('discount')
-        );
+        // Use the correct column names from your CSV
+        const discount = parseFloat(tire['FlyerData[B2B_Discount_Percentage]']) || 0;
+        const stock = parseInt(tire['FlyerData[AvailableQuantity]']) || 0;
         
-        // Find stock field
-        const stockField = headers.find(h => 
-            h.includes('AvailableQuantity') || 
-            h.includes('Stock_Quantity') ||
-            h.toLowerCase().includes('quantity')
-        );
+        console.log(`Item: ${tire['FlyerData[Item]']}, Discount: ${discount}%, Stock: ${stock}`);
         
-        const discount = parseFloat(tire[discountField]) || 0;
-        const stock = parseInt(tire[stockField]) || 0;
-        
-        console.log(`Item: ${tire[headers[0]]}, Discount: ${discount}, Stock: ${stock}`);
-        
-        // More lenient filtering for debugging
-        if (discount >= 1 && stock > 0) {
+        // Filter for good deals with stock
+        if (discount >= 15 && stock > 0) {
             tires.push(tire);
         }
     }
+    
+    console.log(`Processed ${tires.length} qualifying tires from ${lines.length - 1} total rows`);
+    
+    // Sort by discount (highest first)
+    return tires.sort((a, b) => {
+        const discountA = parseFloat(a['FlyerData[B2B_Discount_Percentage]']) || 0;
+        const discountB = parseFloat(b['FlyerData[B2B_Discount_Percentage]']) || 0;
+        return discountB - discountA;
+    });
+}
     
     console.log(`Processed ${tires.length} tires from ${lines.length - 1} total rows`);
     
@@ -89,6 +86,7 @@ function parseCSV(csvText) {
 }
 
 function generateTireCard(tire) {
+    // Use correct column names with brackets
     const brand = tire['FlyerData[Brand_Display]'] || 'QUALITY';
     const model = tire['FlyerData[Model]'] || 'TIRE';
     const item = tire['FlyerData[Item]'] || '';
