@@ -233,4 +233,20 @@ function parseCSV(text) {
     }
 
     document.getElementById('filter-manufacturer').onchange = () => { currentPage = 1; render(); };
-    document.getElementById('filter-discount').onchange = () => { current
+    document.getElementById('filter-discount').onchange = () => { currentPage = 1; render(); };
+    render();
+  </script>
+</body>
+</html>`;
+
+    // Write output
+    const outPath = path.join(process.cwd(), 'index.html');
+    fs.writeFileSync(outPath, html, 'utf8');
+    console.log(`✅ Generated index.html with ${items.length} items`);
+    console.log(`📊 Manufacturers: ${manufacturers.join(', ')}`);
+    
+  } catch (err) {
+    console.error('❌ Error:', err.message);
+    process.exit(1);
+  }
+})();
