@@ -541,7 +541,7 @@ function parseCSV(text) {
   itemsSummary += `Generated: ${new Date().toLocaleString()}`;
   
   // STEP 2: Replace this URL with your actual Microsoft Forms URL
-  const formBaseUrl = 'YOUR_FORM_URL_HERE';
+  const formBaseUrl = 'https://forms.microsoft.com/Pages/ResponsePage.aspx?id=eM04piGZL0isZNcn1SSs5ch5YkMaJNtDm1ZUYFnG3m9UMzcxRjM1Q09RT1lZQjFZUFlUMDJTMUdPQS4uE';
   
   // Create the pre-filled URL
   const prefilledUrl = formBaseUrl + 
