@@ -213,7 +213,7 @@
 <body>
   <div class="header">
     <h1>🚗 Sturgeon Tire Live Deals</h1>
-    <p>Updated: 5/28/2025, 8:35:31 PM</p>
+    <p>Updated: 5/28/2025, 8:54:49 PM</p>
   </div>
   
   <div class="stats">
@@ -1123,58 +1123,92 @@
         return;
       }
       
-      // Build email content
+      // Build detailed tire summary
+      let itemsSummary = '🚗 TIRE QUOTE REQUEST\n';
+      itemsSummary += '═══════════════════════════════════\n\n';
+      
+      let totalSavings = 0;
+      let totalValue = 0;
+      
+      quoteItems.forEach((item, index) => {
+        totalSavings += item.save * item.quantity;
+        totalValue += item.sale * item.quantity;
+        
+        itemsSummary += `${index + 1}. ${item.manufacturer} ${item.model}\n`;
+        itemsSummary += `   📋 Item Code: ${item.item}\n`;
+        itemsSummary += `   📦 Quantity: ${item.quantity}\n`;
+        itemsSummary += `   💰 Sale Price: $${item.sale} each\n`;
+        itemsSummary += `   🏷️  Regular Price: $${item.reg} each\n`;
+        itemsSummary += `   💵 You Save: $${item.save} per tire\n`;
+        itemsSummary += `   📊 Stock Available: ${item.stock}\n`;
+        itemsSummary += `   💯 Line Total: $${(item.sale * item.quantity).toFixed(2)}\n`;
+        itemsSummary += '   ────────────────────────────────\n\n';
+      });
+      
+      itemsSummary += '📋 QUOTE SUMMARY:\n';
+      itemsSummary += '═══════════════════════════════════\n';
+      itemsSummary += `🔢 Total Items: ${quoteItems.length}\n`;
+      itemsSummary += `💰 Total Value: $${totalValue.toFixed(2)}\n`;
+      itemsSummary += `💵 Your Total Savings: $${totalSavings}\n`;
+      itemsSummary += `📅 Generated: ${new Date().toLocaleString()}\n\n`;
+      itemsSummary += '⏰ Expected Response Time: Within 2 hours\n';
+      itemsSummary += '📞 For immediate assistance: (204) 935-5559';
+      
+      // Build email body for fallback
       let emailBody = 'NEW QUOTE REQUEST - Sturgeon Tire Website\n\n';
       emailBody += '🔥 CUSTOMER INFORMATION:\n';
       emailBody += 'Name: ' + name + '\n';
       emailBody += 'Email: ' + email + '\n';
       emailBody += 'Phone: ' + (phone || 'Not provided') + '\n';
       emailBody += 'Company: ' + (company || 'Not provided') + '\n\n';
-      
-      emailBody += '🚗 REQUESTED ITEMS:\n';
-      let totalSavings = 0;
-      let totalValue = 0;
-      
-      quoteItems.forEach(item => {
-        totalSavings += item.save * item.quantity;
-        totalValue += item.sale * item.quantity;
-        emailBody += '• ' + item.manufacturer + ' ' + item.model + '\n';
-        emailBody += '  Item #: ' + item.item + '\n';
-        emailBody += '  Quantity: ' + item.quantity + '\n';
-        emailBody += '  Sale Price: $' + item.sale + ' each\n';
-        emailBody += '  Customer Saves: $' + item.save + ' per tire\n';
-        emailBody += '  Stock Available: ' + item.stock + '\n\n';
-      });
-      
-      emailBody += '💰 QUOTE SUMMARY:\n';
-      emailBody += 'Total Quote Value: $' + totalValue.toFixed(2) + '\n';
-      emailBody += 'Total Customer Savings: $' + totalSavings + '\n';
-      emailBody += 'Number of Items: ' + quoteItems.length + '\n\n';
+      emailBody += itemsSummary;
       
       if (notes) {
-        emailBody += '📝 CUSTOMER NOTES:\n' + notes + '\n\n';
+        emailBody += '\n\n📝 CUSTOMER NOTES:\n' + notes;
       }
       
-      emailBody += '⏰ FOLLOW UP REQUIRED!\n';
+      emailBody += '\n\n⏰ FOLLOW UP REQUIRED!\n';
       emailBody += 'This customer found us online and is ready to buy.\n';
-      emailBody += 'Please contact them within 2 hours for the best conversion rate.\n\n';
-      emailBody += 'Generated: ' + new Date().toLocaleString();
+      emailBody += 'Please contact them within 2 hours for the best conversion rate.';
       
-      // Create mailto link
-      const subject = '🚨 URGENT: New Tire Quote - $' + totalValue.toFixed(0) + ' - ' + name;
-      const mailtoLink = 'mailto:sales@sturgeontire.com'
-        + '?subject=' + encodeURIComponent(subject)
-        + '&body=' + encodeURIComponent(emailBody);
+      // Try Microsoft Forms first, fallback to email
+      const formUrl = 'https://forms.microsoft.com/r/eM04piGZL0isZNc1SSs5ch5YkMaJNtDm1ZUYFnG3m9UMzcxRjM1Q09RT1lZQjFZUFlUMDJTMUdPQS4u';
       
-      // Open email client
-      window.location.href = mailtoLink;
+      // Try to open the form (Microsoft Forms doesn't support pre-filling via URL parameters reliably)
+      const formWindow = window.open(formUrl, 'TireQuoteForm', 'width=800,height=700,scrollbars=yes,resizable=yes');
       
-      // Clear the quote and close modal
-      quoteItems = [];
-      updateQuoteCounter();
-      closeQuoteModal();
-      
-      showNotification('Quote request sent! We\'ll contact you within 2 hours.');
+      if (formWindow) {
+        // Store quote data for the customer to reference
+        const quoteData = {
+          customer: { name, email, phone, company },
+          items: quoteItems,
+          summary: { totalValue, totalSavings, itemCount: quoteItems.length },
+          notes: notes
+        };
+        
+        // Show instructions to customer
+        alert(`Microsoft Forms opened! Please:\n\n1. Fill in your information\n2. Copy and paste this quote data into the "Requested Items" field:\n\n${itemsSummary}\n\n3. Submit the form\n\nWe'll contact you within 2 hours!`);
+        
+        // Clear quote
+        quoteItems = [];
+        updateQuoteCounter();
+        closeQuoteModal();
+        showNotification('Please complete the Microsoft Form that opened in the new window.');
+        
+      } else {
+        // Popup blocked - fallback to email
+        const subject = '🚨 URGENT: New Tire Quote - $' + totalValue.toFixed(0) + ' - ' + name;
+        const mailtoLink = 'mailto:sales@sturgeontire.com'
+          + '?subject=' + encodeURIComponent(subject)
+          + '&body=' + encodeURIComponent(emailBody);
+        
+        if (confirm('Form popup was blocked. Would you like to send via email instead?')) {
+          window.location.href = mailtoLink;
+          quoteItems = [];
+          updateQuoteCounter();
+          closeQuoteModal();
+        }
+      }
     }
 
     function showNotification(message) {
@@ -1187,7 +1221,7 @@
         if (document.body.contains(notification)) {
           document.body.removeChild(notification);
         }
-      }, 3000);
+      }, 5000);
     }
 
     // Close modal when clicking outside
