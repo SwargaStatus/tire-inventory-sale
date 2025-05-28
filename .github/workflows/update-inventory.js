@@ -1,18 +1,14 @@
-// update-inventory.js - Fixed for FlyerData CSV format
+// update-inventory.js - Updated for Power Automate CSV input
 const fs = require('fs');
-const https = require('https');
 
-// Your SharePoint CSV URL
-const CSV_URL = process.env.SHAREPOINT_CSV_URL;
-
-async function downloadCSV(url) {
-    return new Promise((resolve, reject) => {
-        https.get(url, (res) => {
-            let data = '';
-            res.on('data', chunk => data += chunk);
-            res.on('end', () => resolve(data));
-        }).on('error', reject);
-    });
+function readLocalCSV() {
+    try {
+        const csvData = fs.readFileSync('flyer_data.csv', 'utf8');
+        console.log('✅ Successfully read CSV file from repository');
+        return csvData;
+    } catch (error) {
+        throw new Error('Could not read flyer_data.csv: ' + error.message);
+    }
 }
 
 function parseCSV(csvText) {
@@ -40,7 +36,7 @@ function parseCSV(csvText) {
     }
     
     const headers = parseCSVLine(lines[0]);
-    console.log('CSV Headers found:', headers);
+    console.log('CSV Headers found:', headers.length, 'columns');
     
     const tires = [];
     for (let i = 1; i < lines.length; i++) {
@@ -55,8 +51,6 @@ function parseCSV(csvText) {
         // Use exact column names from your CSV
         const discount = parseFloat(tire['FlyerData[B2B_Discount_Percentage]']) || 0;
         const stock = parseInt(tire['FlyerData[AvailableQuantity]']) || 0;
-        
-        console.log(`Processing: ${tire['FlyerData[Item]']}, Discount: ${discount}%, Stock: ${stock}`);
         
         // Filter for good deals with stock
         if (discount >= 15 && stock > 0) {
@@ -148,7 +142,7 @@ function generateHTML(tires) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sturgeon Tire - Live Inventory Sale</title>
-    <meta name="description" content="Live tire clearance sale - up to ${maxDiscount}% off! Professional wholesale prices updated daily.">
+    <meta name="description" content="Live tire clearance sale - up to ${maxDiscount}% off! Professional wholesale prices updated automatically.">
     <style>
         * {
             margin: 0;
@@ -443,7 +437,7 @@ function generateHTML(tires) {
     <div class="container">
         <div class="header">
             <h1>🔥 Live Inventory Clearance - Up to ${maxDiscount}% Off!</h1>
-            <p>Professional wholesale tires - Updated daily from our live system!</p>
+            <p>Professional wholesale tires - Auto-updated from our live system!</p>
             <div class="cta-buttons">
                 <a href="tel:+12049355559" class="btn btn-primary">📞 Call Now: (204) 935-5559</a>
                 <a href="mailto:sales@sturgeontire.com" class="btn btn-secondary">Get Custom Quote</a>
@@ -472,7 +466,7 @@ function generateHTML(tires) {
         </div>
         
         <div class="update-info">
-            🤖 <strong>Auto-Updated Daily!</strong> Fresh deals from our live inventory system.<br>
+            🤖 <strong>Auto-Updated Daily!</strong> Fresh deals from our live inventory system via Power Automate.<br>
             <small>Last updated: ${currentDate} • Showing top ${Math.min(totalItems, 20)} deals</small>
         </div>
         
@@ -490,13 +484,9 @@ function generateHTML(tires) {
 
 async function main() {
     try {
-        console.log('🔄 Downloading tire data from SharePoint...');
+        console.log('🔄 Reading tire data from repository...');
         
-        if (!CSV_URL) {
-            throw new Error('SHAREPOINT_CSV_URL environment variable not set');
-        }
-        
-        const csvData = await downloadCSV(CSV_URL);
+        const csvData = readLocalCSV();
         console.log('📊 Processing tire deals...');
         
         const tires = parseCSV(csvData);
