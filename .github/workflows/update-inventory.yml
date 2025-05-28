@@ -5,6 +5,11 @@ on:
     - cron: '0 12 * * *'  # Run daily at noon UTC
   workflow_dispatch: # Manual trigger
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   update-inventory:
     runs-on: ubuntu-latest
@@ -15,7 +20,7 @@ jobs:
         node-version: '18'
     - run: |
         npm install csv-parser axios
-        node .github/workflows/update-inventory.js
+        node update-inventory.js
     - run: |
         git config --local user.email "automation@sturgeontire.com"
         git config --local user.name "Tire Bot"
