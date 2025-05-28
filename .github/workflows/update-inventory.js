@@ -71,7 +71,7 @@ function parseCSV(text) {
     const items = data.map(d => {
       const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
       const sale = parseFloat(d['SalePrice']) || 0;
-      const reg  = parseFloat(d['Net']) || 0;
+      const reg = parseFloat(d['Net']) || 0;
       const save = Math.round(reg - sale);
       const manufacturer = d['Manufacturer'] || 'Unknown';
       
@@ -94,7 +94,7 @@ function parseCSV(text) {
     console.log(`✅ Processing ${items.length} items from ${manufacturers.length} manufacturers`);
     console.log(`📊 Manufacturers: ${manufacturers.join(', ')}`);
 
-    // Build HTML
+    // Build HTML with all requested changes
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,8 +104,33 @@ function parseCSV(text) {
   <style>
     :root { --primary:#2e6fa3; --dark:#182742; --bg:#f0f8ff; --accent:#ffa726; }
     body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); }
-    .header { background:var(--primary); color:#fff; padding:16px; text-align:center; }
-    .header h1 { margin:0; font-size:1.6rem; }
+    .header { 
+      background:var(--primary); 
+      color:#fff; 
+      padding:16px; 
+      text-align:center; 
+      position:relative;
+    }
+    .header h1 { 
+      margin:0; 
+      font-size:1.6rem; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      gap:12px;
+    }
+    .header .company-logo {
+      height:40px;
+      width:auto;
+    }
+    .update-time {
+      position:absolute;
+      top:8px;
+      right:12px;
+      font-size:0.7rem;
+      opacity:0.8;
+      color:#fff;
+    }
     .stats { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:12px; background:#fff; margin:12px 0; border-radius:8px; }
     .stats div { text-align:center; min-width:80px; }
     .stats .num { font-size:1.4rem; font-weight:bold; color:var(--primary); }
@@ -114,7 +139,11 @@ function parseCSV(text) {
     .filters label { font-size:0.9rem; }
     .filters select { padding:4px; border-radius:4px; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; padding:12px; }
-    @media (max-width:768px) { .grid { grid-template-columns:1fr; } }
+    @media (max-width:768px) { 
+      .grid { grid-template-columns:1fr; }
+      .update-time { position:static; text-align:center; margin-top:8px; }
+      .header h1 { flex-direction:column; }
+    }
     .card { background:#fff; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; overflow:hidden; }
     .badge { position:absolute; top:8px; right:8px; padding:4px 6px; border-radius:4px; color:#fff; font-size:0.75rem; }
     .badge-sale  { background:var(--accent); }
@@ -155,7 +184,7 @@ function parseCSV(text) {
       background: #27ae60;
       color: white;
       border: none;
-      padding: 10px 12px;
+      padding: 12px 16px;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
@@ -165,21 +194,6 @@ function parseCSV(text) {
     
     .btn-add-quote:hover {
       background: #229954;
-    }
-    
-    .btn-call {
-      background: #3498db;
-      color: white;
-      padding: 10px 12px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      transition: background 0.3s;
-    }
-    
-    .btn-call:hover {
-      background: #2980b9;
     }
     
     .quote-counter {
@@ -309,8 +323,11 @@ function parseCSV(text) {
 </head>
 <body>
   <div class="header">
-    <h1>🚗 Sturgeon Tire Live Deals</h1>
-    <p>Updated: ${new Date().toLocaleString()}</p>
+    <div class="update-time">Updated: ${new Date().toLocaleString()}</div>
+    <h1>
+      <img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">
+      Sturgeon Tire Live Deals
+    </h1>
   </div>
   
   <div class="stats">
@@ -399,7 +416,6 @@ function parseCSV(text) {
         + '<div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div>'
         + '<div class="card-actions">'
         + '<button class="btn-add-quote" onclick="addToQuote(' + "'" + i.item + "'" + ')">Add to Quote</button>'
-        + '<a href="tel:+12049355559" class="btn-call">📞 Call</a>'
         + '</div>'
         + '</div>'
         + '</div>';
