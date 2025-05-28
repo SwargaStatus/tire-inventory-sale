@@ -1,192 +1,622 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Sturgeon Tire Deals</title>
-    <style>
-    :root { --brand: #2e6fa3; --dark: #182742; --light-bg: #f0f8ff; --accent: #ffa726; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--light-bg); }
-    .header { background: var(--brand); color:white; padding:20px; text-align:center; }
-    .header h1 { margin:0; }
-    .stats { display:flex; justify-content:center; gap:20px; padding:15px; background:white; }
-    .stats div { text-align:center; }
-    .stats .num { font-size:20px; font-weight:bold; color:var(--brand); }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:15px; padding:15px; }
-    .card { background:white; border-radius:6px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; }
-    .badge { position:absolute; top:10px; right:10px; padding:4px 8px; border-radius:4px; color:white; font-size:12px; }
-    .badge-sale  { background:var(--accent); }
-    .badge-good  { background:var(--brand); }
-    .badge-great { background:#ffb300; }
-    .badge-huge  { background:#ff6d00; }
-    .badge-free  { background:var(--dark); }
-    .logo { height:24px; vertical-align:middle; margin-right:6px; }
-    .content { padding:12px; }
-    .title { font-size:16px; font-weight:bold; color:var(--dark); margin-bottom:6px; }
-    .details { font-size:13px; color:#555; margin-bottom:6px; }
-    .sale-price { color:#27ae60; font-weight:bold; }
-    .orig-price { text-decoration:line-through; color:#888; margin-left:6px; }
-    .free-price { color:var(--dark); font-weight:bold; }
-    .pricing { margin-bottom:6px; }
-    .save { color:#e74c3c; font-size:13px; margin-bottom:6px; }
-    .stock { font-size:12px; padding:4px 6px; border-radius:4px; display:inline-block; margin-bottom:6px; }
-    .stock-low { background:#fdecea; color:#c0392b; }
-    .stock-medium { background:#fff8e1; color:#f57c00; }
-    .stock-good { background:#e8f5e9; color:#2e7d32; }
-    .stock-excellent { background:#e3f2fd; color:#1565c0; }
-    .footer { text-align:center; padding:15px; background:white; }
-    .footer a { margin:0 10px; color:var(--brand); text-decoration:none; font-weight:bold; }
-    </style>
-</head><body>
-    <div class="header"><h1>🚗 Sturgeon Tire Live Deals</h1><p>Updated: 5/28/2025, 5:47:13 PM</p></div>
-    <div class="stats">
-        <div><div class="num">16</div><div>Deals</div></div>
-        <div><div class="num">0</div><div>50%+ Off</div></div>
-        <div><div class="num">$131</div><div>Avg Savings</div></div>
-        <div><div class="num">0</div><div>Hot Items</div></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sturgeon Tire Live Deals</title>
+<style>
+:root { --primary:#2e6fa3; --dark:#182742; --light-bg:#f0f8ff; --accent:#ffa726; }
+body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--light-bg); }
+.header { background:var(--primary); color:#fff; padding:20px; text-align:center; }
+.header h1 { margin:0; font-size:1.8rem; }
+.header p  { margin:5px 0 0; font-size:1rem; }
+.stats { display:flex; flex-wrap:wrap; justify-content:center; gap:30px; padding:15px; background:#fff; }
+.stats div { text-align:center; min-width:100px; }
+.stats .num { font-size:1.2rem; font-weight:bold; color:var(--primary); }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; padding:15px; }
+@media (max-width:768px) { .grid { grid-template-columns:1fr; } .header h1 { font-size:1.5rem;} }
+.card { background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; overflow:hidden; }
+.badge { position:absolute; top:10px; right:10px; padding:4px 8px; border-radius:4px; color:#fff; font-size:0.8rem; }
+.badge-sale  { background:var(--accent);} .badge-good { background:var(--primary);} .badge-great{ background:#ffb300;} .badge-huge{ background:#ff6d00;} .badge-free { background:var(--dark);} 
+.content { padding:16px; }
+.logo { height:28px; vertical-align:middle; margin-right:8px; }
+.title { font-size:1.1rem; font-weight:bold; color:var(--dark); margin-bottom:6px; }
+.details{ font-size:0.9rem; color:#555; margin-bottom:6px; }
+.pricing{ margin-bottom:6px; }
+.sale-price{ color:#27ae60; font-weight:bold; }
+.orig-price{ text-decoration:line-through; color:#888; margin-left:6px; }
+.free-price{ color:var(--dark); font-weight:bold; }
+.save{ color:#e74c3c; font-size:0.9rem; margin-bottom:6px; }
+.stock{ font-size:0.8rem; padding:4px 6px; border-radius:4px; display:inline-block; margin-bottom:6px; }
+.stock-low{ background:#fdecea; color:#c0392b;} .stock-medium{ background:#fff8e1; color:#f57c00;} .stock-good{ background:#e8f5e9; color:#2e7d32;} .stock-excellent{ background:#e3f2fd; color:#1565c0;}
+.footer{ text-align:center; padding:15px; background:#fff; }
+.footer a{ margin:0 10px; color:var(--primary); text-decoration:none; font-weight:bold; }
+</style>
+</head>
+<body>
+  <div class="header"><h1>🚗 Sturgeon Tire Live Deals</h1><p>Updated: 5/28/2025, 5:52:53 PM</p></div>
+  <div class="stats">
+    <div><div class="num">64</div>Deals</div>
+    <div><div class="num">0</div>50%+ Off</div>
+    <div><div class="num">$42</div>Avg Savings</div>
+    <div><div class="num">0</div>Hot Items</div>
+  </div>
+  <div class="grid"><div class="card">
+    <div class="badge badge-sale">-1% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT A/S+</div>
+      <div class="details">Item: 110140669</div>
+      <div class="pricing"><span class="sale-price">$300</span><span class="orig-price">$295</span></div>
+      <div class="save">💰 Save $-4</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
     </div>
-    <div class="grid"><div class="card">
-        <div class="badge badge-huge">49% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://commons.wikimedia.org/wiki/File:Hankook_logo_as_of_2019.png" alt="logo" class="logo">DL12</div>
-            <div class="details">Item: 3002335</div>
-            <div class="pricing"><span class="sale-price">$285</span><span class="orig-price">$556</span></div>
-            <div class="save">💰 Save $271</div>
-            <div class="stock stock-low">⚠️ Only 4 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-great">37% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Michelin-logo-blue%402x.webp" alt="logo" class="logo">XDN2</div>
-            <div class="details">Item: 72805</div>
-            <div class="pricing"><span class="sale-price">$493</span><span class="orig-price">$781</span></div>
-            <div class="save">💰 Save $288</div>
-            <div class="stock stock-medium">🔶 6 available</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-great">37% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Michelin-logo-blue%402x.webp" alt="logo" class="logo">XTE</div>
-            <div class="details">Item: 21307</div>
-            <div class="pricing"><span class="sale-price">$430</span><span class="orig-price">$680</span></div>
-            <div class="save">💰 Save $251</div>
-            <div class="stock stock-medium">🔶 15 available</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-great">33% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
-            <div class="details">Item: 110116024</div>
-            <div class="pricing"><span class="sale-price">$327</span><span class="orig-price">$489</span></div>
-            <div class="save">💰 Save $162</div>
-            <div class="stock stock-low">⚠️ Only 4 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">27% OFF</div>
-        <div class="content">
-            <div class="title">GCB3</div>
-            <div class="details">Item: B101012</div>
-            <div class="pricing"><span class="sale-price">$1229</span><span class="orig-price">$1674</span></div>
-            <div class="save">💰 Save $445</div>
-            <div class="stock stock-medium">🔶 7 available</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">24% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
-            <div class="details">Item: 110116035</div>
-            <div class="pricing"><span class="sale-price">$352</span><span class="orig-price">$462</span></div>
-            <div class="save">💰 Save $110</div>
-            <div class="stock stock-low">⚠️ Only 4 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">24% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-CV</div>
-            <div class="details">Item: 110157001</div>
-            <div class="pricing"><span class="sale-price">$196</span><span class="orig-price">$257</span></div>
-            <div class="save">💰 Save $61</div>
-            <div class="stock stock-low">⚠️ Only 1 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">24% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
-            <div class="details">Item: 110116036</div>
-            <div class="pricing"><span class="sale-price">$373</span><span class="orig-price">$492</span></div>
-            <div class="save">💰 Save $119</div>
-            <div class="stock stock-low">⚠️ Only 5 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">23% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">AVID ASCEND LX</div>
-            <div class="details">Item: 110132810</div>
-            <div class="pricing"><span class="sale-price">$115</span><span class="orig-price">$148</span></div>
-            <div class="save">💰 Save $33</div>
-            <div class="stock stock-low">⚠️ Only 1 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">23% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">AVID ASCEND LX</div>
-            <div class="details">Item: 110132811</div>
-            <div class="pricing"><span class="sale-price">$115</span><span class="orig-price">$150</span></div>
-            <div class="save">💰 Save $35</div>
-            <div class="stock stock-low">⚠️ Only 1 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">23% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">AVID ASCEND LX</div>
-            <div class="details">Item: 110132831</div>
-            <div class="pricing"><span class="sale-price">$149</span><span class="orig-price">$194</span></div>
-            <div class="save">💰 Save $45</div>
-            <div class="stock stock-low">⚠️ Only 2 left</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">22% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">ICEGUARD IG53</div>
-            <div class="details">Item: 110115345</div>
-            <div class="pricing"><span class="sale-price">$165</span><span class="orig-price">$211</span></div>
-            <div class="save">💰 Save $46</div>
-            <div class="stock stock-good">✅ 25 available</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">22% OFF</div>
-        <div class="content">
-            <div class="title">BT556</div>
-            <div class="details">Item: B312135</div>
-            <div class="pricing"><span class="sale-price">$259</span><span class="orig-price">$331</span></div>
-            <div class="save">💰 Save $72</div>
-            <div class="stock stock-good">✅ 44 available</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-good">20% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
-            <div class="details">Item: 110116034</div>
-            <div class="pricing"><span class="sale-price">$338</span><span class="orig-price">$425</span></div>
-            <div class="save">💰 Save $87</div>
-            <div class="stock stock-medium">🔶 8 available</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-sale">19% OFF</div>
-        <div class="content">
-            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">ADVAN FLEVA</div>
-            <div class="details">Item: 110170164</div>
-            <div class="pricing"><span class="sale-price">$211</span><span class="orig-price">$261</span></div>
-            <div class="save">💰 Save $49</div>
-            <div class="stock stock-medium">🔶 6 available</div>
-        </div>
-    </div><div class="card">
-        <div class="badge badge-sale">15% OFF</div>
-        <div class="content">
-            <div class="title">VULCAN</div>
-            <div class="details">Item: K846920</div>
-            <div class="pricing"><span class="sale-price">$118</span><span class="orig-price">$140</span></div>
-            <div class="save">💰 Save $21</div>
-            <div class="stock stock-good">✅ 19 available</div>
-        </div>
-    </div></div>
-    <div class="footer">
-        <a href="tel:+12049854040">📞 (204) 985-4040</a>
-        <a href="mailto:sales@sturgeontire.com">✉️ Quote</a>
+  </div><div class="card">
+    <div class="badge badge-sale">3% OFF</div>
+    <div class="content">
+      <div class="title">PureContact LS</div>
+      <div class="details">Item: 15508770000</div>
+      <div class="pricing"><span class="sale-price">$223</span><span class="orig-price">$231</span></div>
+      <div class="save">💰 Save $8</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
     </div>
-</body></html>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Grabber HTS60</div>
+      <div class="details">Item: 04505170000</div>
+      <div class="pricing"><span class="sale-price">$256</span><span class="orig-price">$262</span></div>
+      <div class="save">💰 Save $6</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">9% OFF</div>
+    <div class="content">
+      <div class="title">Geolandar A/T G015</div>
+      <div class="details">Item: 110101680</div>
+      <div class="pricing"><span class="sale-price">$250</span><span class="orig-price">$274</span></div>
+      <div class="save">💰 Save $24</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">24% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR X-AT</div>
+      <div class="details">Item: 110116035</div>
+      <div class="pricing"><span class="sale-price">$352</span><span class="orig-price">$462</span></div>
+      <div class="save">💰 Save $110</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">GRABBER ARCTIC</div>
+      <div class="details">Item: 15502560000</div>
+      <div class="pricing"><span class="sale-price">$213</span><span class="orig-price">$217</span></div>
+      <div class="save">💰 Save $5</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">11% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR CV G058</div>
+      <div class="details">Item: 110105812</div>
+      <div class="pricing"><span class="sale-price">$152</span><span class="orig-price">$171</span></div>
+      <div class="save">💰 Save $19</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">9% OFF</div>
+    <div class="content">
+      <div class="title">Geolandar A/T G015</div>
+      <div class="details">Item: 110101625</div>
+      <div class="pricing"><span class="sale-price">$213</span><span class="orig-price">$234</span></div>
+      <div class="save">💰 Save $21</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-great">33% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR X-AT</div>
+      <div class="details">Item: 110116024</div>
+      <div class="pricing"><span class="sale-price">$327</span><span class="orig-price">$489</span></div>
+      <div class="save">💰 Save $162</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-huge">49% OFF</div>
+    <div class="content">
+      <div class="title">DL12</div>
+      <div class="details">Item: 3002335</div>
+      <div class="pricing"><span class="sale-price">$285</span><span class="orig-price">$556</span></div>
+      <div class="save">💰 Save $271</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Grabber A/TX</div>
+      <div class="details">Item: 04505590000</div>
+      <div class="pricing"><span class="sale-price">$237</span><span class="orig-price">$242</span></div>
+      <div class="save">💰 Save $5</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">23% OFF</div>
+    <div class="content">
+      <div class="title">AVID ASCEND LX</div>
+      <div class="details">Item: 110132810</div>
+      <div class="pricing"><span class="sale-price">$115</span><span class="orig-price">$148</span></div>
+      <div class="save">💰 Save $33</div>
+      <div class="stock stock-low">⚠️ Only 1 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">23% OFF</div>
+    <div class="content">
+      <div class="title">AVID ASCEND LX</div>
+      <div class="details">Item: 110132811</div>
+      <div class="pricing"><span class="sale-price">$115</span><span class="orig-price">$150</span></div>
+      <div class="save">💰 Save $35</div>
+      <div class="stock stock-low">⚠️ Only 1 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">7% OFF</div>
+    <div class="content">
+      <div class="title">AVID ASCEND GT</div>
+      <div class="details">Item: 110132729</div>
+      <div class="pricing"><span class="sale-price">$172</span><span class="orig-price">$184</span></div>
+      <div class="save">💰 Save $13</div>
+      <div class="stock stock-low">⚠️ Only 1 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">0% OFF</div>
+    <div class="content">
+      <div class="title">SPORTSTAR BH19</div>
+      <div class="details">Item: B560422</div>
+      <div class="pricing"><span class="sale-price">$169</span><span class="orig-price">$169</span></div>
+      <div class="save">💰 Save $0</div>
+      <div class="stock stock-low">⚠️ Only 1 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">24% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR X-CV</div>
+      <div class="details">Item: 110157001</div>
+      <div class="pricing"><span class="sale-price">$196</span><span class="orig-price">$257</span></div>
+      <div class="save">💰 Save $61</div>
+      <div class="stock stock-low">⚠️ Only 1 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">7% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT A/S+</div>
+      <div class="details">Item: 110140671</div>
+      <div class="pricing"><span class="sale-price">$329</span><span class="orig-price">$355</span></div>
+      <div class="save">💰 Save $26</div>
+      <div class="stock stock-low">⚠️ Only 2 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">8% OFF</div>
+    <div class="content">
+      <div class="title">IA-207</div>
+      <div class="details">Item: D221050</div>
+      <div class="pricing"><span class="sale-price">$174</span><span class="orig-price">$189</span></div>
+      <div class="save">💰 Save $15</div>
+      <div class="stock stock-low">⚠️ Only 2 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">23% OFF</div>
+    <div class="content">
+      <div class="title">AVID ASCEND LX</div>
+      <div class="details">Item: 110132831</div>
+      <div class="pricing"><span class="sale-price">$149</span><span class="orig-price">$194</span></div>
+      <div class="save">💰 Save $45</div>
+      <div class="stock stock-low">⚠️ Only 2 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Grabber A/TX</div>
+      <div class="details">Item: 04507150000</div>
+      <div class="pricing"><span class="sale-price">$386</span><span class="orig-price">$394</span></div>
+      <div class="save">💰 Save $8</div>
+      <div class="stock stock-low">⚠️ Only 2 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">20% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR X-AT</div>
+      <div class="details">Item: 110116034</div>
+      <div class="pricing"><span class="sale-price">$338</span><span class="orig-price">$425</span></div>
+      <div class="save">💰 Save $87</div>
+      <div class="stock stock-medium">🔶 8 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">10% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR X-AT</div>
+      <div class="details">Item: 110116006</div>
+      <div class="pricing"><span class="sale-price">$277</span><span class="orig-price">$309</span></div>
+      <div class="save">💰 Save $32</div>
+      <div class="stock stock-medium">🔶 8 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">12% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT A/S+</div>
+      <div class="details">Item: 110140617</div>
+      <div class="pricing"><span class="sale-price">$160</span><span class="orig-price">$181</span></div>
+      <div class="save">💰 Save $21</div>
+      <div class="stock stock-medium">🔶 8 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Grabber APT</div>
+      <div class="details">Item: 04508100000</div>
+      <div class="pricing"><span class="sale-price">$313</span><span class="orig-price">$320</span></div>
+      <div class="save">💰 Save $7</div>
+      <div class="stock stock-medium">🔶 8 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">3% OFF</div>
+    <div class="content">
+      <div class="title">PureContact LS</div>
+      <div class="details">Item: 15509360000</div>
+      <div class="pricing"><span class="sale-price">$148</span><span class="orig-price">$153</span></div>
+      <div class="save">💰 Save $5</div>
+      <div class="stock stock-medium">🔶 8 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">7% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT A/S+</div>
+      <div class="details">Item: 110140651</div>
+      <div class="pricing"><span class="sale-price">$261</span><span class="orig-price">$281</span></div>
+      <div class="save">💰 Save $20</div>
+      <div class="stock stock-medium">🔶 8 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">10% OFF</div>
+    <div class="content">
+      <div class="title">AVID ASCEND LX</div>
+      <div class="details">Item: 110132828</div>
+      <div class="pricing"><span class="sale-price">$162</span><span class="orig-price">$181</span></div>
+      <div class="save">💰 Save $19</div>
+      <div class="stock stock-low">⚠️ Only 3 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">6% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT A/S+</div>
+      <div class="details">Item: 110140653</div>
+      <div class="pricing"><span class="sale-price">$220</span><span class="orig-price">$236</span></div>
+      <div class="save">💰 Save $15</div>
+      <div class="stock stock-low">⚠️ Only 1 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">19% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN FLEVA</div>
+      <div class="details">Item: 110170164</div>
+      <div class="pricing"><span class="sale-price">$211</span><span class="orig-price">$261</span></div>
+      <div class="save">💰 Save $49</div>
+      <div class="stock stock-medium">🔶 6 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">13% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR H/T G056</div>
+      <div class="details">Item: 110105664</div>
+      <div class="pricing"><span class="sale-price">$204</span><span class="orig-price">$235</span></div>
+      <div class="save">💰 Save $31</div>
+      <div class="stock stock-medium">🔶 6 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">12% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT A/S+</div>
+      <div class="details">Item: 110140616</div>
+      <div class="pricing"><span class="sale-price">$164</span><span class="orig-price">$186</span></div>
+      <div class="save">💰 Save $22</div>
+      <div class="stock stock-medium">🔶 12 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Grabber HTS</div>
+      <div class="details">Item: 04503240000</div>
+      <div class="pricing"><span class="sale-price">$353</span><span class="orig-price">$361</span></div>
+      <div class="save">💰 Save $8</div>
+      <div class="stock stock-medium">🔶 12 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">8% OFF</div>
+    <div class="content">
+      <div class="title">IA-207</div>
+      <div class="details">Item: D226675</div>
+      <div class="pricing"><span class="sale-price">$173</span><span class="orig-price">$188</span></div>
+      <div class="save">💰 Save $15</div>
+      <div class="stock stock-medium">🔶 12 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">7% OFF</div>
+    <div class="content">
+      <div class="title">BT957</div>
+      <div class="details">Item: B301621</div>
+      <div class="pricing"><span class="sale-price">$180</span><span class="orig-price">$194</span></div>
+      <div class="save">💰 Save $14</div>
+      <div class="stock stock-medium">🔶 12 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">8% OFF</div>
+    <div class="content">
+      <div class="title">VULCAN</div>
+      <div class="details">Item: K845820</div>
+      <div class="pricing"><span class="sale-price">$114</span><span class="orig-price">$123</span></div>
+      <div class="save">💰 Save $10</div>
+      <div class="stock stock-medium">🔶 12 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">24% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR X-AT</div>
+      <div class="details">Item: 110116036</div>
+      <div class="pricing"><span class="sale-price">$373</span><span class="orig-price">$492</span></div>
+      <div class="save">💰 Save $119</div>
+      <div class="stock stock-low">⚠️ Only 5 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">9% OFF</div>
+    <div class="content">
+      <div class="title">GEOLANDAR X-AT</div>
+      <div class="details">Item: 110116028</div>
+      <div class="pricing"><span class="sale-price">$271</span><span class="orig-price">$297</span></div>
+      <div class="save">💰 Save $26</div>
+      <div class="stock stock-low">⚠️ Only 5 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">7% OFF</div>
+    <div class="content">
+      <div class="title">MIDAS</div>
+      <div class="details">Item: K832190</div>
+      <div class="pricing"><span class="sale-price">$89</span><span class="orig-price">$95</span></div>
+      <div class="save">💰 Save $7</div>
+      <div class="stock stock-low">⚠️ Only 5 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">11% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT V105</div>
+      <div class="details">Item: 110110549</div>
+      <div class="pricing"><span class="sale-price">$245</span><span class="orig-price">$275</span></div>
+      <div class="save">💰 Save $29</div>
+      <div class="stock stock-low">⚠️ Only 4 left</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">12% OFF</div>
+    <div class="content">
+      <div class="title">AVID ASCEND GT</div>
+      <div class="details">Item: 110132714</div>
+      <div class="pricing"><span class="sale-price">$127</span><span class="orig-price">$144</span></div>
+      <div class="save">💰 Save $17</div>
+      <div class="stock stock-medium">🔶 11 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Grabber APT</div>
+      <div class="details">Item: 04508020000</div>
+      <div class="pricing"><span class="sale-price">$247</span><span class="orig-price">$252</span></div>
+      <div class="save">💰 Save $5</div>
+      <div class="stock stock-good">✅ 24 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Grabber APT</div>
+      <div class="details">Item: 04507980000</div>
+      <div class="pricing"><span class="sale-price">$245</span><span class="orig-price">$250</span></div>
+      <div class="save">💰 Save $5</div>
+      <div class="stock stock-medium">🔶 10 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">22% OFF</div>
+    <div class="content">
+      <div class="title">ICEGUARD IG53</div>
+      <div class="details">Item: 110115345</div>
+      <div class="pricing"><span class="sale-price">$165</span><span class="orig-price">$211</span></div>
+      <div class="save">💰 Save $46</div>
+      <div class="stock stock-good">✅ 25 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">9% OFF</div>
+    <div class="content">
+      <div class="title">ATLAS</div>
+      <div class="details">Item: K836840</div>
+      <div class="pricing"><span class="sale-price">$102</span><span class="orig-price">$113</span></div>
+      <div class="save">💰 Save $10</div>
+      <div class="stock stock-good">✅ 35 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">6% OFF</div>
+    <div class="content">
+      <div class="title">ADVAN SPORT A/S+</div>
+      <div class="details">Item: 110140618</div>
+      <div class="pricing"><span class="sale-price">$179</span><span class="orig-price">$190</span></div>
+      <div class="save">💰 Save $11</div>
+      <div class="stock stock-medium">🔶 7 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">9% OFF</div>
+    <div class="content">
+      <div class="title">Geolandar A/T G015</div>
+      <div class="details">Item: 110101641</div>
+      <div class="pricing"><span class="sale-price">$299</span><span class="orig-price">$328</span></div>
+      <div class="save">💰 Save $29</div>
+      <div class="stock stock-medium">🔶 10 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">AltiMAX RT45</div>
+      <div class="details">Item: 15576180000</div>
+      <div class="pricing"><span class="sale-price">$124</span><span class="orig-price">$127</span></div>
+      <div class="save">💰 Save $3</div>
+      <div class="stock stock-medium">🔶 14 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">3% OFF</div>
+    <div class="content">
+      <div class="title">PureContact LS</div>
+      <div class="details">Item: 15571180000</div>
+      <div class="pricing"><span class="sale-price">$162</span><span class="orig-price">$168</span></div>
+      <div class="save">💰 Save $6</div>
+      <div class="stock stock-good">✅ 18 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">2% OFF</div>
+    <div class="content">
+      <div class="title">Altimax 365AW</div>
+      <div class="details">Item: 15574890000</div>
+      <div class="pricing"><span class="sale-price">$192</span><span class="orig-price">$197</span></div>
+      <div class="save">💰 Save $4</div>
+      <div class="stock stock-good">✅ 19 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">14% OFF</div>
+    <div class="content">
+      <div class="title">ICEGUARD IG53</div>
+      <div class="details">Item: 110115346</div>
+      <div class="pricing"><span class="sale-price">$186</span><span class="orig-price">$216</span></div>
+      <div class="save">💰 Save $29</div>
+      <div class="stock stock-good">✅ 24 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-great">37% OFF</div>
+    <div class="content">
+      <div class="title">XDN2</div>
+      <div class="details">Item: 72805</div>
+      <div class="pricing"><span class="sale-price">$493</span><span class="orig-price">$781</span></div>
+      <div class="save">💰 Save $288</div>
+      <div class="stock stock-medium">🔶 6 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">0% OFF</div>
+    <div class="content">
+      <div class="title">BV11+</div>
+      <div class="details">Item: B608680</div>
+      <div class="pricing"><span class="sale-price">$167</span><span class="orig-price">$167</span></div>
+      <div class="save">💰 Save $0</div>
+      <div class="stock stock-excellent">✅ 53+ in stock</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">3% OFF</div>
+    <div class="content">
+      <div class="title">PureContact LS</div>
+      <div class="details">Item: 15508370000</div>
+      <div class="pricing"><span class="sale-price">$189</span><span class="orig-price">$196</span></div>
+      <div class="save">💰 Save $7</div>
+      <div class="stock stock-medium">🔶 7 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">1% OFF</div>
+    <div class="content">
+      <div class="title">PureContact LS</div>
+      <div class="details">Item: 15571170000</div>
+      <div class="pricing"><span class="sale-price">$131</span><span class="orig-price">$133</span></div>
+      <div class="save">💰 Save $2</div>
+      <div class="stock stock-good">✅ 19 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">8% OFF</div>
+    <div class="content">
+      <div class="title">IA-207</div>
+      <div class="details">Item: D226760</div>
+      <div class="pricing"><span class="sale-price">$173</span><span class="orig-price">$188</span></div>
+      <div class="save">💰 Save $15</div>
+      <div class="stock stock-good">✅ 16 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">0% OFF</div>
+    <div class="content">
+      <div class="title">SASQUA H/T</div>
+      <div class="details">Item: B586675</div>
+      <div class="pricing"><span class="sale-price">$145</span><span class="orig-price">$145</span></div>
+      <div class="save">💰 Save $0</div>
+      <div class="stock stock-excellent">✅ 53+ in stock</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">27% OFF</div>
+    <div class="content">
+      <div class="title">GCB3</div>
+      <div class="details">Item: B101012</div>
+      <div class="pricing"><span class="sale-price">$1229</span><span class="orig-price">$1674</span></div>
+      <div class="save">💰 Save $445</div>
+      <div class="stock stock-medium">🔶 7 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">3% OFF</div>
+    <div class="content">
+      <div class="title">CrossContact ATR</div>
+      <div class="details">Item: 03594630000</div>
+      <div class="pricing"><span class="sale-price">$224</span><span class="orig-price">$232</span></div>
+      <div class="save">💰 Save $8</div>
+      <div class="stock stock-medium">🔶 7 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">0% OFF</div>
+    <div class="content">
+      <div class="title">SPORTSTAR BH19</div>
+      <div class="details">Item: B560425</div>
+      <div class="pricing"><span class="sale-price">$166</span><span class="orig-price">$166</span></div>
+      <div class="save">💰 Save $0</div>
+      <div class="stock stock-medium">🔶 10 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">0% OFF</div>
+    <div class="content">
+      <div class="title">SPORTSTAR BH19</div>
+      <div class="details">Item: B564322</div>
+      <div class="pricing"><span class="sale-price">$117</span><span class="orig-price">$117</span></div>
+      <div class="save">💰 Save $0</div>
+      <div class="stock stock-good">✅ 22 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-good">22% OFF</div>
+    <div class="content">
+      <div class="title">BT556</div>
+      <div class="details">Item: B312135</div>
+      <div class="pricing"><span class="sale-price">$259</span><span class="orig-price">$331</span></div>
+      <div class="save">💰 Save $72</div>
+      <div class="stock stock-good">✅ 44 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">9% OFF</div>
+    <div class="content">
+      <div class="title">BS68</div>
+      <div class="details">Item: B821580</div>
+      <div class="pricing"><span class="sale-price">$109</span><span class="orig-price">$121</span></div>
+      <div class="save">💰 Save $11</div>
+      <div class="stock stock-excellent">✅ 72+ in stock</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-great">37% OFF</div>
+    <div class="content">
+      <div class="title">XTE</div>
+      <div class="details">Item: 21307</div>
+      <div class="pricing"><span class="sale-price">$430</span><span class="orig-price">$680</span></div>
+      <div class="save">💰 Save $251</div>
+      <div class="stock stock-medium">🔶 15 available</div>
+    </div>
+  </div><div class="card">
+    <div class="badge badge-sale">15% OFF</div>
+    <div class="content">
+      <div class="title">VULCAN</div>
+      <div class="details">Item: K846920</div>
+      <div class="pricing"><span class="sale-price">$118</span><span class="orig-price">$140</span></div>
+      <div class="save">💰 Save $21</div>
+      <div class="stock stock-good">✅ 19 available</div>
+    </div>
+  </div></div>
+  <div class="footer"><a href="tel:+12049355559">📞 (204) 935-5559</a><a href="mailto:sales@sturgeontire.com">✉️ Quote</a></div>
+</body>
+</html>
