@@ -45,12 +45,175 @@
     .footer { text-align:center; padding:20px; background:#fff; margin:12px 0; border-radius:8px; }
     .footer a { margin:0 15px; color:var(--primary); text-decoration:none; font-weight:bold; padding:8px 16px; border:2px solid var(--primary); border-radius:4px; }
     .footer a:hover { background:var(--primary); color:#fff; }
+    
+    /* Quote System Styles */
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn-add-quote {
+      flex: 1;
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    
+    .btn-add-quote:hover {
+      background: #229954;
+    }
+    
+    .btn-call {
+      background: #3498db;
+      color: white;
+      padding: 10px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+    
+    .btn-call:hover {
+      background: #2980b9;
+    }
+    
+    .quote-counter {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #e74c3c;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: none;
+    }
+    
+    .quote-counter:hover {
+      background: #c0392b;
+    }
+    
+    .quote-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+    }
+    
+    .quote-modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 8px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .quote-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .quote-item:last-child {
+      border-bottom: none;
+    }
+    
+    .remove-item {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    
+    .quote-form {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #eee;
+    }
+    
+    .quote-form input, .quote-form textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    .quote-form textarea {
+      height: 60px;
+      resize: vertical;
+    }
+    
+    .submit-quote {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      width: 100%;
+    }
+    
+    .submit-quote:hover {
+      background: #229954;
+    }
+    
+    .close-modal {
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #aaa;
+    }
+    
+    .close-modal:hover {
+      color: #000;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #27ae60;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 6px;
+      z-index: 3000;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>🚗 Sturgeon Tire Live Deals</h1>
-    <p>Updated: 5/28/2025, 7:55:21 PM</p>
+    <p>Updated: 5/28/2025, 8:27:19 PM</p>
   </div>
   
   <div class="stats">
@@ -84,6 +247,29 @@
   <div class="footer">
     <a href="tel:+12049355559">📞 Call (204) 935-5559</a>
     <a href="mailto:sales@sturgeontire.com">✉️ Get Quote</a>
+  </div>
+  
+  <!-- Quote System -->
+  <div class="quote-counter" id="quote-counter" onclick="openQuoteModal()">
+    Quote (<span id="quote-count">0</span>)
+  </div>
+  
+  <div class="quote-modal" id="quote-modal">
+    <div class="quote-modal-content">
+      <span class="close-modal" onclick="closeQuoteModal()">&times;</span>
+      <h2>Request Quote</h2>
+      <div id="quote-items"></div>
+      
+      <div class="quote-form">
+        <h3>Your Information</h3>
+        <input type="text" id="customer-name" placeholder="Your Name *" required>
+        <input type="email" id="customer-email" placeholder="Email Address *" required>
+        <input type="tel" id="customer-phone" placeholder="Phone Number">
+        <input type="text" id="customer-company" placeholder="Company Name">
+        <textarea id="customer-notes" placeholder="Additional notes or questions..."></textarea>
+        <button class="submit-quote" onclick="submitQuote()">Request Quote</button>
+      </div>
+    </div>
   </div>
   
   <script>
@@ -794,6 +980,7 @@
   }
 ];
     let currentPage = 1, pageSize = 20;
+    let quoteItems = [];
 
     function renderCard(i) {
       const badgeType = i.disc >= 99 ? 'free'
@@ -818,6 +1005,10 @@
         + '<div class="pricing">' + priceHtml + '</div>'
         + '<div class="save">💰 Save $' + i.save + '</div>'
         + '<div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div>'
+        + '<div class="card-actions">'
+        + '<button class="btn-add-quote" onclick="addToQuote(' + "'" + i.item + "'" + ')">Add to Quote</button>'
+        + '<a href="tel:+12049355559" class="btn-call">📞 Call</a>'
+        + '</div>'
         + '</div>'
         + '</div>';
     }
@@ -840,6 +1031,174 @@
       }
     }
 
+    // Quote System Functions
+    function addToQuote(itemCode) {
+      const item = items.find(i => i.item === itemCode);
+      if (!item) return;
+      
+      // Check if item already in quote
+      const existingIndex = quoteItems.findIndex(q => q.item === item.item);
+      
+      if (existingIndex >= 0) {
+        // Increase quantity
+        quoteItems[existingIndex].quantity += 1;
+      } else {
+        // Add new item
+        quoteItems.push({
+          ...item,
+          quantity: 1
+        });
+      }
+      
+      updateQuoteCounter();
+      showNotification('Added to quote!');
+    }
+
+    function removeFromQuote(itemCode) {
+      quoteItems = quoteItems.filter(item => item.item !== itemCode);
+      updateQuoteCounter();
+      updateQuoteModal();
+    }
+
+    function updateQuoteCounter() {
+      const counter = document.getElementById('quote-counter');
+      const count = document.getElementById('quote-count');
+      
+      if (quoteItems.length > 0) {
+        counter.style.display = 'block';
+        count.textContent = quoteItems.length;
+      } else {
+        counter.style.display = 'none';
+      }
+    }
+
+    function openQuoteModal() {
+      updateQuoteModal();
+      document.getElementById('quote-modal').style.display = 'block';
+    }
+
+    function closeQuoteModal() {
+      document.getElementById('quote-modal').style.display = 'none';
+    }
+
+    function updateQuoteModal() {
+      const container = document.getElementById('quote-items');
+      
+      if (quoteItems.length === 0) {
+        container.innerHTML = '<p>No items in quote yet. Browse our deals and click "Add to Quote"!</p>';
+        return;
+      }
+      
+      let html = '<h3>Items in Quote:</h3>';
+      let totalSavings = 0;
+      
+      quoteItems.forEach(item => {
+        totalSavings += item.save * item.quantity;
+        html += '<div class="quote-item">'
+          + '<div>'
+          + '<strong>' + item.manufacturer + ' ' + item.model + '</strong><br>'
+          + 'Item: ' + item.item + ' • Qty: ' + item.quantity + '<br>'
+          + '<small>$' + item.sale + ' each (save $' + item.save + ' per tire)</small>'
+          + '</div>'
+          + '<button class="remove-item" onclick="removeFromQuote(\''+item.item+'\')">Remove</button>'
+          + '</div>';
+      });
+      
+      html += '<div style="margin-top:15px; padding:10px; background:#f8f9fa; border-radius:4px;">'
+        + '<strong>Total Savings: $' + totalSavings + '</strong>'
+        + '</div>';
+      
+      container.innerHTML = html;
+    }
+
+    function submitQuote() {
+      const name = document.getElementById('customer-name').value;
+      const email = document.getElementById('customer-email').value;
+      const phone = document.getElementById('customer-phone').value;
+      const company = document.getElementById('customer-company').value;
+      const notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email address.');
+        return;
+      }
+      
+      // Build email content
+      let emailBody = 'NEW QUOTE REQUEST - Sturgeon Tire Website\n\n';
+      emailBody += '🔥 CUSTOMER INFORMATION:\n';
+      emailBody += 'Name: ' + name + '\n';
+      emailBody += 'Email: ' + email + '\n';
+      emailBody += 'Phone: ' + (phone || 'Not provided') + '\n';
+      emailBody += 'Company: ' + (company || 'Not provided') + '\n\n';
+      
+      emailBody += '🚗 REQUESTED ITEMS:\n';
+      let totalSavings = 0;
+      let totalValue = 0;
+      
+      quoteItems.forEach(item => {
+        totalSavings += item.save * item.quantity;
+        totalValue += item.sale * item.quantity;
+        emailBody += '• ' + item.manufacturer + ' ' + item.model + '\n';
+        emailBody += '  Item #: ' + item.item + '\n';
+        emailBody += '  Quantity: ' + item.quantity + '\n';
+        emailBody += '  Sale Price: $' + item.sale + ' each\n';
+        emailBody += '  Customer Saves: $' + item.save + ' per tire\n';
+        emailBody += '  Stock Available: ' + item.stock + '\n\n';
+      });
+      
+      emailBody += '💰 QUOTE SUMMARY:\n';
+      emailBody += 'Total Quote Value: $' + totalValue.toFixed(2) + '\n';
+      emailBody += 'Total Customer Savings: $' + totalSavings + '\n';
+      emailBody += 'Number of Items: ' + quoteItems.length + '\n\n';
+      
+      if (notes) {
+        emailBody += '📝 CUSTOMER NOTES:\n' + notes + '\n\n';
+      }
+      
+      emailBody += '⏰ FOLLOW UP REQUIRED!\n';
+      emailBody += 'This customer found us online and is ready to buy.\n';
+      emailBody += 'Please contact them within 2 hours for the best conversion rate.\n\n';
+      emailBody += 'Generated: ' + new Date().toLocaleString();
+      
+      // Create mailto link
+      const subject = '🚨 URGENT: New Tire Quote - $' + totalValue.toFixed(0) + ' - ' + name;
+      const mailtoLink = 'mailto:sales@sturgeontire.com'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(emailBody);
+      
+      // Open email client
+      window.location.href = mailtoLink;
+      
+      // Clear the quote and close modal
+      quoteItems = [];
+      updateQuoteCounter();
+      closeQuoteModal();
+      
+      showNotification('Quote request sent! We\'ll contact you within 2 hours.');
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 3000);
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('quote-modal');
+      if (event.target === modal) {
+        closeQuoteModal();
+      }
+    }
+
+    // Initialize
     document.getElementById('filter-manufacturer').onchange = () => { currentPage = 1; render(); };
     document.getElementById('filter-discount').onchange = () => { currentPage = 1; render(); };
     render();
