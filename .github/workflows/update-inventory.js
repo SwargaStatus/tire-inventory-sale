@@ -12,8 +12,6 @@ function readLocalCSV() {
   }
 }
 
-}
-
 // Parse CSV text into array of objects
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
