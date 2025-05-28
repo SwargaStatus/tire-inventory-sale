@@ -10,7 +10,7 @@ function readLocalCSV() {
   }
 }
 
-// Parse CSV into objects
+// Parse CSV into array of objects
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
   const parseLine = line => {
@@ -36,32 +36,28 @@ function parseCSV(text) {
   return rows;
 }
 
-// Core script
+// Main
 (async () => {
   try {
     const raw = readLocalCSV();
     const data = parseCSV(raw);
-
-    // Prepare simplified item objects for front-end
     const items = data.map(d => {
-      const disc = Math.round(parseFloat(d['FlyerData[B2B_Discount_Percentage]'])||0);
-      const sale = parseFloat(d['FlyerData[SalePrice]'])||0;
-      const reg  = parseFloat(d['FlyerData[Net]'])||0;
+      const disc = Math.round(parseFloat(d['FlyerData[B2B_Discount_Percentage]']) || 0);
+      const sale = parseFloat(d['FlyerData[SalePrice]']) || 0;
+      const reg  = parseFloat(d['FlyerData[Net]']) || 0;
       const save = Math.round(reg - sale);
       return {
         manufacturer: d['FlyerData[Manufacturer]'] || 'Unknown',
-        logo:          d['FlyerData[Brand_Logo_URL]']  || '',
-        model:         d['FlyerData[Model]']           || '',
-        item:          d['FlyerData[Item]']            || '',
+        logo:         d['FlyerData[Brand_Logo_URL]']  || '',
+        model:        d['FlyerData[Model]']           || '',
+        item:         d['FlyerData[Item]']            || '',
         disc, sale, reg, save,
-        stock:         parseInt(d['FlyerData[AvailableQuantity]'])||0
+        stock:        parseInt(d['FlyerData[AvailableQuantity]']) || 0
       };
     });
 
-    // Extract unique manufacturers for filter
     const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
 
-    // Generate HTML
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,76 +102,48 @@ function parseCSV(text) {
 <body>
   <div class="header"><h1>🚗 Sturgeon Tire Live Deals</h1></div>
   <div class="filters">
-    <label>Manufacturer:
-      <select id="filter-manufacturer">
-        <option value="">All</option>
-        ${manufacturers.map(m=>`<option value="${m}">${m}</option>`).join('')}
-      </select>
-    </label>
-    <label>Min Discount:
-      <select id="filter-discount">
-        <option value="0">0%</option>
-        <option value="10">10%</option>
-        <option value="20">20%</option>
-        <option value="30">30%</option>
-        <option value="40">40%</option>
-      </select>
-    </label>
+    <label>Manufacturer:<select id="filter-manufacturer"><option value="">All</option>${manufacturers.map(m=>`<option value="${m}">${m}</option>`).join('')}</select></label>
+    <label>Min Discount:<select id="filter-discount"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option></select></label>
   </div>
   <div class="grid" id="card-container"></div>
   <div class="pagination" id="pagination"></div>
+<script>
+  const items = ${JSON.stringify(items)};
+  let currentPage = 1, pageSize = 20;
 
-  <script>
-    const items = ${JSON.stringify(items, null, 2)};
-    let currentPage = 1;
-    const pageSize = 20;
+  function renderCard(i) {
+    const badgeType = i.disc>=99?'free':i.disc>=40?'huge':i.disc>=30?'great':i.disc>=20?'good':'sale';
+    const priceHtml = i.disc>=99
+      ? '<span class=\"free-price\">FREE</span><span class=\"orig-price\">$'+i.reg+'</span>'
+      : '<span class=\"sale-price\">$'+i.sale+'</span><span class=\"orig-price\">$'+i.reg+'</span>';
+    let stockClass='excellent'; if(i.stock<=5) stockClass='low'; else if(i.stock<=15) stockClass='medium'; else if(i.stock<=50) stockClass='good';
+    return '<div class=\"card\">'
+      + '<div class=\"badge badge-'+badgeType+'\">'+i.disc+'% OFF</div>'
+      + '<div class=\"content\">'
+      + '<div class=\"title\">'+(i.logo?'<img src=\"'+i.logo+'\" class=\"logo\">':'')+i.model+'</div>'
+      + '<div class=\"details\">Item: '+i.item+'</div>'
+      + '<div class=\"pricing\">'+priceHtml+'</div>'
+      + '<div class=\"save\">💰 Save $'+i.save+'</div>'
+      + '<div class=\"stock stock-'+stockClass+'\">Qty: '+i.stock+'</div>'
+      + '</div></div>';
+  }
 
-    function renderCard(i) {
-      const badgeType = i.disc>=99?'free':i.disc>=40?'huge':i.disc>=30?'great':i.disc>=20?'good':'sale';
-      const priceHtml = i.disc>=99
-        ? `<span class="free-price">FREE</span><span class="orig-price">$${i.reg}</span>`
-        : `<span class="sale-price">$${i.sale}</span><span class="orig-price">$${i.reg}</span>`;
-      let stockClass = 'excellent';
-      if(i.stock<=5) stockClass='low'; else if(i.stock<=15) stockClass='medium'; else if(i.stock<=50) stockClass='good';
-      return `<div class="card">
-        <div class="badge badge-${badgeType}">${i.disc}% OFF</div>
-        <div class="content">
-          <div class="title">${i.logo?`<img src="${i.logo}" class="logo">`:''}${i.model}</div>
-          <div class="details">Item: ${i.item}</div>
-          <div class="pricing">${priceHtml}</div>
-          <div class="save">💰 Save $${i.save}</div>
-          <div class="stock stock-${stockClass}">Qty: ${i.stock}</div>
-        </div>
-      </div>`;
-    }
+  function render() {
+    const mf = document.getElementById('filter-manufacturer').value;
+    const md = parseInt(document.getElementById('filter-discount').value);
+    const filtered = items.filter(i=>(!mf||i.manufacturer===mf)&& i.disc>=md);
+    const totalPages = Math.ceil(filtered.length/pageSize)||1;
+    if(currentPage>totalPages) currentPage=totalPages;
+    const start=(currentPage-1)*pageSize;
+    const pageItems = filtered.slice(start,start+pageSize);
+    document.getElementById('card-container').innerHTML = pageItems.map(renderCard).join('');
+    const pg = document.getElementById('pagination'); pg.innerHTML='';
+    for(let p=1;p<=totalPages;p++){ const btn=document.createElement('button'); btn.textContent=p; if(p===currentPage) btn.disabled=true; btn.onclick=()=>{currentPage=p;render();}; pg.appendChild(btn);}  }
 
-    function render() {
-      const mf = document.getElementById('filter-manufacturer').value;
-      const md = parseInt(document.getElementById('filter-discount').value);
-      let filtered = items.filter(i => (!mf||i.manufacturer===mf) && i.disc>=md);
-      const totalPages = Math.ceil(filtered.length / pageSize) || 1;
-      if(currentPage>totalPages) currentPage = totalPages;
-      const start = (currentPage-1)*pageSize;
-      const pageItems = filtered.slice(start, start+pageSize);
-
-      document.getElementById('card-container').innerHTML =
-        pageItems.map(renderCard).join('');
-
-      const pg = document.getElementById('pagination');
-      pg.innerHTML = '';
-      for(let p=1; p<=totalPages; p++) {
-        const btn = document.createElement('button');
-        btn.textContent = p;
-        if(p===currentPage) btn.disabled=true;
-        btn.onclick = () => { currentPage = p; render(); };
-        pg.appendChild(btn);
-      }
-    }
-
-    document.getElementById('filter-manufacturer').onchange = () => { currentPage = 1; render(); };
-    document.getElementById('filter-discount').onchange    = () => { currentPage = 1; render(); };
-    render();
-  </script>
+  document.getElementById('filter-manufacturer').onchange=()=>{currentPage=1;render();};
+  document.getElementById('filter-discount').onchange=()=>{currentPage=1;render();};
+  render();
+</script>
 </body>
 </html>`;
 
