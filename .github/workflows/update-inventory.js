@@ -503,132 +503,105 @@ function parseCSV(text) {
       container.innerHTML = html;
     }
 
-   function submitQuote() {
-  const name = document.getElementById('customer-name').value;
-  const email = document.getElementById('customer-email').value;
-  const phone = document.getElementById('customer-phone').value;
-  const company = document.getElementById('customer-company').value;
-  const notes = document.getElementById('customer-notes').value;
-  
-  if (!name || !email) {
-    alert('Please fill in your name and email address.');
-    return;
-  }
-  
-  // Build the tire items summary
-  let itemsSummary = 'TIRE QUOTE REQUEST\\n\\n';
-  let totalSavings = 0;
-  let totalValue = 0;
-  
-  quoteItems.forEach((item, index) => {
-    totalSavings += item.save * item.quantity;
-    totalValue += item.sale * item.quantity;
-    
-    itemsSummary += `${index + 1}. ${item.manufacturer} ${item.model}\\n`;
-    itemsSummary += `   Item Code: ${item.item}\\n`;
-    itemsSummary += `   Quantity: ${item.quantity}\\n`;
-    itemsSummary += `   Sale Price: $${item.sale} each\\n`;
-    itemsSummary += `   Regular Price: $${item.reg} each\\n`;
-    itemsSummary += `   Customer Saves: $${item.save} per tire\\n`;
-    itemsSummary += `   Stock Available: ${item.stock}\\n`;
-    itemsSummary += `   Line Total: $${(item.sale * item.quantity).toFixed(2)}\\n\\n`;
-  });
-  
-  itemsSummary += `QUOTE SUMMARY:\\n`;
-  itemsSummary += `Total Items: ${quoteItems.length}\\n`;
-  itemsSummary += `Total Value: $${totalValue.toFixed(2)}\\n`;
-  itemsSummary += `Total Savings: $${totalSavings}\\n`;
-  itemsSummary += `Generated: ${new Date().toLocaleString()}`;
-  
-  // STEP 2: Replace this URL with your actual Microsoft Forms URL
-  const formBaseUrl = 'https://forms.microsoft.com/Pages/ResponsePage.aspx?id=eM04piGZL0isZNcn1SSs5ch5YkMaJNtDm1ZUYFnG3m9UMzcxRjM1Q09RT1lZQjFZUFlUMDJTMUdPQS4uE';
-  
-  // Create the pre-filled URL
-  const prefilledUrl = formBaseUrl + 
-    '?entry.customer_name=' + encodeURIComponent(name) +
-    '&entry.email=' + encodeURIComponent(email) +
-    '&entry.phone=' + encodeURIComponent(phone || 'Not provided') +
-    '&entry.company=' + encodeURIComponent(company || 'Not provided') +
-    '&entry.items=' + encodeURIComponent(itemsSummary) +
-    '&entry.total_value=' + encodeURIComponent('$' + totalValue.toFixed(2)) +
-    '&entry.total_savings=' + encodeURIComponent('$' + totalSavings) +
-    '&entry.notes=' + encodeURIComponent(notes || 'No additional notes');
-  
-  // Open Microsoft Forms in a new window
-  const formWindow = window.open(
-    prefilledUrl, 
-    'TireQuoteForm', 
-    'width=800,height=700,scrollbars=yes,resizable=yes'
-  );
-  
-  if (formWindow) {
-    // Success - clear the quote
-    quoteItems = [];
-    updateQuoteCounter();
-    closeQuoteModal();
-    
-    showNotification('Quote form opened! Please complete and submit the Microsoft Form to send your request.');
-    
-    // Optional: Track conversion
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'quote_form_opened', {
-        'event_category': 'sales',
-        'event_label': 'microsoft_forms',
-        'value': totalValue
-      });
-    }
-    
-    // Monitor if form window is closed (optional)
-    const checkClosed = setInterval(() => {
-      if (formWindow.closed) {
-        clearInterval(checkClosed);
-        showNotification('Thanks for your interest! If you submitted the form, we\\'ll contact you within 2 hours.');
+    function submitQuote() {
+      const name = document.getElementById('customer-name').value;
+      const email = document.getElementById('customer-email').value;
+      const phone = document.getElementById('customer-phone').value;
+      const company = document.getElementById('customer-company').value;
+      const notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email address.');
+        return;
       }
-    }, 1000);
-    
-  } else {
-    // Popup blocked
-    alert('Please allow popups for this site and try again. Or call us directly at (204) 935-5559.');
-  }
-}
-
-// Alternative: Simple redirect version (if popup doesn't work)
-function submitQuoteRedirect() {
-  const name = document.getElementById('customer-name').value;
-  const email = document.getElementById('customer-email').value;
-  
-  if (!name || !email) {
-    alert('Please fill in your name and email address.');
-    return;
-  }
-  
-  // Build items summary (same as above)
-  let itemsSummary = '';
-  let totalSavings = 0;
-  let totalValue = 0;
-  
-  quoteItems.forEach((item, index) => {
-    totalSavings += item.save * item.quantity;
-    totalValue += item.sale * item.quantity;
-    itemsSummary += `${index + 1}. ${item.manufacturer} ${item.model} (${item.item}) - Qty: ${item.quantity} - $${item.sale} each - Save $${item.save}/tire\\n`;
-  });
-  
-  // Store quote data in localStorage for the return trip
-  localStorage.setItem('quoteSubmitted', 'true');
-  localStorage.setItem('quoteSummary', JSON.stringify({
-    items: quoteItems.length,
-    value: totalValue,
-    savings: totalSavings
-  }));
-  
-  // Redirect to Microsoft Forms
-  const formUrl = 'YOUR_FORM_URL_HERE' + 
-    '?entry.customer_name=' + encodeURIComponent(name) +
-    '&entry.email=' + encodeURIComponent(email) +
-    '&entry.items=' + encodeURIComponent(itemsSummary);
-    
-  window.location.href = formUrl;
-}
+      
+      // Build detailed tire summary
+      let itemsSummary = '🚗 TIRE QUOTE REQUEST\\n';
+      itemsSummary += '═══════════════════════════════════\\n\\n';
+      
+      let totalSavings = 0;
+      let totalValue = 0;
+      
+      quoteItems.forEach((item, index) => {
+        totalSavings += item.save * item.quantity;
+        totalValue += item.sale * item.quantity;
+        
+        itemsSummary += \`\${index + 1}. \${item.manufacturer} \${item.model}\\n\`;
+        itemsSummary += \`   📋 Item Code: \${item.item}\\n\`;
+        itemsSummary += \`   📦 Quantity: \${item.quantity}\\n\`;
+        itemsSummary += \`   💰 Sale Price: $\${item.sale} each\\n\`;
+        itemsSummary += \`   🏷️  Regular Price: $\${item.reg} each\\n\`;
+        itemsSummary += \`   💵 You Save: $\${item.save} per tire\\n\`;
+        itemsSummary += \`   📊 Stock Available: \${item.stock}\\n\`;
+        itemsSummary += \`   💯 Line Total: $\${(item.sale * item.quantity).toFixed(2)}\\n\`;
+        itemsSummary += '   ────────────────────────────────\\n\\n';
+      });
+      
+      itemsSummary += '📋 QUOTE SUMMARY:\\n';
+      itemsSummary += '═══════════════════════════════════\\n';
+      itemsSummary += \`🔢 Total Items: \${quoteItems.length}\\n\`;
+      itemsSummary += \`💰 Total Value: $\${totalValue.toFixed(2)}\\n\`;
+      itemsSummary += \`💵 Your Total Savings: $\${totalSavings}\\n\`;
+      itemsSummary += \`📅 Generated: \${new Date().toLocaleString()}\\n\\n\`;
+      itemsSummary += '⏰ Expected Response Time: Within 2 hours\\n';
+      itemsSummary += '📞 For immediate assistance: (204) 935-5559';
+      
+      // Build email body for fallback
+      let emailBody = 'NEW QUOTE REQUEST - Sturgeon Tire Website\\n\\n';
+      emailBody += '🔥 CUSTOMER INFORMATION:\\n';
+      emailBody += 'Name: ' + name + '\\n';
+      emailBody += 'Email: ' + email + '\\n';
+      emailBody += 'Phone: ' + (phone || 'Not provided') + '\\n';
+      emailBody += 'Company: ' + (company || 'Not provided') + '\\n\\n';
+      emailBody += itemsSummary;
+      
+      if (notes) {
+        emailBody += '\\n\\n📝 CUSTOMER NOTES:\\n' + notes;
+      }
+      
+      emailBody += '\\n\\n⏰ FOLLOW UP REQUIRED!\\n';
+      emailBody += 'This customer found us online and is ready to buy.\\n';
+      emailBody += 'Please contact them within 2 hours for the best conversion rate.';
+      
+      // Try Microsoft Forms first, fallback to email
+      const formUrl = 'https://forms.microsoft.com/r/eM04piGZL0isZNc1SSs5ch5YkMaJNtDm1ZUYFnG3m9UMzcxRjM1Q09RT1lZQjFZUFlUMDJTMUdPQS4u';
+      
+      // Try to open the form (Microsoft Forms doesn't support pre-filling via URL parameters reliably)
+      const formWindow = window.open(formUrl, 'TireQuoteForm', 'width=800,height=700,scrollbars=yes,resizable=yes');
+      
+      if (formWindow) {
+        // Store quote data for the customer to reference
+        const quoteData = {
+          customer: { name, email, phone, company },
+          items: quoteItems,
+          summary: { totalValue, totalSavings, itemCount: quoteItems.length },
+          notes: notes
+        };
+        
+        // Show instructions to customer
+        alert(\`Microsoft Forms opened! Please:\\n\\n1. Fill in your information\\n2. Copy and paste this quote data into the "Requested Items" field:\\n\\n\${itemsSummary}\\n\\n3. Submit the form\\n\\nWe'll contact you within 2 hours!\`);
+        
+        // Clear quote
+        quoteItems = [];
+        updateQuoteCounter();
+        closeQuoteModal();
+        showNotification('Please complete the Microsoft Form that opened in the new window.');
+        
+      } else {
+        // Popup blocked - fallback to email
+        const subject = '🚨 URGENT: New Tire Quote - $' + totalValue.toFixed(0) + ' - ' + name;
+        const mailtoLink = 'mailto:sales@sturgeontire.com'
+          + '?subject=' + encodeURIComponent(subject)
+          + '&body=' + encodeURIComponent(emailBody);
+        
+        if (confirm('Form popup was blocked. Would you like to send via email instead?')) {
+          window.location.href = mailtoLink;
+          quoteItems = [];
+          updateQuoteCounter();
+          closeQuoteModal();
+        }
+      }
+    }
 
     function showNotification(message) {
       const notification = document.createElement('div');
@@ -640,7 +613,7 @@ function submitQuoteRedirect() {
         if (document.body.contains(notification)) {
           document.body.removeChild(notification);
         }
-      }, 3000);
+      }, 5000);
     }
 
     // Close modal when clicking outside
