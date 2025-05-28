@@ -127,19 +127,41 @@ function generateHTML(tires) {
     const avgSavings = Math.round(tires.reduce((sum, t) => sum + parseFloat(t['FlyerData[B2B_Savings_Amount]'] || 0), 0) / totalItems);
     const freeItems = tires.filter(t => parseFloat(t['FlyerData[B2B_Discount_Percentage]']) >= 99).length;
     const maxDiscount = Math.max(...tires.map(t => parseFloat(t['FlyerData[B2B_Discount_Percentage]']) || 0));
-
     const tireCards = tires.slice(0, 20).map(generateTireCard).join('');
     const currentDate = new Date().toLocaleDateString();
 
-    const template = fs.readFileSync('template.html', 'utf8');
-    return template
-        .replace('{{cards}}', tireCards)
-        .replace('{{maxDiscount}}', maxDiscount)
-        .replace('{{totalItems}}', totalItems)
-        .replace('{{items50Plus}}', items50Plus)
-        .replace('{{avgSavings}}', avgSavings)
-        .replace('{{freeItems}}', freeItems > 0 ? freeItems : items50Plus)
-        .replace('{{currentDate}}', currentDate);
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sturgeon Tire Inventory</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+        .brand-model img { height: 24px; vertical-align: middle; margin-right: 10px; }
+        .deal-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .discount-badge { font-weight: bold; color: white; background: #e74c3c; padding: 5px 10px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
+        .discount-huge { background: #e74c3c; }
+        .discount-great { background: #f39c12; }
+        .discount-good { background: #3498db; }
+        .discount-free { background: #8e44ad; }
+        .discount-sale { background: #95a5a6; }
+        .sale-price { font-size: 24px; color: #27ae60; font-weight: bold; }
+        .original-price { text-decoration: line-through; color: gray; margin-left: 10px; }
+        .free-price { font-size: 24px; color: #8e44ad; font-weight: bold; }
+        .btn-quote, .btn-call { display: inline-block; margin-top: 10px; padding: 10px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+        .btn-quote { background: #3498db; color: white; }
+        .btn-call { background: #27ae60; color: white; }
+    </style>
+</head>
+<body>
+    <h1>🔥 Tire Inventory Clearance</h1>
+    <p>Updated: ${currentDate} • Showing top ${Math.min(totalItems, 20)} deals</p>
+    <p><strong>${totalItems}</strong> items on sale, <strong>${items50Plus}</strong> over 50% off, <strong>$${avgSavings}</strong> avg savings, <strong>${freeItems > 0 ? freeItems : items50Plus}</strong> hot items</p>
+    <hr/>
+    ${tireCards}
+</body>
+</html>`;
 }
 
 async function main() {
