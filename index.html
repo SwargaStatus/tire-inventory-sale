@@ -1,387 +1,192 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sturgeon Tire Live Clearance</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Sturgeon Tire Deals</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Segoe UI', Tahoma, sans-serif; background:#fafafa; }
-        .container { max-width:1200px; margin:20px auto; padding:20px; }
-        .header { background:linear-gradient(135deg,#ff6b35 0%,#ff9f43 100%); color:white; padding:30px; border-radius:8px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-        .header h1 { font-size:32px; margin-bottom:10px; }
-        .header p  { font-size:18px; }
-        .stats-bar { display:flex; flex-wrap:wrap; justify-content:space-around; background:white; margin:20px 0; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-        .stat { text-align:center; margin:10px; }
-        .stat-number { font-size:24px; font-weight:bold; color:#ff6b35; }
-        .stat-label  { font-size:14px; color:#555; }
-        .deals-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
-        .deal-card { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; }
-        .discount-badge { position:absolute; top:12px; right:12px; padding:6px 10px; border-radius:4px; color:white; font-weight:bold; font-size:12px; }
-        .discount-free     { background:#8e44ad; }
-        .discount-huge     { background:#e74c3c; }
-        .discount-great    { background:#f39c12; }
-        .discount-good     { background:#3498db; }
-        .discount-sale     { background:#95a5a6; }
-        .card-content      { padding:16px; }
-        .brand-model       { font-size:18px; font-weight:bold; color:#333; margin-bottom:10px; }
-        .brand-model img   { height:24px; vertical-align:middle; margin-right:8px; }
-        .tire-details      { font-size:14px; color:#666; margin-bottom:12px; }
-        .pricing           { margin-bottom:12px; }
-        .sale-price        { font-size:20px; font-weight:bold; color:#27ae60; }
-        .original-price    { text-decoration:line-through; color:#999; margin-left:8px; }
-        .free-price        { font-size:20px; font-weight:bold; color:#8e44ad; }
-        .savings           { font-size:14px; color:#e74c3c; margin-bottom:12px; }
-        .stock-info        { font-size:13px; margin-bottom:12px; padding:6px 10px; border-radius:4px; display:inline-block; font-weight:bold; }
-        .stock-low         { background:#fdecea; color:#c0392b; }
-        .stock-medium      { background:#fff5e6; color:#e67e22; }
-        .stock-good        { background:#eafaf1; color:#27ae60; }
-        .stock-excellent   { background:#e8f8f5; color:#16a085; }
-        .card-actions      { display:flex; gap:10px; }
-        .btn-quote         { flex:1; text-align:center; background:#ff6b35; color:white; padding:10px; text-decoration:none; border-radius:4px; font-weight:bold; }
-        .btn-call          { width:48px; text-align:center; background:#27ae60; color:white; padding:10px; border-radius:4px; font-weight:bold; }
-        @media (max-width:600px) { .stats-bar { flex-direction:column; align-items:center; } }
+    :root { --brand: #2e6fa3; --dark: #182742; --light-bg: #f0f8ff; --accent: #ffa726; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--light-bg); }
+    .header { background: var(--brand); color:white; padding:20px; text-align:center; }
+    .header h1 { margin:0; }
+    .stats { display:flex; justify-content:center; gap:20px; padding:15px; background:white; }
+    .stats div { text-align:center; }
+    .stats .num { font-size:20px; font-weight:bold; color:var(--brand); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:15px; padding:15px; }
+    .card { background:white; border-radius:6px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; }
+    .badge { position:absolute; top:10px; right:10px; padding:4px 8px; border-radius:4px; color:white; font-size:12px; }
+    .badge-sale  { background:var(--accent); }
+    .badge-good  { background:var(--brand); }
+    .badge-great { background:#ffb300; }
+    .badge-huge  { background:#ff6d00; }
+    .badge-free  { background:var(--dark); }
+    .logo { height:24px; vertical-align:middle; margin-right:6px; }
+    .content { padding:12px; }
+    .title { font-size:16px; font-weight:bold; color:var(--dark); margin-bottom:6px; }
+    .details { font-size:13px; color:#555; margin-bottom:6px; }
+    .sale-price { color:#27ae60; font-weight:bold; }
+    .orig-price { text-decoration:line-through; color:#888; margin-left:6px; }
+    .free-price { color:var(--dark); font-weight:bold; }
+    .pricing { margin-bottom:6px; }
+    .save { color:#e74c3c; font-size:13px; margin-bottom:6px; }
+    .stock { font-size:12px; padding:4px 6px; border-radius:4px; display:inline-block; margin-bottom:6px; }
+    .stock-low { background:#fdecea; color:#c0392b; }
+    .stock-medium { background:#fff8e1; color:#f57c00; }
+    .stock-good { background:#e8f5e9; color:#2e7d32; }
+    .stock-excellent { background:#e3f2fd; color:#1565c0; }
+    .footer { text-align:center; padding:15px; background:white; }
+    .footer a { margin:0 10px; color:var(--brand); text-decoration:none; font-weight:bold; }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>📢 Sturgeon Tire Live Clearance</h1>
-            <p>Friendly deals for mom & pop garages – updated 5/28/2025</p>
-        </div>
-        <div class="stats-bar">
-            <div class="stat"><span class="stat-number">16</span><br><span class="stat-label">Items on Sale</span></div>
-            <div class="stat"><span class="stat-number">0</span><br><span class="stat-label">50%+ Off</span></div>
-            <div class="stat"><span class="stat-number">$131</span><br><span class="stat-label">Avg Savings</span></div>
-            <div class="stat"><span class="stat-number">0</span><br><span class="stat-label">Hot Deals</span></div>
-        </div>
-        <div class="deals-grid">
-            
-        <div class="deal-card">
-            <div class="discount-badge discount-huge">49% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://commons.wikimedia.org/wiki/File:Hankook_logo_as_of_2019.png" alt="Logo" />DL12
-                </div>
-                <div class="tire-details">
-                    Item: 3002335<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$285</span><span class="original-price">$556</span>
-                </div>
-                <div class="savings">💰 Save $271 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 4 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - DL12" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-great">37% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Michelin-logo-blue%402x.webp" alt="Logo" />XDN2
-                </div>
-                <div class="tire-details">
-                    Item: 72805<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$493</span><span class="original-price">$781</span>
-                </div>
-                <div class="savings">💰 Save $288 per tire!</div>
-                <div class="stock-info stock-medium">🔶 6 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - XDN2" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-great">37% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Michelin-logo-blue%402x.webp" alt="Logo" />XTE
-                </div>
-                <div class="tire-details">
-                    Item: 21307<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$430</span><span class="original-price">$680</span>
-                </div>
-                <div class="savings">💰 Save $251 per tire!</div>
-                <div class="stock-info stock-medium">🔶 15 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - XTE" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-great">33% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />GEOLANDAR X-AT
-                </div>
-                <div class="tire-details">
-                    Item: 110116024<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$327</span><span class="original-price">$489</span>
-                </div>
-                <div class="savings">💰 Save $162 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 4 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - GEOLANDAR X-AT" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">27% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    GCB3
-                </div>
-                <div class="tire-details">
-                    Item: B101012<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$1229</span><span class="original-price">$1674</span>
-                </div>
-                <div class="savings">💰 Save $445 per tire!</div>
-                <div class="stock-info stock-medium">🔶 7 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - GCB3" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">24% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />GEOLANDAR X-AT
-                </div>
-                <div class="tire-details">
-                    Item: 110116035<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$352</span><span class="original-price">$462</span>
-                </div>
-                <div class="savings">💰 Save $110 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 4 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - GEOLANDAR X-AT" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">24% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />GEOLANDAR X-CV
-                </div>
-                <div class="tire-details">
-                    Item: 110157001<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$196</span><span class="original-price">$257</span>
-                </div>
-                <div class="savings">💰 Save $61 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 1 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - GEOLANDAR X-CV" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">24% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />GEOLANDAR X-AT
-                </div>
-                <div class="tire-details">
-                    Item: 110116036<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$373</span><span class="original-price">$492</span>
-                </div>
-                <div class="savings">💰 Save $119 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 5 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - GEOLANDAR X-AT" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">23% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />AVID ASCEND LX
-                </div>
-                <div class="tire-details">
-                    Item: 110132810<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$115</span><span class="original-price">$148</span>
-                </div>
-                <div class="savings">💰 Save $33 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 1 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - AVID ASCEND LX" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">23% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />AVID ASCEND LX
-                </div>
-                <div class="tire-details">
-                    Item: 110132811<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$115</span><span class="original-price">$150</span>
-                </div>
-                <div class="savings">💰 Save $35 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 1 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - AVID ASCEND LX" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">23% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />AVID ASCEND LX
-                </div>
-                <div class="tire-details">
-                    Item: 110132831<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$149</span><span class="original-price">$194</span>
-                </div>
-                <div class="savings">💰 Save $45 per tire!</div>
-                <div class="stock-info stock-low">⚠️ Only 2 left</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - AVID ASCEND LX" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">22% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />ICEGUARD IG53
-                </div>
-                <div class="tire-details">
-                    Item: 110115345<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$165</span><span class="original-price">$211</span>
-                </div>
-                <div class="savings">💰 Save $46 per tire!</div>
-                <div class="stock-info stock-good">✅ 25 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - ICEGUARD IG53" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">22% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    BT556
-                </div>
-                <div class="tire-details">
-                    Item: B312135<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$259</span><span class="original-price">$331</span>
-                </div>
-                <div class="savings">💰 Save $72 per tire!</div>
-                <div class="stock-info stock-good">✅ 44 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - BT556" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-good">20% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />GEOLANDAR X-AT
-                </div>
-                <div class="tire-details">
-                    Item: 110116034<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$338</span><span class="original-price">$425</span>
-                </div>
-                <div class="savings">💰 Save $87 per tire!</div>
-                <div class="stock-info stock-medium">🔶 8 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - GEOLANDAR X-AT" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-sale">19% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="Logo" />ADVAN FLEVA
-                </div>
-                <div class="tire-details">
-                    Item: 110170164<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$211</span><span class="original-price">$261</span>
-                </div>
-                <div class="savings">💰 Save $49 per tire!</div>
-                <div class="stock-info stock-medium">🔶 6 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - ADVAN FLEVA" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        <div class="deal-card">
-            <div class="discount-badge discount-sale">15% OFF</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    VULCAN
-                </div>
-                <div class="tire-details">
-                    Item: K846920<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    <span class="sale-price">$118</span><span class="original-price">$140</span>
-                </div>
-                <div class="savings">💰 Save $21 per tire!</div>
-                <div class="stock-info stock-good">✅ 19 available</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - VULCAN" class="btn-quote">Add to Quote</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>
-        </div>
-        <div class="stats-bar">
-            <a href="tel:+12049355559" class="btn-quote">📞 Call (204) 935-5559</a>
-            <a href="mailto:sales@sturgeontire.com" class="btn-call">✉️</a>
-        </div>
+</head><body>
+    <div class="header"><h1>🚗 Sturgeon Tire Live Deals</h1><p>Updated: 5/28/2025, 5:47:13 PM</p></div>
+    <div class="stats">
+        <div><div class="num">16</div><div>Deals</div></div>
+        <div><div class="num">0</div><div>50%+ Off</div></div>
+        <div><div class="num">$131</div><div>Avg Savings</div></div>
+        <div><div class="num">0</div><div>Hot Items</div></div>
     </div>
-</body>
-</html>
+    <div class="grid"><div class="card">
+        <div class="badge badge-huge">49% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://commons.wikimedia.org/wiki/File:Hankook_logo_as_of_2019.png" alt="logo" class="logo">DL12</div>
+            <div class="details">Item: 3002335</div>
+            <div class="pricing"><span class="sale-price">$285</span><span class="orig-price">$556</span></div>
+            <div class="save">💰 Save $271</div>
+            <div class="stock stock-low">⚠️ Only 4 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-great">37% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Michelin-logo-blue%402x.webp" alt="logo" class="logo">XDN2</div>
+            <div class="details">Item: 72805</div>
+            <div class="pricing"><span class="sale-price">$493</span><span class="orig-price">$781</span></div>
+            <div class="save">💰 Save $288</div>
+            <div class="stock stock-medium">🔶 6 available</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-great">37% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Michelin-logo-blue%402x.webp" alt="logo" class="logo">XTE</div>
+            <div class="details">Item: 21307</div>
+            <div class="pricing"><span class="sale-price">$430</span><span class="orig-price">$680</span></div>
+            <div class="save">💰 Save $251</div>
+            <div class="stock stock-medium">🔶 15 available</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-great">33% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
+            <div class="details">Item: 110116024</div>
+            <div class="pricing"><span class="sale-price">$327</span><span class="orig-price">$489</span></div>
+            <div class="save">💰 Save $162</div>
+            <div class="stock stock-low">⚠️ Only 4 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">27% OFF</div>
+        <div class="content">
+            <div class="title">GCB3</div>
+            <div class="details">Item: B101012</div>
+            <div class="pricing"><span class="sale-price">$1229</span><span class="orig-price">$1674</span></div>
+            <div class="save">💰 Save $445</div>
+            <div class="stock stock-medium">🔶 7 available</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">24% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
+            <div class="details">Item: 110116035</div>
+            <div class="pricing"><span class="sale-price">$352</span><span class="orig-price">$462</span></div>
+            <div class="save">💰 Save $110</div>
+            <div class="stock stock-low">⚠️ Only 4 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">24% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-CV</div>
+            <div class="details">Item: 110157001</div>
+            <div class="pricing"><span class="sale-price">$196</span><span class="orig-price">$257</span></div>
+            <div class="save">💰 Save $61</div>
+            <div class="stock stock-low">⚠️ Only 1 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">24% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
+            <div class="details">Item: 110116036</div>
+            <div class="pricing"><span class="sale-price">$373</span><span class="orig-price">$492</span></div>
+            <div class="save">💰 Save $119</div>
+            <div class="stock stock-low">⚠️ Only 5 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">23% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">AVID ASCEND LX</div>
+            <div class="details">Item: 110132810</div>
+            <div class="pricing"><span class="sale-price">$115</span><span class="orig-price">$148</span></div>
+            <div class="save">💰 Save $33</div>
+            <div class="stock stock-low">⚠️ Only 1 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">23% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">AVID ASCEND LX</div>
+            <div class="details">Item: 110132811</div>
+            <div class="pricing"><span class="sale-price">$115</span><span class="orig-price">$150</span></div>
+            <div class="save">💰 Save $35</div>
+            <div class="stock stock-low">⚠️ Only 1 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">23% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">AVID ASCEND LX</div>
+            <div class="details">Item: 110132831</div>
+            <div class="pricing"><span class="sale-price">$149</span><span class="orig-price">$194</span></div>
+            <div class="save">💰 Save $45</div>
+            <div class="stock stock-low">⚠️ Only 2 left</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">22% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">ICEGUARD IG53</div>
+            <div class="details">Item: 110115345</div>
+            <div class="pricing"><span class="sale-price">$165</span><span class="orig-price">$211</span></div>
+            <div class="save">💰 Save $46</div>
+            <div class="stock stock-good">✅ 25 available</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">22% OFF</div>
+        <div class="content">
+            <div class="title">BT556</div>
+            <div class="details">Item: B312135</div>
+            <div class="pricing"><span class="sale-price">$259</span><span class="orig-price">$331</span></div>
+            <div class="save">💰 Save $72</div>
+            <div class="stock stock-good">✅ 44 available</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-good">20% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">GEOLANDAR X-AT</div>
+            <div class="details">Item: 110116034</div>
+            <div class="pricing"><span class="sale-price">$338</span><span class="orig-price">$425</span></div>
+            <div class="save">💰 Save $87</div>
+            <div class="stock stock-medium">🔶 8 available</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-sale">19% OFF</div>
+        <div class="content">
+            <div class="title"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg" alt="logo" class="logo">ADVAN FLEVA</div>
+            <div class="details">Item: 110170164</div>
+            <div class="pricing"><span class="sale-price">$211</span><span class="orig-price">$261</span></div>
+            <div class="save">💰 Save $49</div>
+            <div class="stock stock-medium">🔶 6 available</div>
+        </div>
+    </div><div class="card">
+        <div class="badge badge-sale">15% OFF</div>
+        <div class="content">
+            <div class="title">VULCAN</div>
+            <div class="details">Item: K846920</div>
+            <div class="pricing"><span class="sale-price">$118</span><span class="orig-price">$140</span></div>
+            <div class="save">💰 Save $21</div>
+            <div class="stock stock-good">✅ 19 available</div>
+        </div>
+    </div></div>
+    <div class="footer">
+        <a href="tel:+12049854040">📞 (204) 985-4040</a>
+        <a href="mailto:sales@sturgeontire.com">✉️ Quote</a>
+    </div>
+</body></html>
