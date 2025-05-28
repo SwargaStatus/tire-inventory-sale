@@ -15,7 +15,7 @@ jobs:
         node-version: '18'
     - run: |
         npm install csv-parser axios
-        node update-inventory.js
+        node .github/workflows/update-inventory.js
     - run: |
         git config --local user.email "automation@sturgeontire.com"
         git config --local user.name "Tire Bot"
