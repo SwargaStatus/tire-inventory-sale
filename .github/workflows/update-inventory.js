@@ -5,10 +5,9 @@ const path = require('path');
 function readLocalCSV() {
   const csvPath = path.join(process.cwd(), 'flyer_data.csv');
   try {
-    console.log(📊 Reading flyer_data.csv from: ${csvPath});
+    console.log(`Reading flyer_data.csv`);
     return fs.readFileSync(csvPath, 'utf8');
   } catch (err) {
-    console.error(❌ Could not read flyer_data.csv: ${err.message});
     throw new Error('Could not read flyer_data.csv: ' + err.message);
   }
 }
@@ -17,23 +16,15 @@ function readLocalCSV() {
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
   
-  if (lines.length === 0) {
-    throw new Error('CSV file is empty');
-  }
-
   const parseLine = line => {
     const cols = [];
     let cur = '', inQuotes = false;
     for (let ch of line) {
       if (ch === '"') inQuotes = !inQuotes;
-      else if (ch === ',' && !inQuotes) { 
-        cols.push(cur.trim().replace(/^"|"$/g, '')); 
-        cur = ''; 
-      } else {
-        cur += ch;
-      }
+      else if (ch === ',' && !inQuotes) { cols.push(cur.trim()); cur = ''; }
+      else cur += ch;
     }
-    cols.push(cur.trim().replace(/^"|"$/g, ''));
+    cols.push(cur.trim());
     return cols;
   };
 
@@ -44,15 +35,12 @@ function parseCSV(text) {
     return match ? match[1] : h;
   });
 
-  console.log(📈 Parsed ${headers.length} headers:, headers.slice(0, 5).join(', '), '...');
+  console.log(`Parsed ${headers.length} headers`);
 
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const vals = parseLine(lines[i]);
-    if (vals.length < headers.length) {
-      console.log(⚠️  Skipping row ${i} - insufficient columns (${vals.length} vs ${headers.length}));
-      continue;
-    }
+    if (vals.length !== rawHeaders.length) continue;
 
     // Build object using cleaned header names
     const obj = {};
@@ -67,7 +55,7 @@ function parseCSV(text) {
     }
   }
   
-  console.log(✅ Found ${rows.length} items with stock > 0 from ${lines.length - 1} total rows);
+  console.log(`Found ${rows.length} items with stock > 0`);
   return rows;
 }
 
@@ -75,10 +63,10 @@ function generateHTML(items) {
   // Get unique manufacturers for filter
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
   
-  console.log(🏭 Processing ${items.length} items from ${manufacturers.length} manufacturers);
-  console.log(🏷️  Manufacturers: ${manufacturers.join(', ')});
+  console.log(`Processing ${items.length} items from ${manufacturers.length} manufacturers`);
+  console.log(`Manufacturers: ${manufacturers.join(', ')}`);
 
-  return <!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -224,7 +212,7 @@ function generateHTML(items) {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
+      padding: 8px 0;
       border-bottom: 1px solid #eee;
     }
     
@@ -232,30 +220,14 @@ function generateHTML(items) {
       border-bottom: none;
     }
     
-    .quantity-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .quantity-controls button {
-      background: #3498db;
+    .remove-item {
+      background: #e74c3c;
       color: white;
       border: none;
-      width: 28px;
-      height: 28px;
+      padding: 4px 8px;
       border-radius: 4px;
       cursor: pointer;
-      font-weight: bold;
-    }
-    
-    .quantity-controls input {
-      width: 60px;
-      text-align: center;
-      padding: 4px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
+      font-size: 12px;
     }
     
     .quote-form {
@@ -346,7 +318,7 @@ function generateHTML(items) {
   <div class="stats">
     <div><div class="num">${items.length}</div><div class="label">Deals</div></div>
     <div><div class="num">${items.filter(i => i.disc >= 50).length}</div><div class="label">50%+ Off</div></div>
-    <div><div class="num">$${Math.round(items.reduce((sum, i) => sum + i.save, 0) / items.length) || 0}</div><div class="label">Avg Savings</div></div>
+    <div><div class="num">$${Math.round(items.reduce((sum, i) => sum + i.save, 0) / items.length)}</div><div class="label">Avg Savings</div></div>
     <div><div class="num">${items.filter(i => i.disc >= 99).length || items.filter(i => i.disc >= 40).length}</div><div class="label">${items.filter(i => i.disc >= 99).length ? 'Free' : 'Hot'} Items</div></div>
   </div>
   
@@ -354,7 +326,7 @@ function generateHTML(items) {
     <label>Manufacturer:
       <select id="filter-manufacturer">
         <option value="">All</option>
-        ${manufacturers.map(m => <option value="${m}">${m}</option>).join('')}
+        ${manufacturers.map(m => `<option value="${m}">${m}</option>`).join('')}
       </select>
     </label>
     <label>Min Discount:
@@ -460,12 +432,7 @@ function generateHTML(items) {
       const existingIndex = quoteItems.findIndex(q => q.item === item.item);
       
       if (existingIndex >= 0) {
-        if (quoteItems[existingIndex].quantity < item.stock) {
-          quoteItems[existingIndex].quantity += 1;
-        } else {
-          showNotification(\Maximum available quantity is \${item.stock}\);
-          return;
-        }
+        quoteItems[existingIndex].quantity += 1;
       } else {
         quoteItems.push({
           ...item,
@@ -481,44 +448,6 @@ function generateHTML(items) {
       quoteItems = quoteItems.filter(item => item.item !== itemCode);
       updateQuoteCounter();
       updateQuoteModal();
-    }
-
-    // Quote quantity control functions
-    function changeQuantity(itemCode, change) {
-      const item = quoteItems.find(q => q.item === itemCode);
-      if (!item) return;
-      
-      const newQty = item.quantity + change;
-      
-      if (newQty <= 0) {
-        removeFromQuote(itemCode);
-      } else if (newQty <= item.stock) {
-        item.quantity = newQty;
-        updateQuoteModal();
-        updateQuoteCounter();
-      } else {
-        showNotification(\Maximum available quantity is \${item.stock}\);
-      }
-    }
-
-    function setQuantity(itemCode, value) {
-      const item = quoteItems.find(q => q.item === itemCode);
-      if (!item) return;
-      
-      const newQty = parseInt(value) || 0;
-      
-      if (newQty <= 0) {
-        removeFromQuote(itemCode);
-      } else if (newQty <= item.stock) {
-        item.quantity = newQty;
-        updateQuoteModal();
-        updateQuoteCounter();
-      } else {
-        // Reset to max available
-        item.quantity = item.stock;
-        updateQuoteModal();
-        showNotification(\Maximum available quantity is \${item.stock}\);
-      }
     }
 
     function updateQuoteCounter() {
@@ -551,21 +480,23 @@ function generateHTML(items) {
       }
       
       let html = '<h3>Items in Quote:</h3>';
+      let totalSavings = 0;
       
       quoteItems.forEach(item => {
+        totalSavings += item.save * item.quantity;
         html += '<div class="quote-item">'
           + '<div>'
           + '<strong>' + item.manufacturer + ' ' + item.model + '</strong><br>'
-          + 'Item: ' + item.item + '<br>'
-          + '<small>Available: ' + item.stock + ' units</small>'
+          + 'Item: ' + item.item + ' • Qty: ' + item.quantity + '<br>'
+          + '<small>$' + item.sale + ' each (save $' + item.save + ' per tire)</small>'
           + '</div>'
-          + '<div class="quantity-controls">'
-          + '<button onclick="changeQuantity(\\'' + item.item + '\\', -1)">-</button>'
-          + '<input type="number" value="' + item.quantity + '" min="1" max="' + item.stock + '" onchange="setQuantity(\\'' + item.item + '\\', this.value)">'
-          + '<button onclick="changeQuantity(\\'' + item.item + '\\', 1)">+</button>'
-          + '</div>'
+          + '<button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">Remove</button>'
           + '</div>';
       });
+      
+      html += '<div style="margin-top:15px; padding:10px; background:#f8f9fa; border-radius:4px;">'
+        + '<strong>Total Savings: $' + totalSavings + '</strong>'
+        + '</div>';
       
       container.innerHTML = html;
     }
@@ -590,24 +521,54 @@ function generateHTML(items) {
       submitBtn.disabled = true;
       
       // Calculate totals
-      const totalItems = quoteItems.reduce((sum, item) => sum + item.quantity, 0);
+      const totalValue = quoteItems.reduce((sum, item) => sum + (item.sale * item.quantity), 0);
+      const totalSavings = quoteItems.reduce((sum, item) => sum + (item.save * item.quantity), 0);
       
-      // Simple quote summary for sales team
-      const quoteSummary = \TIRE QUOTE REQUEST
+      // Format tire details for email
+      const tireDetails = quoteItems.map((item, index) => 
+        \`\${index + 1}. \${item.manufacturer} \${item.model}
+Item Code: \${item.item}
+Quantity: \${item.quantity}
+Sale Price: $\${item.sale} each
+Regular Price: $\${item.reg} each  
+You Save: $\${item.save} per tire
+Stock Available: \${item.stock}
+Line Total: $\${(item.sale * item.quantity).toFixed(2)}
+────────────────────────────────\`
+      ).join('\\n\\n');
+      
+      // Create complete quote summary
+      const quoteSummary = \`TIRE QUOTE REQUEST - URGENT PRIORITY
 
-CUSTOMER:
+CUSTOMER INFORMATION:
 Name: \${name}
 Email: \${email}
 Phone: \${phone || 'Not provided'}
 Company: \${company || 'Not provided'}
 
-REQUESTED ITEMS:
-\${quoteItems.map(item => \\${item.item} - Qty: \${item.quantity}\).join('\\n')}
+REQUESTED TIRES:
+\${tireDetails}
 
-Total Items: \${totalItems}
-Date: \${new Date().toLocaleString()}
+QUOTE SUMMARY:
+Total Items: \${quoteItems.length}
+Total Value: $\${totalValue.toFixed(2)}
+Your Total Savings: $\${totalSavings}
+Generated: \${new Date().toLocaleString()}
 
-Notes: \${notes || 'None'}\;
+CUSTOMER NOTES:
+\${notes || 'None provided'}
+
+PRIORITY INFORMATION:
+HIGH PRIORITY - Online lead ready to purchase
+Expected Response Time: Within 2 hours
+Source: Sturgeon Tire Website
+Customer is actively shopping and comparing prices
+
+SALES RECOMMENDATIONS:
+- Customer has already selected specific tires
+- Total savings of $\${totalSavings} is a strong selling point
+- Quick response time is critical for conversion
+- Follow up via phone AND email for best results\`;
       
       // Prepare form data for Formspree
       const formData = new FormData();
@@ -616,10 +577,16 @@ Notes: \${notes || 'None'}\;
       formData.append('phone', phone || '');
       formData.append('company', company || '');
       formData.append('notes', notes || '');
-      formData.append('total_items', totalItems);
+      formData.append('tire_details', tireDetails);
+      formData.append('total_items', quoteItems.length);
+      formData.append('total_value', \`$\${totalValue.toFixed(2)}\`);
+      formData.append('total_savings', \`$\${totalSavings}\`);
       formData.append('quote_date', new Date().toLocaleString());
       formData.append('message', quoteSummary);
-      formData.append('_subject', \Tire Quote - \${name} - \${totalItems} items\);
+      formData.append('priority', 'HIGH');
+      formData.append('source', 'Website');
+      formData.append('lead_type', 'Hot Lead - Ready to Purchase');
+      formData.append('_subject', \`URGENT: Tire Quote - $\${totalValue.toFixed(0)} - \${name}\`);
       formData.append('_replyto', email);
       
       // Send to Formspree
@@ -643,7 +610,7 @@ Notes: \${notes || 'None'}\;
             updateQuoteCounter();
             closeQuoteModal();
             
-            showSuccessNotification(\Quote sent successfully! We'll contact you soon about your \${totalItems} item request.\);
+            showSuccessNotification(\`Quote sent successfully! Total value: $\${totalValue.toFixed(0)} with $\${totalSavings} in savings. We'll contact you within 2 hours.\`);
             
             // Reset button
             submitBtn.innerHTML = originalText;
@@ -655,22 +622,22 @@ Notes: \${notes || 'None'}\;
         } else {
           response.json().then(data => {
             console.error('Formspree error:', data);
-            handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalItems);
+            handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalValue);
           });
         }
       })
       .catch(error => {
         console.error('Network error:', error);
-        handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalItems);
+        handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalValue);
       });
     }
 
-    function handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalItems) {
+    function handleSubmissionError(submitBtn, originalText, quoteSummary, name, totalValue) {
       submitBtn.innerHTML = 'Opening Email Client...';
       
       setTimeout(() => {
-        const subject = \Tire Quote - \${name} - \${totalItems} items\;
-        const mailtoLink = \mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\;
+        const subject = \`URGENT: Tire Quote - $\${totalValue.toFixed(0)} - \${name}\`;
+        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
         
         window.open(mailtoLink, '_blank');
         
@@ -683,7 +650,7 @@ Notes: \${notes || 'None'}\;
 
     function showNotification(message) {
       const notification = document.createElement('div');
-      notification.style.cssText = \
+      notification.style.cssText = \`
         position: fixed;
         top: 20px;
         right: 20px;
@@ -697,7 +664,43 @@ Notes: \${notes || 'None'}\;
         transform: translateX(400px);
         transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         max-width: 350px;
-      \;
+      \`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+      }, 100);
+      
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 400);
+      }, 5000);
+    }
+
+    function showSuccessNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = \`
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 12px;
+        z-index: 3000;
+        font-weight: 500;
+        box-shadow: 0 8px 32px rgba(39, 174, 96, 0.4);
+        transform: translateX(400px);
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        max-width: 350px;
+        line-height: 1.4;
+      \`;
       notification.textContent = message;
       
       document.body.appendChild(notification);
@@ -739,7 +742,7 @@ Notes: \${notes || 'None'}\;
     render();
   </script>
 </body>
-</html>;
+</html>`;
 }
 
 async function main() {
@@ -749,10 +752,6 @@ async function main() {
     // Load and parse data
     const raw = readLocalCSV();
     const data = parseCSV(raw);
-
-    if (data.length === 0) {
-      throw new Error('No tire data found with stock > 0');
-    }
 
     // Map to clean objects using the CSV manufacturer data
     const items = data.map(d => {
@@ -767,145 +766,32 @@ async function main() {
         logo: d['Brand_Logo_URL'] || '',
         model: d['Model'] || 'TIRE',
         item: d['Item'] || '',
-        disc, 
-        sale, 
-        reg, 
-        save,
+        disc, sale, reg, save,
         stock: parseInt(d['AvailableQuantity']) || 0
       };
     });
 
-    // Sort by discount (highest first), then by savings
-    items.sort((a, b) => {
-      if (b.disc !== a.disc) return b.disc - a.disc;
-      return b.save - a.save;
-    });
+    // Sort by discount (highest first)
+    items.sort((a, b) => b.disc - a.disc);
     
-    console.log('🎨 Generating HTML with simplified Formspree integration...');
+    if (items.length === 0) {
+      throw new Error('No qualifying tire deals found');
+    }
+    
+    console.log('🎨 Generating HTML with Formspree integration...');
     const html = generateHTML(items);
     
-    console.log('💾 Writing updated index.html...');
+    console.log('💾 Updating website...');
     fs.writeFileSync('index.html', html);
     
-    console.log('🚀 Website updated successfully!');
-    console.log(📈 Processed ${items.length} tire deals);
-    console.log(🏆 Top deal: ${items[0]?.manufacturer} ${items[0]?.model} - ${items[0]?.disc}% off);
-    console.log('✅ Features included:');
-    console.log('   ├── Simplified quote system');
-    console.log('   ├── Stock validation');
-    console.log('   ├── Formspree integration');
-    console.log('   ├── Email fallback');
-    console.log('   └── Responsive design');
+    console.log('🚀 Website updated successfully with Formspree integration!');
+    console.log(`📈 Showing ${items.length} deals total`);
+    console.log('✅ Quote system ready with:');
+    console.log('   - Add to quote functionality');
+    console.log('   - Formspree form submission');
+    console.log('   - Email fallback system');
+    console.log('   - Professional quote formatting');
     
-  } catch (error) {
-    console.error('❌ Error updating inventory:', error.message);
-    console.error('Stack:', error.stack);
-    process.exit(1);
-  }
-}
-
-// Run the main function
-main(); => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-          if (document.body.contains(notification)) {
-            document.body.removeChild(notification);
-          }
-        }, 400);
-      }, 5000);
-    }
-
-    function showSuccessNotification(message) {
-      const notification = document.createElement('div');
-      notification.style.cssText = \
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-        color: white;
-        padding: 20px 25px;
-        border-radius: 12px;
-        z-index: 3000;
-        font-weight: 500;
-        box-shadow: 0 8px 32px rgba(39, 174, 96, 0.4);
-        transform: translateX(400px);
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        max-width: 350px;
-        line-height: 1.4;
-      \;
-      notification.textContent = message;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-      }, 100);
-      
-      // Resuming from where it was cut off:
-
-      setTimeout(() => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-          if (document.body.contains(notification)) {
-            document.body.removeChild(notification);
-          }
-        }, 500);
-      }, 8000);
-    }
-
-    // Initial render
-    render();
-  </script>
-</body>
-</html>;
-}
-
-// Main function
-async function main() {
-  try {
-    console.log('🔄 Processing tire data from local CSV...');
-    const raw = readLocalCSV();
-    const data = parseCSV(raw);
-
-    if (data.length === 0) {
-      throw new Error('No tire data found with stock > 0');
-    }
-
-    const items = data.map(d => {
-      const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
-      const sale = parseFloat(d['SalePrice']) || 0;
-      const reg = parseFloat(d['Net']) || 0;
-      const save = Math.round(reg - sale);
-      const manufacturer = d['Manufacturer'] || 'Unknown';
-
-      return {
-        manufacturer,
-        logo: d['Brand_Logo_URL'] || '',
-        model: d['Model'] || 'TIRE',
-        item: d['Item'] || '',
-        disc,
-        sale,
-        reg,
-        save,
-        stock: parseInt(d['AvailableQuantity']) || 0
-      };
-    });
-
-    // Sort deals
-    items.sort((a, b) => {
-      if (b.disc !== a.disc) return b.disc - a.disc;
-      return b.save - a.save;
-    });
-
-    console.log('🎨 Generating HTML...');
-    const html = generateHTML(items);
-
-    console.log('💾 Writing updated index.html...');
-    fs.writeFileSync('index.html', html);
-
-    console.log('🚀 Website updated successfully!');
-    console.log(`📈 Processed ${items.length} tire deals`);
-    console.log(`🏆 Top deal: ${items[0]?.manufacturer} ${items[0]?.model} - ${items[0]?.disc}% off`);
   } catch (error) {
     console.error('❌ Error:', error.message);
     process.exit(1);
