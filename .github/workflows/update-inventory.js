@@ -2,8 +2,8 @@
 const fs = require('fs');
 const https = require('https');
 
-// Your SharePoint CSV URL (add as GitHub secret)
-const CSV_URL = process.env.SHAREPOINT_CSV_URL || 'https://sturgeontire.sharepoint.com/sites/SturgeonTireDistributors/_layouts/15/download.aspx?SourceUrl=/sites/SturgeonTireDistributors/Shared%20Documents/FlyerData/flyer_data.csv';
+// Your SharePoint CSV URL
+const CSV_URL = process.env.SHAREPOINT_CSV_URL;
 
 async function downloadCSV(url) {
     return new Promise((resolve, reject) => {
