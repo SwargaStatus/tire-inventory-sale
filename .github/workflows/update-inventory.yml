@@ -20,12 +20,11 @@ jobs:
         node-version: '18'
     - name: Run inventory update
       run: node .github/workflows/update-inventory.js
-    - name: Commit and push if changed
+    - name: Commit and push updated index.html
       run: |
-        git config --local user.email "automation@sturgeontire.com"
-        git config --local user.name "Tire Bot"
-        if [[ -n $(git status --porcelain) ]]; then
-          git add index.html
-          git commit -m "🤖 Auto-update tire inventory $(date +%Y-%m-%d)"
-          git push
+        git config --global user.name "Tire Bot"
+        git config --global user.email "bot@sturgeon-tire.com"
+        git add index.html
+        git commit -m "Auto-update tire inventory $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git push
         fi
