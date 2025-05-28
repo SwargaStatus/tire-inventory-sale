@@ -3,7 +3,7 @@ const fs = require('fs');
 function readLocalCSV() {
     try {
         const csvData = fs.readFileSync('flyer_data.csv', 'utf8');
-        console.log('✅ Successfully read CSV file from repository');
+        console.log('✅ Successfully read CSV file');
         return csvData;
     } catch (error) {
         throw new Error('Could not read flyer_data.csv: ' + error.message);
@@ -12,208 +12,138 @@ function readLocalCSV() {
 
 function parseCSV(csvText) {
     const lines = csvText.split('\n').filter(line => line.trim());
-
-    function parseCSVLine(line) {
-        const result = [];
-        let current = '';
+    function parseLine(line) {
+        const cols = [];
+        let cur = '';
         let inQuotes = false;
-
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                result.push(current.trim().replace(/^"|"$/g, ''));
-                current = '';
-            } else {
-                current += char;
-            }
+        for (let c of line) {
+            if (c === '"') inQuotes = !inQuotes;
+            else if (c === ',' && !inQuotes) { cols.push(cur.trim().replace(/^"|"$/g, '')); cur = ''; }
+            else cur += c;
         }
-        result.push(current.trim().replace(/^"|"$/g, ''));
-        return result;
+        cols.push(cur.trim().replace(/^"|"$/g, ''));
+        return cols;
     }
 
-    const headers = parseCSVLine(lines[0]);
-    console.log('CSV Headers found:', headers.length, 'columns');
+    const headers = parseLine(lines[0]);
+    console.log(`CSV Headers: ${headers.length}`);
 
-    const tires = [];
+    const deals = [];
     for (let i = 1; i < lines.length; i++) {
-        const values = parseCSVLine(lines[i]);
-        if (values.length < headers.length) continue;
-
-        const tire = {};
-        headers.forEach((header, index) => {
-            tire[header] = values[index] || '';
-        });
-
-        const discount = parseFloat(tire['FlyerData[B2B_Discount_Percentage]']) || 0;
-        const stock    = parseInt(tire['FlyerData[AvailableQuantity]'])       || 0;
-
-        if (discount >= 15 && stock > 0) {
-            tires.push(tire);
-        }
+        const vals = parseLine(lines[i]);
+        if (vals.length < headers.length) continue;
+        const row = {};
+        headers.forEach((h, idx) => row[h] = vals[idx] || '');
+        const disc = parseFloat(row['FlyerData[B2B_Discount_Percentage]']) || 0;
+        const qty  = parseInt(row['FlyerData[AvailableQuantity]']) || 0;
+        if (qty > 0 && disc >= 15) deals.push(row);
     }
-
-    console.log(`✅ Found ${tires.length} qualifying deals from ${lines.length - 1} total rows`);
-
-    return tires.sort((a, b) => {
-        const da = parseFloat(a['FlyerData[B2B_Discount_Percentage]']) || 0;
-        const db = parseFloat(b['FlyerData[B2B_Discount_Percentage]']) || 0;
-        return db - da;
-    });
+    console.log(`✅ ${deals.length} deals found`);
+    return deals.sort((a,b) => parseFloat(b['FlyerData[B2B_Discount_Percentage]']) - parseFloat(a['FlyerData[B2B_Discount_Percentage]']));
 }
 
-function generateTireCard(tire) {
-    const logoURL     = tire['FlyerData[Brand_Logo_URL]']             || '';
-    const model       = tire['FlyerData[Model]']                      || 'TIRE';
-    const item        = tire['FlyerData[Item]']                       || '';
-    const discount    = parseInt(tire['FlyerData[B2B_Discount_Percentage]']) || 0;
-    const salePrice   = parseFloat(tire['FlyerData[SalePrice]'])      || 0;
-    const regularPrice= parseFloat(tire['FlyerData[Net]'])           || 0;
-    const savings     = parseFloat(tire['FlyerData[B2B_Savings_Amount]'])  || 0;
-    const stock       = parseInt(tire['FlyerData[AvailableQuantity]'])     || 0;
+function generateCard(d) {
+    const logo = d['FlyerData[Brand_Logo_URL]'] || '';
+    const model = d['FlyerData[Model]'] || 'TIRE';
+    const item  = d['FlyerData[Item]']  || '';
+    const disc  = Math.round(parseFloat(d['FlyerData[B2B_Discount_Percentage]']) || 0);
+    const sale  = parseFloat(d['FlyerData[SalePrice]']) || 0;
+    const reg   = parseFloat(d['FlyerData[Net]'])       || 0;
+    const save  = Math.round(reg - sale);
+    const qty   = parseInt(d['FlyerData[AvailableQuantity]']) || 0;
 
-    let badgeClass = 'discount-sale';
-    if      (discount >= 99) badgeClass = 'discount-free';
-    else if (discount >= 40) badgeClass = 'discount-huge';
-    else if (discount >= 30) badgeClass = 'discount-great';
-    else if (discount >= 20) badgeClass = 'discount-good';
+    let badge = 'sale';
+    if (disc >= 99) badge = 'free';
+    else if (disc >= 40) badge = 'huge';
+    else if (disc >= 30) badge = 'great';
+    else if (disc >= 20) badge = 'good';
 
-    let stockClass = 'stock-good';
-    let stockText  = `✅ ${stock} available`;
-    if      (stock <= 5)  { stockClass = 'stock-low';     stockText = `⚠️ Only ${stock} left`;       }
-    else if (stock <= 15) { stockClass = 'stock-medium';  stockText = `🔶 ${stock} available`; }
-    else if (stock >  50) { stockClass = 'stock-excellent'; stockText = `✅ ${stock}+ in stock`; }
+    let stockClass = 'excellent', stockText = `✅ ${qty}+ in stock`;
+    if (qty <= 5)  { stockClass = 'low';    stockText = `⚠️ Only ${qty} left`; }
+    else if (qty <=15) { stockClass = 'medium'; stockText = `🔶 ${qty} available`; }
+    else if (qty <=50) { stockClass = 'good'; stockText = `✅ ${qty} available`; }
 
-    const priceDisplay = discount >= 99 
-        ? `<span class="free-price">FREE</span><span class="original-price">$${regularPrice.toFixed(0)}</span>`
-        : `<span class="sale-price">$${salePrice.toFixed(0)}</span><span class="original-price">$${regularPrice.toFixed(0)}</span>`;
+    const priceHtml = disc >= 99
+      ? `<span class="free-price">FREE</span><span class="orig-price">$${reg.toFixed(0)}</span>`
+      : `<span class="sale-price">$${sale.toFixed(0)}</span><span class="orig-price">$${reg.toFixed(0)}</span>`;
 
-    return `
-        <div class="deal-card">
-            <div class="discount-badge ${badgeClass}">${discount}% OFF${discount >= 99 ? ' - FREE!' : ''}</div>
-            <div class="card-content">
-                <div class="brand-model">
-                    ${logoURL ? `<img src="${logoURL}" alt="Logo" />` : ''}${model}
-                </div>
-                <div class="tire-details">
-                    Item: ${item}<br>Professional grade tire
-                </div>
-                <div class="pricing">
-                    ${priceDisplay}
-                </div>
-                <div class="savings">💰 Save $${Math.round(savings)} per tire!</div>
-                <div class="stock-info ${stockClass}">${stockText}</div>
-                <div class="card-actions">
-                    <a href="mailto:sales@sturgeontire.com?subject=Quote Request - ${model}" class="btn-quote">${discount >= 99 ? 'Claim FREE Tires!' : 'Add to Quote'}</a>
-                    <a href="tel:+12049355559" class="btn-call">📞</a>
-                </div>
-            </div>
-        </div>`;
+    return `<div class="card">
+        <div class="badge badge-${badge}">${disc}% OFF</div>
+        <div class="content">
+            <div class="title">${logo?`<img src="${logo}" alt="logo" class="logo">`:''}${model}</div>
+            <div class="details">Item: ${item}</div>
+            <div class="pricing">${priceHtml}</div>
+            <div class="save">💰 Save $${save}</div>
+            <div class="stock stock-${stockClass}">${stockText}</div>
+        </div>
+    </div>`;
 }
 
-function generateHTML(tires) {
-    const totalItems  = tires.length;
-    const items50Plus = tires.filter(t => parseFloat(t['FlyerData[B2B_Discount_Percentage]']) >= 50).length;
-    const avgSavings  = Math.round(
-        tires.reduce((sum, t) => sum + parseFloat(t['FlyerData[B2B_Savings_Amount]'] || 0), 0)
-        / totalItems
-    );
-    const freeItems   = tires.filter(t => parseFloat(t['FlyerData[B2B_Discount_Percentage]']) >= 99).length;
-    const maxDiscount = Math.max(...tires.map(t => parseFloat(t['FlyerData[B2B_Discount_Percentage]']) || 0));
-    const tireCards   = tires.slice(0, 20).map(generateTireCard).join('');
-    const currentDate = new Date().toLocaleDateString();
+function generateHTML(deals) {
+    const total = deals.length;
+    const over50 = deals.filter(d=> parseFloat(d['FlyerData[B2B_Discount_Percentage]'])>=50).length;
+    const avgSav = Math.round(deals.reduce((s,d)=> s + (parseFloat(d['FlyerData[Net]'])-parseFloat(d['FlyerData[SalePrice]'])),0)/total);
+    const freeCt = deals.filter(d=> parseFloat(d['FlyerData[B2B_Discount_Percentage]'])>=99).length;
+    const now = new Date().toLocaleString();
+    const cards = deals.map(generateCard).join('');
 
-    return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sturgeon Tire Live Clearance</title>
+    return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Sturgeon Tire Deals</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Segoe UI', Tahoma, sans-serif; background:#fafafa; }
-        .container { max-width:1200px; margin:20px auto; padding:20px; }
-        .header { background:linear-gradient(135deg,#ff6b35 0%,#ff9f43 100%); color:white; padding:30px; border-radius:8px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-        .header h1 { font-size:32px; margin-bottom:10px; }
-        .header p  { font-size:18px; }
-        .stats-bar { display:flex; flex-wrap:wrap; justify-content:space-around; background:white; margin:20px 0; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-        .stat { text-align:center; margin:10px; }
-        .stat-number { font-size:24px; font-weight:bold; color:#ff6b35; }
-        .stat-label  { font-size:14px; color:#555; }
-        .deals-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
-        .deal-card { background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; }
-        .discount-badge { position:absolute; top:12px; right:12px; padding:6px 10px; border-radius:4px; color:white; font-weight:bold; font-size:12px; }
-        .discount-free     { background:#8e44ad; }
-        .discount-huge     { background:#e74c3c; }
-        .discount-great    { background:#f39c12; }
-        .discount-good     { background:#3498db; }
-        .discount-sale     { background:#95a5a6; }
-        .card-content      { padding:16px; }
-        .brand-model       { font-size:18px; font-weight:bold; color:#333; margin-bottom:10px; }
-        .brand-model img   { height:24px; vertical-align:middle; margin-right:8px; }
-        .tire-details      { font-size:14px; color:#666; margin-bottom:12px; }
-        .pricing           { margin-bottom:12px; }
-        .sale-price        { font-size:20px; font-weight:bold; color:#27ae60; }
-        .original-price    { text-decoration:line-through; color:#999; margin-left:8px; }
-        .free-price        { font-size:20px; font-weight:bold; color:#8e44ad; }
-        .savings           { font-size:14px; color:#e74c3c; margin-bottom:12px; }
-        .stock-info        { font-size:13px; margin-bottom:12px; padding:6px 10px; border-radius:4px; display:inline-block; font-weight:bold; }
-        .stock-low         { background:#fdecea; color:#c0392b; }
-        .stock-medium      { background:#fff5e6; color:#e67e22; }
-        .stock-good        { background:#eafaf1; color:#27ae60; }
-        .stock-excellent   { background:#e8f8f5; color:#16a085; }
-        .card-actions      { display:flex; gap:10px; }
-        .btn-quote         { flex:1; text-align:center; background:#ff6b35; color:white; padding:10px; text-decoration:none; border-radius:4px; font-weight:bold; }
-        .btn-call          { width:48px; text-align:center; background:#27ae60; color:white; padding:10px; border-radius:4px; font-weight:bold; }
-        @media (max-width:600px) { .stats-bar { flex-direction:column; align-items:center; } }
+    :root { --brand: #2e6fa3; --dark: #182742; --light-bg: #f0f8ff; --accent: #ffa726; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--light-bg); }
+    .header { background: var(--brand); color:white; padding:20px; text-align:center; }
+    .header h1 { margin:0; }
+    .stats { display:flex; justify-content:center; gap:20px; padding:15px; background:white; }
+    .stats div { text-align:center; }
+    .stats .num { font-size:20px; font-weight:bold; color:var(--brand); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:15px; padding:15px; }
+    .card { background:white; border-radius:6px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; }
+    .badge { position:absolute; top:10px; right:10px; padding:4px 8px; border-radius:4px; color:white; font-size:12px; }
+    .badge-sale  { background:var(--accent); }
+    .badge-good  { background:var(--brand); }
+    .badge-great { background:#ffb300; }
+    .badge-huge  { background:#ff6d00; }
+    .badge-free  { background:var(--dark); }
+    .logo { height:24px; vertical-align:middle; margin-right:6px; }
+    .content { padding:12px; }
+    .title { font-size:16px; font-weight:bold; color:var(--dark); margin-bottom:6px; }
+    .details { font-size:13px; color:#555; margin-bottom:6px; }
+    .sale-price { color:#27ae60; font-weight:bold; }
+    .orig-price { text-decoration:line-through; color:#888; margin-left:6px; }
+    .free-price { color:var(--dark); font-weight:bold; }
+    .pricing { margin-bottom:6px; }
+    .save { color:#e74c3c; font-size:13px; margin-bottom:6px; }
+    .stock { font-size:12px; padding:4px 6px; border-radius:4px; display:inline-block; margin-bottom:6px; }
+    .stock-low { background:#fdecea; color:#c0392b; }
+    .stock-medium { background:#fff8e1; color:#f57c00; }
+    .stock-good { background:#e8f5e9; color:#2e7d32; }
+    .stock-excellent { background:#e3f2fd; color:#1565c0; }
+    .footer { text-align:center; padding:15px; background:white; }
+    .footer a { margin:0 10px; color:var(--brand); text-decoration:none; font-weight:bold; }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>📢 Sturgeon Tire Live Clearance</h1>
-            <p>Friendly deals for mom & pop garages – updated ${currentDate}</p>
-        </div>
-        <div class="stats-bar">
-            <div class="stat"><span class="stat-number">${totalItems}</span><br><span class="stat-label">Items on Sale</span></div>
-            <div class="stat"><span class="stat-number">${items50Plus}</span><br><span class="stat-label">50%+ Off</span></div>
-            <div class="stat"><span class="stat-number">$${avgSavings}</span><br><span class="stat-label">Avg Savings</span></div>
-            <div class="stat"><span class="stat-number">${freeItems>0?freeItems:items50Plus}</span><br><span class="stat-label">${freeItems>0?'FREE Items':'Hot Deals'}</span></div>
-        </div>
-        <div class="deals-grid">
-            ${tireCards}
-        </div>
-        <div class="stats-bar">
-            <a href="tel:+12049355559" class="btn-quote">📞 Call (204) 935-5559</a>
-            <a href="mailto:sales@sturgeontire.com" class="btn-call">✉️</a>
-        </div>
+</head><body>
+    <div class="header"><h1>🚗 Sturgeon Tire Live Deals</h1><p>Updated: ${now}</p></div>
+    <div class="stats">
+        <div><div class="num">${total}</div><div>Deals</div></div>
+        <div><div class="num">${over50}</div><div>50%+ Off</div></div>
+        <div><div class="num">$${avgSav}</div><div>Avg Savings</div></div>
+        <div><div class="num">${freeCt||over50}</div><div>${freeCt?'Free':'Hot'} Items</div></div>
     </div>
-</body>
-</html>`;
+    <div class="grid">${cards}</div>
+    <div class="footer">
+        <a href="tel:+12049355559">📞 (204) 935-5559</a>
+        <a href="mailto:sales@sturgeontire.com">✉️ Quote</a>
+    </div>
+</body></html>`;
 }
 
-async function main() {
+(async ()=>{
     try {
-        console.log('🔄 Reading tire data from repository...');
-        console.log('📂 Current directory:', process.cwd());
-
-        const csvData = readLocalCSV();
-        console.log('📊 Processing tire deals...');
-        const tires   = parseCSV(csvData);
-        if (tires.length === 0) throw new Error('No qualifying tire deals found');
-
-        console.log('🎨 Generating HTML...');
-        const html = generateHTML(tires);
-
-        console.log('💾 Updating website...');
+        console.log('Dir:', process.cwd());
+        const data = readLocalCSV();
+        const deals = parseCSV(data);
+        const html = generateHTML(deals);
         fs.writeFileSync('index.html', html, 'utf8');
-        console.log(`🚀 Website updated successfully! Showing top ${Math.min(tires.length,20)} deals`);
-
-    } catch (error) {
-        console.error('❌ Error:', error.message);
-        process.exit(1);
-    }
-}
-
-main();
+        console.log('✅ index.html generated with', deals.length, 'items');
+    } catch(e) { console.error('Error:', e.message); process.exit(1);}    
+})();
