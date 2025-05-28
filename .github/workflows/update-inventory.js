@@ -117,22 +117,27 @@ function parseCSV(text) {
   const items = ${JSON.stringify(items)};
   let currentPage = 1, pageSize = 20;
   function renderCard(i) {
-    const badgeType = i.disc>=99?'free':i.disc>=40?'huge':i.disc>=30?'great':i.disc>=20?'good':'sale';
-    const priceHtml = i.disc>=99
-      ? '<span class="free-price">FREE</span><span class="orig-price">$'+i.reg+'</span>'
-      : '<span class="sale-price">$'+i.sale+'</span><span class="orig-price">$'+i.reg+'</span>';
-    let stockClass='excellent'; if(i.stock<=5) stockClass='low'; else if(i.stock<=15) stockClass='medium'; else if(i.stock<=50) stockClass='good';
-    return `<div class="card">`
-      + `${i.logo?`<div class="content"><img src="${i.logo}" class="logo">`:`<div class="content">`}`
-      + `<div class="title">${i.model}</div>`
-      + `<div class="details">Item: ${i.item}</div>`
-      + `<div class="pricing">${priceHtml}</div>`
-      + `<div class="save">💰 Save $${i.save}</div>`
-      + `<div class="stock stock-${stockClass}">Qty: ${i.stock}</div>`
-      + `</div>`
-      + `<div class="badge badge-${badgeType}">${i.disc}% OFF</div>`
-      + `</div>`;
+    const badgeType = /*…*/;
+    const priceHtml = /*…*/;
+    let stockClass = /*…*/;
+  
+    // build your card with single-quoted strings + + concatenation:
+    return  '<div class="card">' +
+              '<div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div>' +
+              '<div class="content">' +
+                (i.logo 
+                 ? '<img src="' + i.logo + '" class="logo">' 
+                 : ''
+                ) +
+                '<div class="title">'  + i.model  + '</div>' +
+                '<div class="details">Item: ' + i.item + '</div>' +
+                '<div class="pricing">'   + priceHtml + '</div>' +
+                '<div class="save">💰 Save $' + i.save + '</div>' +
+                '<div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div>' +
+              '</div>' +
+            '</div>';
   }
+
   function render() {
     const mf = document.getElementById('filter-manufacturer').value;
     const md = parseInt(document.getElementById('filter-discount').value);
