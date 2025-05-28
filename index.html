@@ -226,7 +226,7 @@
 </head>
 <body>
   <div class="header">
-    <div class="update-time">Updated: 5/28/2025, 9:14:27 PM</div>
+    <div class="update-time">Updated: 5/28/2025, 9:36:53 PM</div>
     <h1>
       <img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">
       Sturgeon Tire Live Deals
@@ -1139,10 +1139,8 @@
         return;
       }
       
-      // Build detailed tire summary
-      let itemsSummary = '🚗 TIRE QUOTE REQUEST\n';
-      itemsSummary += '═══════════════════════════════════\n\n';
-      
+      // Build tire summary for the "Requested Tires" field
+      let tiresSummary = '';
       let totalSavings = 0;
       let totalValue = 0;
       
@@ -1150,81 +1148,151 @@
         totalSavings += item.save * item.quantity;
         totalValue += item.sale * item.quantity;
         
-        itemsSummary += `${index + 1}. ${item.manufacturer} ${item.model}\n`;
-        itemsSummary += `   📋 Item Code: ${item.item}\n`;
-        itemsSummary += `   📦 Quantity: ${item.quantity}\n`;
-        itemsSummary += `   💰 Sale Price: $${item.sale} each\n`;
-        itemsSummary += `   🏷️  Regular Price: $${item.reg} each\n`;
-        itemsSummary += `   💵 You Save: $${item.save} per tire\n`;
-        itemsSummary += `   📊 Stock Available: ${item.stock}\n`;
-        itemsSummary += `   💯 Line Total: $${(item.sale * item.quantity).toFixed(2)}\n`;
-        itemsSummary += '   ────────────────────────────────\n\n';
+        tiresSummary += `${index + 1}. ${item.manufacturer} ${item.model}\n`;
+        tiresSummary += `   Item: ${item.item} | Qty: ${item.quantity} | $${item.sale} each\n`;
+        tiresSummary += `   You Save: $${item.save} per tire | Stock: ${item.stock}\n\n`;
       });
       
-      itemsSummary += '📋 QUOTE SUMMARY:\n';
-      itemsSummary += '═══════════════════════════════════\n';
-      itemsSummary += `🔢 Total Items: ${quoteItems.length}\n`;
-      itemsSummary += `💰 Total Value: $${totalValue.toFixed(2)}\n`;
-      itemsSummary += `💵 Your Total Savings: $${totalSavings}\n`;
-      itemsSummary += `📅 Generated: ${new Date().toLocaleString()}\n\n`;
-      itemsSummary += '⏰ Expected Response Time: Within 2 hours\n';
-      itemsSummary += '📞 For immediate assistance: (204) 935-5559';
+      tiresSummary += `💰 TOTAL: $${totalValue.toFixed(2)} (Save $${totalSavings})\n`;
+      tiresSummary += `📅 Quote Generated: ${new Date().toLocaleString()}`;
       
-      // Build email body for fallback
-      let emailBody = 'NEW QUOTE REQUEST - Sturgeon Tire Website\n\n';
-      emailBody += '🔥 CUSTOMER INFORMATION:\n';
-      emailBody += 'Name: ' + name + '\n';
-      emailBody += 'Email: ' + email + '\n';
-      emailBody += 'Phone: ' + (phone || 'Not provided') + '\n';
-      emailBody += 'Company: ' + (company || 'Not provided') + '\n\n';
-      emailBody += itemsSummary;
-      
+      // Build additional notes section
+      let additionalNotes = '🚨 URGENT QUOTE REQUEST\n\n';
+      additionalNotes += '📞 Expected Response: Within 2 hours\n';
+      additionalNotes += '🌐 Source: Sturgeon Tire Website\n\n';
       if (notes) {
-        emailBody += '\n\n📝 CUSTOMER NOTES:\n' + notes;
+        additionalNotes += '💬 Customer Notes:\n' + notes + '\n\n';
       }
+      additionalNotes += '⚡ Priority: High (Online lead ready to purchase)';
       
-      emailBody += '\n\n⏰ FOLLOW UP REQUIRED!\n';
-      emailBody += 'This customer found us online and is ready to buy.\n';
-      emailBody += 'Please contact them within 2 hours for the best conversion rate.';
+      // Microsoft Forms URL
+      const formUrl = 'https://forms.microsoft.com/Pages/ResponsePage.aspx?id=eM04piGZL0isZNcn1SSs5ch5YkMaJNtDm1ZUYFnG3m9UMzcxRjM1Q09RT1lZQjFZUFlUMDJTMUdPQS4u';
       
-      // Try Microsoft Forms first, fallback to email
-      const formUrl = 'https://forms.microsoft.com/r/eM04piGZL0isZNc1SSs5ch5YkMaJNtDm1ZUYFnG3m9UMzcxRjM1Q09RT1lZQjFZUFlUMDJTMUdPQS4u';
+      // Try to copy tires summary to clipboard
+      const tempTires = document.createElement('textarea');
+      tempTires.value = tiresSummary;
+      document.body.appendChild(tempTires);
       
-      // Try to open the form (Microsoft Forms doesn't support pre-filling via URL parameters reliably)
-      const formWindow = window.open(formUrl, 'TireQuoteForm', 'width=800,height=700,scrollbars=yes,resizable=yes');
-      
-      if (formWindow) {
-        // Store quote data for the customer to reference
-        const quoteData = {
-          customer: { name, email, phone, company },
-          items: quoteItems,
-          summary: { totalValue, totalSavings, itemCount: quoteItems.length },
-          notes: notes
-        };
+      try {
+        // Copy tires summary to clipboard
+        tempTires.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTires);
         
-        // Show instructions to customer
-        alert(`Microsoft Forms opened! Please:\n\n1. Fill in your information\n2. Copy and paste this quote data into the "Requested Items" field:\n\n${itemsSummary}\n\n3. Submit the form\n\nWe'll contact you within 2 hours!`);
+        // Open the form
+        const formWindow = window.open(formUrl, 'TireQuoteForm', 'width=900,height=800,scrollbars=yes,resizable=yes');
         
-        // Clear quote
-        quoteItems = [];
-        updateQuoteCounter();
-        closeQuoteModal();
-        showNotification('Please complete the Microsoft Form that opened in the new window.');
-        
-      } else {
-        // Popup blocked - fallback to email
-        const subject = '🚨 URGENT: New Tire Quote - $' + totalValue.toFixed(0) + ' - ' + name;
-        const mailtoLink = 'mailto:sales@sturgeontire.com'
-          + '?subject=' + encodeURIComponent(subject)
-          + '&body=' + encodeURIComponent(emailBody);
-        
-        if (confirm('Form popup was blocked. Would you like to send via email instead?')) {
-          window.location.href = mailtoLink;
+        if (formWindow) {
+          // Show detailed instructions matching your form fields
+          const instructions = `✅ Quote copied to clipboard!\n\n📝 FORM INSTRUCTIONS:\n\n` +
+            `1. Customer Name: ${name}\n` +
+            `2. Email Address: ${email}\n` +
+            `3. Phone Number: ${phone || '(leave blank)'}\n` +
+            `4. Company Name: ${company || '(leave blank)'}\n` +
+            `5. Requested Tires: PASTE HERE (Ctrl+V)\n` +
+            `6. Additional Notes: Copy this text:\n\n${additionalNotes}\n\n` +
+            `💡 The tire details are already copied - just paste into "Requested Tires"!\n\n` +
+            `📞 We'll contact you within 2 hours!`;
+          
+          alert(instructions);
+          
+          // Clear quote after successful submission
           quoteItems = [];
           updateQuoteCounter();
           closeQuoteModal();
+          showNotification('Form opened! Follow the instructions to complete your quote.');
+          
+        } else {
+          // Popup blocked - show fallback options
+          showQuoteFallbackOptions(name, email, phone, company, tiresSummary, additionalNotes, totalValue);
+        }
+        
+      } catch (err) {
+        // Clipboard copy failed
+        document.body.removeChild(tempTires);
+        
+        // Try to open form anyway
+        const formWindow = window.open(formUrl, 'TireQuoteForm', 'width=900,height=800,scrollbars=yes,resizable=yes');
+        
+        if (formWindow) {
+          alert(`Microsoft Forms opened!\n\nPlease fill out:\n1. Your contact info\n2. Copy this for "Requested Tires":\n\n${tiresSummary}\n\n3. Copy this for "Additional Notes":\n\n${additionalNotes}`);
+          
+          quoteItems = [];
+          updateQuoteCounter();
+          closeQuoteModal();
+          
+        } else {
+          showQuoteFallbackOptions(name, email, phone, company, tiresSummary, additionalNotes, totalValue);
         }
       }
+    }
+
+    function showQuoteFallbackOptions(name, email, phone, company, tiresSummary, additionalNotes, totalValue) {
+      const emailBody = `NEW QUOTE REQUEST - Sturgeon Tire Website\n\n` +
+        `Customer Name: ${name}\n` +
+        `Email Address: ${email}\n` +
+        `Phone Number: ${phone || 'Not provided'}\n` +
+        `Company Name: ${company || 'Not provided'}\n\n` +
+        `REQUESTED TIRES:\n${tiresSummary}\n\n` +
+        `ADDITIONAL NOTES:\n${additionalNotes}`;
+      
+      const subject = '🚨 URGENT: Tire Quote Request - $' + totalValue.toFixed(0) + ' - ' + name;
+      const mailtoLink = 'mailto:sales@sturgeontire.com'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(emailBody);
+      
+      // Show options modal with better instructions
+      const optionsHtml = `
+        <div style="text-align:center; padding:20px;">
+          <h3>⚠️ Form Popup Blocked</h3>
+          <p>Choose how you'd like to send your quote request:</p>
+          <div style="margin:20px 0;">
+            <button onclick="openFormManually()" 
+                    style="background:#27ae60; color:white; padding:12px 20px; border:none; border-radius:6px; margin:10px; cursor:pointer; font-weight:bold; display:block; width:100%;">
+              📝 Open Microsoft Form
+            </button>
+            <button onclick="window.location.href='${mailtoLink}'" 
+                    style="background:#3498db; color:white; padding:12px 20px; border:none; border-radius:6px; margin:10px; cursor:pointer; font-weight:bold; display:block; width:100%;">
+              📧 Send via Email Instead
+            </button>
+            <button onclick="copyQuoteData()" 
+                    style="background:#f39c12; color:white; padding:12px 20px; border:none; border-radius:6px; margin:10px; cursor:pointer; font-weight:bold; display:block; width:100%;">
+              📋 Copy Quote Data
+            </button>
+          </div>
+          <div style="font-size:12px; color:#666; text-align:left; background:#f8f9fa; padding:15px; border-radius:6px; margin:10px 0;">
+            <strong>📝 Form Field Guide:</strong><br>
+            • <strong>Customer Name:</strong> ${name}<br>
+            • <strong>Email:</strong> ${email}<br>
+            • <strong>Phone:</strong> ${phone || 'Leave blank'}<br>
+            • <strong>Company:</strong> ${company || 'Leave blank'}<br>
+            • <strong>Requested Tires:</strong> Paste tire details<br>
+            • <strong>Additional Notes:</strong> Paste additional info
+          </div>
+        </div>
+      `;
+      
+      const container = document.getElementById('quote-items');
+      container.innerHTML = optionsHtml;
+      
+      // Add helper functions to window scope
+      window.openFormManually = function() {
+        window.open('https://forms.microsoft.com/Pages/ResponsePage.aspx?id=eM04piGZL0isZNcn1SSs5ch5YkMaJNtDm1ZUYFnG3m9UMzcxRjM1Q09RT1lZQjFZUFlUMDJTMUdPQS4u', '_blank');
+        alert(`Form opened!\n\nFill out the form with:\n\n📋 REQUESTED TIRES:\n${tiresSummary}\n\n📝 ADDITIONAL NOTES:\n${additionalNotes}`);
+      };
+      
+      window.copyQuoteData = function() {
+        const fullQuote = `REQUESTED TIRES:\n${tiresSummary}\n\nADDITIONAL NOTES:\n${additionalNotes}`;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(fullQuote).then(() => {
+            alert('✅ Quote data copied to clipboard!\n\nNow open the form and paste into the appropriate fields.');
+          }).catch(() => {
+            alert(`Please copy this manually:\n\n${fullQuote}`);
+          });
+        } else {
+          alert(`Please copy this manually:\n\n${fullQuote}`);
+        }
+      };
     }
 
     function showNotification(message) {
@@ -1237,7 +1305,7 @@
         if (document.body.contains(notification)) {
           document.body.removeChild(notification);
         }
-      }, 5000);
+      }, 3000);
     }
 
     // Close modal when clicking outside
