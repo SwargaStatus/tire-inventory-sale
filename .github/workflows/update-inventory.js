@@ -11,6 +11,7 @@ function readLocalCSV() {
     throw new Error('Could not read flyer_data.csv: ' + err.message + ' (looked at ' + csvPath + ')');
   }
 }
+
 }
 
 // Parse CSV text into array of objects
