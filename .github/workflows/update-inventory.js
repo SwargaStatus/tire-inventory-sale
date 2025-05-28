@@ -1,20 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-// Read CSV file from repo root
+// Read the single CSV file from repo root
 function readLocalCSV() {
-  // Try the new file first, then fallback to old one
-  const newCsvPath = path.join(process.cwd(), 'flyer_data 4.csv');
-  const oldCsvPath = path.join(process.cwd(), 'flyer_data.csv');
-  
+  const csvPath = path.join(process.cwd(), 'flyer_data.csv');
   try {
-    return fs.readFileSync(newCsvPath, 'utf8');
+    console.log(`✅ Reading flyer_data.csv`);
+    return fs.readFileSync(csvPath, 'utf8');
   } catch (err) {
-    try {
-      return fs.readFileSync(oldCsvPath, 'utf8');
-    } catch (err2) {
-      throw new Error('Could not read CSV file: ' + err.message + ' (tried both flyer_data 4.csv and flyer_data.csv)');
-    }
+    throw new Error('Could not read flyer_data.csv: ' + err.message);
   }
 }
 
@@ -41,7 +35,7 @@ function parseCSV(text) {
     return match ? match[1] : h;
   });
 
-  console.log('✅ Parsed headers:', headers);
+  console.log(`✅ Parsed ${headers.length} headers`);
 
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
@@ -65,8 +59,6 @@ function parseCSV(text) {
   return rows;
 }
 
-// No need for manufacturer extraction since it's in the CSV now!
-
 (async () => {
   try {
     console.log('🔄 Reading tire data...');
@@ -81,15 +73,15 @@ function parseCSV(text) {
       const sale = parseFloat(d['SalePrice']) || 0;
       const reg  = parseFloat(d['Net']) || 0;
       const save = Math.round(reg - sale);
-      const manufacturer = d['Manufacturer'] || 'Unknown'; // Use actual CSV data!
+      const manufacturer = d['Manufacturer'] || 'Unknown';
       
       return {
         manufacturer,
-        logo:         d['Brand_Logo_URL']     || '',
-        model:        d['Model']              || 'TIRE',
-        item:         d['Item']               || '',
+        logo: d['Brand_Logo_URL'] || '',
+        model: d['Model'] || 'TIRE',
+        item: d['Item'] || '',
         disc, sale, reg, save,
-        stock:        parseInt(d['AvailableQuantity']) || 0
+        stock: parseInt(d['AvailableQuantity']) || 0
       };
     });
 
@@ -100,6 +92,7 @@ function parseCSV(text) {
     const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
     
     console.log(`✅ Processing ${items.length} items from ${manufacturers.length} manufacturers`);
+    console.log(`📊 Manufacturers: ${manufacturers.join(', ')}`);
 
     // Build HTML
     const html = `<!DOCTYPE html>
@@ -240,20 +233,4 @@ function parseCSV(text) {
     }
 
     document.getElementById('filter-manufacturer').onchange = () => { currentPage = 1; render(); };
-    document.getElementById('filter-discount').onchange = () => { currentPage = 1; render(); };
-    render();
-  </script>
-</body>
-</html>`;
-
-    // Write output
-    const outPath = path.join(process.cwd(), 'index.html');
-    fs.writeFileSync(outPath, html, 'utf8');
-    console.log(`✅ Generated index.html with ${items.length} items`);
-    console.log(`📊 Manufacturers: ${manufacturers.join(', ')}`);
-    
-  } catch (err) {
-    console.error('❌ Error:', err.message);
-    process.exit(1);
-  }
-})();
+    document.getElementById('filter-discount').onchange = () => { current
