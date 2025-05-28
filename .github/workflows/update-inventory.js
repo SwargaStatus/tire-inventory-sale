@@ -3,12 +3,14 @@ const path = require('path');
 
 // Read CSV file from repo root
 function readLocalCSV() {
-  const csvPath = path.resolve(__dirname, '..', 'flyer_data.csv');
+  // Use repo root via current working directory
+  const csvPath = path.join(process.cwd(), 'flyer_data.csv');
   try {
     return fs.readFileSync(csvPath, 'utf8');
   } catch (err) {
-    throw new Error('Could not read flyer_data.csv: ' + err.message);
+    throw new Error('Could not read flyer_data.csv: ' + err.message + ' (looked at ' + csvPath + ')');
   }
+}
 }
 
 // Parse CSV text into array of objects
@@ -187,7 +189,7 @@ function parseCSV(text) {
 </html>`;
 
     // Write output
-    const outPath = path.resolve(__dirname, '..', 'index.html');
+    const outPath = path.join(process.cwd(), 'index.html');
     fs.writeFileSync(outPath, html, 'utf8');
     console.log(`✅ index.html generated with ${items.length} items`);
   } catch (err) {
