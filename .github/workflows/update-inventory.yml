@@ -2,7 +2,7 @@ name: Update Tire Inventory
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Run daily at noon UTC (fixed missing *)
+    - cron: '0 12 * * *'  # Run daily at noon UTC
   workflow_dispatch: # Manual trigger
   push:
     branches: ["main"]
@@ -28,6 +28,13 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        
+    - name: Debug - List files
+      run: |
+        echo "Current directory:"
+        ls -la
+        echo "CSV file check:"
+        ls -la *.csv || echo "No CSV files found"
         
     - name: Run inventory update
       run: node .github/workflows/update-inventory.js
