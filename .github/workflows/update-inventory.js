@@ -3,73 +3,103 @@ const path = require('path');
 
 // Read CSV file from repo root
 function readLocalCSV() {
-  // Use repo root via current working directory
-  const csvPath = path.join(process.cwd(), 'flyer_data.csv');
+  // Try the new file first, then fallback to old one
+  const newCsvPath = path.join(process.cwd(), 'flyer_data 4.csv');
+  const oldCsvPath = path.join(process.cwd(), 'flyer_data.csv');
+  
   try {
-    return fs.readFileSync(csvPath, 'utf8');
+    return fs.readFileSync(newCsvPath, 'utf8');
   } catch (err) {
-    throw new Error('Could not read flyer_data.csv: ' + err.message + ' (looked at ' + csvPath + ')');
+    try {
+      return fs.readFileSync(oldCsvPath, 'utf8');
+    } catch (err2) {
+      throw new Error('Could not read CSV file: ' + err.message + ' (tried both flyer_data 4.csv and flyer_data.csv)');
+    }
   }
 }
 
 // Parse CSV text into array of objects
 function parseCSV(text) {
   const lines = text.split('\n').filter(l => l.trim());
+  
   const parseLine = line => {
-    /*…your existing parseLine…*/
+    const cols = [];
+    let cur = '', inQuotes = false;
+    for (let ch of line) {
+      if (ch === '"') inQuotes = !inQuotes;
+      else if (ch === ',' && !inQuotes) { cols.push(cur.trim()); cur = ''; }
+      else cur += ch;
+    }
+    cols.push(cur.trim());
+    return cols;
   };
 
-  // 1) capture the raw headers...
+  // Get headers and strip the FlyerData[] wrapper
   const rawHeaders = parseLine(lines[0]);
-  // 2) then strip them down to whatever’s inside the [brackets]
   const headers = rawHeaders.map(h => {
-    const m = h.match(/\[(.+)\]$/);
-    return m ? m[1] : h;
+    const match = h.match(/FlyerData\[(.+)\]$/);
+    return match ? match[1] : h;
   });
+
+  console.log('✅ Parsed headers:', headers);
 
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const vals = parseLine(lines[i]);
     if (vals.length !== rawHeaders.length) continue;
 
-    // 3) build an object using the stripped-down names
+    // Build object using cleaned header names
     const obj = {};
     headers.forEach((fieldName, j) => {
-      obj[fieldName] = vals[j];
+      obj[fieldName] = vals[j] || '';
     });
 
-    // 4) now this will work, since you do actually have obj.AvailableQuantity
-    if ((parseInt(obj['AvailableQuantity']) || 0) > 0) {
+    // Only include items with stock > 0
+    const stock = parseInt(obj['AvailableQuantity']) || 0;
+    if (stock > 0) {
       rows.push(obj);
     }
   }
+  
+  console.log(`✅ Found ${rows.length} items with stock > 0`);
   return rows;
 }
 
+// No need for manufacturer extraction since it's in the CSV now!
+
 (async () => {
   try {
+    console.log('🔄 Reading tire data...');
+    
     // Load and parse data
     const raw = readLocalCSV();
     const data = parseCSV(raw);
 
-    // Map to clean objects
+    // Map to clean objects using the CSV manufacturer data
     const items = data.map(d => {
       const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
       const sale = parseFloat(d['SalePrice']) || 0;
-      const reg  = parseFloat(d['Net'])       || 0;
+      const reg  = parseFloat(d['Net']) || 0;
       const save = Math.round(reg - sale);
+      const manufacturer = d['Manufacturer'] || 'Unknown'; // Use actual CSV data!
+      
       return {
-        manufacturer: d['Manufacturer']       || 'Unknown',
+        manufacturer,
         logo:         d['Brand_Logo_URL']     || '',
-        model:        d['Model']              || '',
+        model:        d['Model']              || 'TIRE',
         item:         d['Item']               || '',
         disc, sale, reg, save,
         stock:        parseInt(d['AvailableQuantity']) || 0
       };
     });
 
-    // Unique manufacturers
+    // Sort by discount (highest first)
+    items.sort((a, b) => b.disc - a.disc);
+
+    // Get unique manufacturers for filter
     const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
+    
+    console.log(`✅ Processing ${items.length} items from ${manufacturers.length} manufacturers`);
 
     // Build HTML
     const html = `<!DOCTYPE html>
@@ -83,6 +113,10 @@ function parseCSV(text) {
     body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); }
     .header { background:var(--primary); color:#fff; padding:16px; text-align:center; }
     .header h1 { margin:0; font-size:1.6rem; }
+    .stats { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:12px; background:#fff; margin:12px 0; border-radius:8px; }
+    .stats div { text-align:center; min-width:80px; }
+    .stats .num { font-size:1.4rem; font-weight:bold; color:var(--primary); }
+    .stats .label { font-size:0.8rem; color:#666; }
     .filters { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:12px; }
     .filters label { font-size:0.9rem; }
     .filters select { padding:4px; border-radius:4px; }
@@ -112,10 +146,24 @@ function parseCSV(text) {
     .pagination { text-align:center; margin:12px; }
     .pagination button { margin:0 4px; padding:6px 10px; border:none; background:var(--primary); color:#fff; border-radius:4px; cursor:pointer; }
     .pagination button[disabled] { opacity:0.6; cursor:default; }
+    .footer { text-align:center; padding:20px; background:#fff; margin:12px 0; border-radius:8px; }
+    .footer a { margin:0 15px; color:var(--primary); text-decoration:none; font-weight:bold; padding:8px 16px; border:2px solid var(--primary); border-radius:4px; }
+    .footer a:hover { background:var(--primary); color:#fff; }
   </style>
 </head>
 <body>
-  <div class="header"><h1>🚗 Sturgeon Tire Live Deals</h1></div>
+  <div class="header">
+    <h1>🚗 Sturgeon Tire Live Deals</h1>
+    <p>Updated: ${new Date().toLocaleString()}</p>
+  </div>
+  
+  <div class="stats">
+    <div><div class="num">${items.length}</div><div class="label">Deals</div></div>
+    <div><div class="num">${items.filter(i => i.disc >= 50).length}</div><div class="label">50%+ Off</div></div>
+    <div><div class="num">$${Math.round(items.reduce((sum, i) => sum + i.save, 0) / items.length)}</div><div class="label">Avg Savings</div></div>
+    <div><div class="num">${items.filter(i => i.disc >= 99).length || items.filter(i => i.disc >= 40).length}</div><div class="label">${items.filter(i => i.disc >= 99).length ? 'Free' : 'Hot'} Items</div></div>
+  </div>
+  
   <div class="filters">
     <label>Manufacturer:
       <select id="filter-manufacturer">
@@ -133,10 +181,17 @@ function parseCSV(text) {
       </select>
     </label>
   </div>
+  
   <div class="grid" id="card-container"></div>
   <div class="pagination" id="pagination"></div>
+  
+  <div class="footer">
+    <a href="tel:+12049355559">📞 Call (204) 935-5559</a>
+    <a href="mailto:sales@sturgeontire.com">✉️ Get Quote</a>
+  </div>
+  
   <script>
-    const items = ${JSON.stringify(items)};
+    const items = ${JSON.stringify(items, null, 2)};
     let currentPage = 1, pageSize = 20;
 
     function renderCard(i) {
@@ -156,9 +211,9 @@ function parseCSV(text) {
       return '<div class="card">'
         + '<div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div>'
         + '<div class="content">'
-        + (i.logo ? '<img src="' + i.logo + '" class="logo">' : '')
+        + (i.logo ? '<img src="' + i.logo + '" class="logo" onerror="this.style.display=\\'none\\'">' : '')
         + '<div class="title">' + i.model + '</div>'
-        + '<div class="details">Item: ' + i.item + '</div>'
+        + '<div class="details">Item: ' + i.item + ' • ' + i.manufacturer + '</div>'
         + '<div class="pricing">' + priceHtml + '</div>'
         + '<div class="save">💰 Save $' + i.save + '</div>'
         + '<div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div>'
@@ -194,9 +249,11 @@ function parseCSV(text) {
     // Write output
     const outPath = path.join(process.cwd(), 'index.html');
     fs.writeFileSync(outPath, html, 'utf8');
-    console.log(`✅ index.html generated with ${items.length} items`);
+    console.log(`✅ Generated index.html with ${items.length} items`);
+    console.log(`📊 Manufacturers: ${manufacturers.join(', ')}`);
+    
   } catch (err) {
-    console.error(err);
+    console.error('❌ Error:', err.message);
     process.exit(1);
   }
 })();
