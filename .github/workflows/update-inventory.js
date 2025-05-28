@@ -131,7 +131,7 @@ function generateHTML(deals) {
     </div>
     <div class="grid">${cards}</div>
     <div class="footer">
-        <a href="tel:+12049355559">📞 (204) 935-5559</a>
+        <a href="tel:+12049854040">📞 (204) 985-4040</a>
         <a href="mailto:sales@sturgeontire.com">✉️ Quote</a>
     </div>
 </body></html>`;
