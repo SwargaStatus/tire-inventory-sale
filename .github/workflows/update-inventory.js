@@ -1,4 +1,4 @@
-// update-inventory.js - GitHub automation script
+// update-inventory.js - Fixed for FlyerData CSV format
 const fs = require('fs');
 const https = require('https');
 
@@ -18,7 +18,7 @@ async function downloadCSV(url) {
 function parseCSV(csvText) {
     const lines = csvText.split('\n').filter(line => line.trim());
     
-    // More robust CSV parsing for quoted fields
+    // Robust CSV parsing for quoted fields
     function parseCSVLine(line) {
         const result = [];
         let current = '';
@@ -52,11 +52,11 @@ function parseCSV(csvText) {
             tire[header] = values[index] || '';
         });
         
-        // Use the correct column names from your CSV
+        // Use exact column names from your CSV
         const discount = parseFloat(tire['FlyerData[B2B_Discount_Percentage]']) || 0;
         const stock = parseInt(tire['FlyerData[AvailableQuantity]']) || 0;
         
-        console.log(`Item: ${tire['FlyerData[Item]']}, Discount: ${discount}%, Stock: ${stock}`);
+        console.log(`Processing: ${tire['FlyerData[Item]']}, Discount: ${discount}%, Stock: ${stock}`);
         
         // Filter for good deals with stock
         if (discount >= 15 && stock > 0) {
@@ -64,7 +64,7 @@ function parseCSV(csvText) {
         }
     }
     
-    console.log(`Processed ${tires.length} qualifying tires from ${lines.length - 1} total rows`);
+    console.log(`✅ Found ${tires.length} qualifying deals from ${lines.length - 1} total rows`);
     
     // Sort by discount (highest first)
     return tires.sort((a, b) => {
@@ -73,20 +73,9 @@ function parseCSV(csvText) {
         return discountB - discountA;
     });
 }
-    
-    console.log(`Processed ${tires.length} tires from ${lines.length - 1} total rows`);
-    
-    // Sort by discount (highest first)
-    return tires.sort((a, b) => {
-        const discountFieldA = headers.find(h => h.includes('Discount_Percentage'));
-        const discountA = parseFloat(a[discountFieldA]) || 0;
-        const discountB = parseFloat(b[discountFieldA]) || 0;
-        return discountB - discountA;
-    });
-}
 
 function generateTireCard(tire) {
-    // Use correct column names with brackets
+    // Use exact column names with brackets
     const brand = tire['FlyerData[Brand_Display]'] || 'QUALITY';
     const model = tire['FlyerData[Model]'] || 'TIRE';
     const item = tire['FlyerData[Item]'] || '';
@@ -501,13 +490,20 @@ function generateHTML(tires) {
 
 async function main() {
     try {
-        console.log('🔄 Downloading tire data...');
-        const csvData = await downloadCSV(CSV_URL);
+        console.log('🔄 Downloading tire data from SharePoint...');
         
+        if (!CSV_URL) {
+            throw new Error('SHAREPOINT_CSV_URL environment variable not set');
+        }
+        
+        const csvData = await downloadCSV(CSV_URL);
         console.log('📊 Processing tire deals...');
+        
         const tires = parseCSV(csvData);
         
-        console.log(`✅ Found ${tires.length} qualifying deals`);
+        if (tires.length === 0) {
+            throw new Error('No qualifying tire deals found');
+        }
         
         console.log('🎨 Generating HTML...');
         const html = generateHTML(tires);
@@ -516,6 +512,7 @@ async function main() {
         fs.writeFileSync('index.html', html);
         
         console.log('🚀 Website updated successfully!');
+        console.log(`📈 Showing ${Math.min(tires.length, 20)} deals out of ${tires.length} total`);
         
     } catch (error) {
         console.error('❌ Error:', error.message);
