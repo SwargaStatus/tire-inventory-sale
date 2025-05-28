@@ -13,26 +13,27 @@
   .filters label { font-size:0.9rem; }
   .filters select { padding:4px; border-radius:4px; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; padding:12px; }
+  @media (max-width:768px) { .grid { grid-template-columns:1fr; } }
   .card { background:#fff; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.1); overflow:hidden; position:relative; }
   .badge { position:absolute; top:8px; right:8px; padding:4px 6px; border-radius:4px; color:#fff; font-size:0.75rem; }
-  .badge-sale { background:var(--accent); }
-  .badge-good { background:var(--primary); }
+  .badge-sale  { background:var(--accent); }
+  .badge-good  { background:var(--primary); }
   .badge-great { background:#ffb300; }
-  .badge-huge { background:#ff6d00; }
-  .badge-free { background:var(--dark); }
+  .badge-huge  { background:#ff6d00; }
+  .badge-free  { background:var(--dark); }
   .content { padding:10px; }
   .logo { height:24px; vertical-align:middle; margin-right:6px; }
   .title { font-size:1.1rem; font-weight:bold; color:var(--dark); margin-bottom:6px; }
-  .details { font-size:0.85rem; color:#555; margin-bottom:6px; }
-  .pricing { margin-bottom:6px; }
+  .details  { font-size:0.85rem; color:#555; margin-bottom:6px; }
+  .pricing  { margin-bottom:6px; }
   .sale-price { color:#27ae60; font-weight:bold; }
   .orig-price { text-decoration:line-through; color:#888; margin-left:6px; }
   .free-price { color:var(--dark); font-weight:bold; }
-  .save { color:#e74c3c; font-size:0.85rem; margin-bottom:6px; }
-  .stock { font-size:0.8rem; padding:3px 6px; border-radius:4px; display:inline-block; margin-bottom:6px; }
-  .stock-low { background:#fdecea; color:#c0392b; }
-  .stock-medium { background:#fff8e1; color:#f57c00; }
-  .stock-good { background:#e8f5e9; color:#2e7d32; }
+  .save     { color:#e74c3c; font-size:0.85rem; margin-bottom:6px; }
+  .stock    { font-size:0.8rem; padding:3px 6px; border-radius:4px; display:inline-block; margin-bottom:6px; }
+  .stock-low       { background:#fdecea; color:#c0392b; }
+  .stock-medium    { background:#fff8e1; color:#f57c00; }
+  .stock-good      { background:#e8f5e9; color:#2e7d32; }
   .stock-excellent { background:#e3f2fd; color:#1565c0; }
   .pagination { text-align:center; margin:12px; }
   .pagination button { margin:0 4px; padding:6px 10px; border:none; background:var(--primary); color:#fff; border-radius:4px; cursor:pointer; }
@@ -42,46 +43,55 @@
 <body>
   <div class="header"><h1>🚗 Sturgeon Tire Live Deals</h1></div>
   <div class="filters">
-    <label>Manufacturer:<select id="filter-manufacturer"><option value="">All</option><option value="Unknown">Unknown</option></select></label>
+    <label>Manufacturer:<select id="filter-manufacturer"><option value="">All</option></select></label>
     <label>Min Discount:<select id="filter-discount"><option value="0">0%</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option></select></label>
   </div>
   <div class="grid" id="card-container"></div>
   <div class="pagination" id="pagination"></div>
 <script>
-  const items = [{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT A/S+","item":"110140669","disc":-1,"sale":299.6,"reg":295.1747,"save":-4,"stock":4},{"manufacturer":"Unknown","logo":"","model":"PureContact LS","item":"15508770000","disc":3,"sale":223.3978,"reg":231.28,"save":8,"stock":4},{"manufacturer":"Unknown","logo":"","model":"Grabber HTS60","item":"04505170000","disc":2,"sale":256.0737,"reg":261.6369,"save":6,"stock":4},{"manufacturer":"Unknown","logo":"","model":"Geolandar A/T G015","item":"110101680","disc":9,"sale":249.9263,"reg":274.1719,"save":24,"stock":4},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR X-AT","item":"110116035","disc":24,"sale":352.4211,"reg":462.062,"save":110,"stock":4},{"manufacturer":"Unknown","logo":"","model":"GRABBER ARCTIC","item":"15502560000","disc":2,"sale":212.5579,"reg":217.129,"save":5,"stock":4},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR CV G058","item":"110105812","disc":11,"sale":152.1263,"reg":170.8608,"save":19,"stock":4},{"manufacturer":"Unknown","logo":"","model":"Geolandar A/T G015","item":"110101625","disc":9,"sale":213.1895,"reg":233.8692,"save":21,"stock":4},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR X-AT","item":"110116024","disc":33,"sale":327.1579,"reg":488.7413,"save":162,"stock":4},{"manufacturer":"Unknown","logo":"","model":"DL12","item":"3002335","disc":49,"sale":284.54,"reg":555.6818,"save":271,"stock":4},{"manufacturer":"Unknown","logo":"","model":"Grabber A/TX","item":"04505590000","disc":2,"sale":236.5474,"reg":241.6344,"save":5,"stock":4},{"manufacturer":"Unknown","logo":"","model":"AVID ASCEND LX","item":"110132810","disc":23,"sale":114.7158,"reg":148.155,"save":33,"stock":1},{"manufacturer":"Unknown","logo":"","model":"AVID ASCEND LX","item":"110132811","disc":23,"sale":115.2316,"reg":150.4256,"save":35,"stock":1},{"manufacturer":"Unknown","logo":"","model":"AVID ASCEND GT","item":"110132729","disc":7,"sale":171.7158,"reg":184.4842,"save":13,"stock":1},{"manufacturer":"Unknown","logo":"","model":"SPORTSTAR BH19","item":"B560422","disc":0,"sale":169.0931,"reg":169.0931,"save":0,"stock":1},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR X-CV","item":"110157001","disc":24,"sale":195.8526,"reg":257.1426,"save":61,"stock":1},{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT A/S+","item":"110140671","disc":7,"sale":328.5789,"reg":354.7773,"save":26,"stock":2},{"manufacturer":"Unknown","logo":"","model":"IA-207","item":"D221050","disc":8,"sale":173.74,"reg":188.74,"save":15,"stock":2},{"manufacturer":"Unknown","logo":"","model":"AVID ASCEND LX","item":"110132831","disc":23,"sale":148.8211,"reg":193.5665,"save":45,"stock":2},{"manufacturer":"Unknown","logo":"","model":"Grabber A/TX","item":"04507150000","disc":2,"sale":385.5053,"reg":393.7957,"save":8,"stock":2},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR X-AT","item":"110116034","disc":20,"sale":338.3474,"reg":425.1652,"save":87,"stock":8},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR X-AT","item":"110116006","disc":10,"sale":277.1895,"reg":308.7982,"save":32,"stock":8},{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT A/S+","item":"110140617","disc":12,"sale":159.6105,"reg":180.5107,"save":21,"stock":8},{"manufacturer":"Unknown","logo":"","model":"Grabber APT","item":"04508100000","disc":2,"sale":312.9789,"reg":319.7097,"save":7,"stock":8},{"manufacturer":"Unknown","logo":"","model":"PureContact LS","item":"15509360000","disc":3,"sale":148.172,"reg":153.4,"save":5,"stock":8},{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT A/S+","item":"110140651","disc":7,"sale":260.7579,"reg":280.9837,"save":20,"stock":8},{"manufacturer":"Unknown","logo":"","model":"AVID ASCEND LX","item":"110132828","disc":10,"sale":161.6526,"reg":180.5107,"save":19,"stock":3},{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT A/S+","item":"110140653","disc":6,"sale":220.4842,"reg":235.5722,"save":15,"stock":1},{"manufacturer":"Unknown","logo":"","model":"ADVAN FLEVA","item":"110170164","disc":19,"sale":211.4737,"reg":260.5485,"save":49,"stock":6},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR H/T G056","item":"110105664","disc":13,"sale":204.0526,"reg":235.0045,"save":31,"stock":6},{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT A/S+","item":"110140616","disc":12,"sale":164.3053,"reg":186.1871,"save":22,"stock":12},{"manufacturer":"Unknown","logo":"","model":"Grabber HTS","item":"04503240000","disc":2,"sale":353.1474,"reg":360.7419,"save":8,"stock":12},{"manufacturer":"Unknown","logo":"","model":"IA-207","item":"D226675","disc":8,"sale":172.58,"reg":187.58,"save":15,"stock":12},{"manufacturer":"Unknown","logo":"","model":"BT957","item":"B301621","disc":7,"sale":179.99,"reg":194.375,"save":14,"stock":12},{"manufacturer":"Unknown","logo":"","model":"VULCAN","item":"K845820","disc":8,"sale":113.9262,"reg":123.455,"save":10,"stock":12},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR X-AT","item":"110116036","disc":24,"sale":372.5789,"reg":491.5795,"save":119,"stock":5},{"manufacturer":"Unknown","logo":"","model":"GEOLANDAR X-AT","item":"110116028","disc":9,"sale":270.8316,"reg":296.8777,"save":26,"stock":5},{"manufacturer":"Unknown","logo":"","model":"MIDAS","item":"K832190","disc":7,"sale":88.5674,"reg":95.3723,"save":7,"stock":5},{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT V105","item":"110110549","disc":11,"sale":245.2737,"reg":274.56,"save":29,"stock":4},{"manufacturer":"Unknown","logo":"","model":"AVID ASCEND GT","item":"110132714","disc":12,"sale":126.9895,"reg":143.6139,"save":17,"stock":11},{"manufacturer":"Unknown","logo":"","model":"Grabber APT","item":"04508020000","disc":2,"sale":246.5895,"reg":251.8925,"save":5,"stock":24},{"manufacturer":"Unknown","logo":"","model":"Grabber APT","item":"04507980000","disc":2,"sale":244.9158,"reg":250.1828,"save":5,"stock":10},{"manufacturer":"Unknown","logo":"","model":"ICEGUARD IG53","item":"110115345","disc":22,"sale":165.1263,"reg":211.1635,"save":46,"stock":25},{"manufacturer":"Unknown","logo":"","model":"ATLAS","item":"K836840","disc":9,"sale":102.49,"reg":112.6487,"save":10,"stock":35},{"manufacturer":"Unknown","logo":"","model":"ADVAN SPORT A/S+","item":"110140618","disc":6,"sale":178.5158,"reg":189.593,"save":11,"stock":7},{"manufacturer":"Unknown","logo":"","model":"Geolandar A/T G015","item":"110101641","disc":9,"sale":299.0842,"reg":328.0981,"save":29,"stock":10},{"manufacturer":"Unknown","logo":"","model":"AltiMAX RT45","item":"15576180000","disc":2,"sale":124.4105,"reg":127.086,"save":3,"stock":14},{"manufacturer":"Unknown","logo":"","model":"PureContact LS","item":"15571180000","disc":3,"sale":161.8495,"reg":167.56,"save":6,"stock":18},{"manufacturer":"Unknown","logo":"","model":"Altimax 365AW","item":"15574890000","disc":2,"sale":192.4737,"reg":196.7187,"save":4,"stock":19},{"manufacturer":"Unknown","logo":"","model":"ICEGUARD IG53","item":"110115346","disc":14,"sale":186.2526,"reg":215.609,"save":29,"stock":24},{"manufacturer":"Unknown","logo":"","model":"XDN2","item":"72805","disc":37,"sale":492.6,"reg":780.56,"save":288,"stock":6},{"manufacturer":"Unknown","logo":"","model":"BV11+","item":"B608680","disc":0,"sale":166.8197,"reg":166.8197,"save":0,"stock":53},{"manufacturer":"Unknown","logo":"","model":"PureContact LS","item":"15508370000","disc":3,"sale":189.2043,"reg":195.88,"save":7,"stock":7},{"manufacturer":"Unknown","logo":"","model":"PureContact LS","item":"15571170000","disc":1,"sale":131.0753,"reg":132.75,"save":2,"stock":19},{"manufacturer":"Unknown","logo":"","model":"IA-207","item":"D226760","disc":8,"sale":173.42,"reg":188.42,"save":15,"stock":16},{"manufacturer":"Unknown","logo":"","model":"SASQUA H/T","item":"B586675","disc":0,"sale":145.1362,"reg":145.1362,"save":0,"stock":53},{"manufacturer":"Unknown","logo":"","model":"GCB3","item":"B101012","disc":27,"sale":1229,"reg":1674.3586,"save":445,"stock":7},{"manufacturer":"Unknown","logo":"","model":"CrossContact ATR","item":"03594630000","disc":3,"sale":223.9677,"reg":231.87,"save":8,"stock":7},{"manufacturer":"Unknown","logo":"","model":"SPORTSTAR BH19","item":"B560425","disc":0,"sale":165.5998,"reg":165.5998,"save":0,"stock":10},{"manufacturer":"Unknown","logo":"","model":"SPORTSTAR BH19","item":"B564322","disc":0,"sale":117.1002,"reg":117.1002,"save":0,"stock":22},{"manufacturer":"Unknown","logo":"","model":"BT556","item":"B312135","disc":22,"sale":259,"reg":331.24,"save":72,"stock":44},{"manufacturer":"Unknown","logo":"","model":"BS68","item":"B821580","disc":9,"sale":109.49,"reg":120.87,"save":11,"stock":72},{"manufacturer":"Unknown","logo":"","model":"XTE","item":"21307","disc":37,"sale":429.6,"reg":680.24,"save":251,"stock":15},{"manufacturer":"Unknown","logo":"","model":"VULCAN","item":"K846920","disc":15,"sale":118.49,"reg":139.5279,"save":21,"stock":19}];
+  const items = [];
   let currentPage = 1, pageSize = 20;
-
   function renderCard(i) {
-    const badgeType = i.disc>=99?'free':i.disc>=40?'huge':i.disc>=30?'great':i.disc>=20?'good':'sale';
-    const priceHtml = i.disc>=99
-      ? '<span class="free-price">FREE</span><span class="orig-price">$'+i.reg+'</span>'
-      : '<span class="sale-price">$'+i.sale+'</span><span class="orig-price">$'+i.reg+'</span>';
-    let stockClass='excellent'; if(i.stock<=5) stockClass='low'; else if(i.stock<=15) stockClass='medium'; else if(i.stock<=50) stockClass='good';
-    return '<div class="card">'
-      + '<div class="badge badge-'+badgeType+'">'+i.disc+'% OFF</div>'
-      + '<div class="content">'
-      + '<div class="title">'+(i.logo?'<img src="'+i.logo+'" class="logo">':'')+i.model+'</div>'
-      + '<div class="details">Item: '+i.item+'</div>'
-      + '<div class="pricing">'+priceHtml+'</div>'
-      + '<div class="save">💰 Save $'+i.save+'</div>'
-      + '<div class="stock stock-'+stockClass+'">Qty: '+i.stock+'</div>'
-      + '</div></div>';
+    const badgeType = /*…*/;
+    const priceHtml = /*…*/;
+    let stockClass = /*…*/;
+  
+    // build your card with single-quoted strings + + concatenation:
+    return  '<div class="card">' +
+              '<div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div>' +
+              '<div class="content">' +
+                (i.logo 
+                 ? '<img src="' + i.logo + '" class="logo">' 
+                 : ''
+                ) +
+                '<div class="title">'  + i.model  + '</div>' +
+                '<div class="details">Item: ' + i.item + '</div>' +
+                '<div class="pricing">'   + priceHtml + '</div>' +
+                '<div class="save">💰 Save $' + i.save + '</div>' +
+                '<div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div>' +
+              '</div>' +
+            '</div>';
   }
 
   function render() {
     const mf = document.getElementById('filter-manufacturer').value;
     const md = parseInt(document.getElementById('filter-discount').value);
     const filtered = items.filter(i=>(!mf||i.manufacturer===mf)&& i.disc>=md);
-    const totalPages = Math.ceil(filtered.length/pageSize)||1;
-    if(currentPage>totalPages) currentPage=totalPages;
-    const start=(currentPage-1)*pageSize;
-    const pageItems = filtered.slice(start,start+pageSize);
+    const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * pageSize;
+    const pageItems = filtered.slice(start, start + pageSize);
     document.getElementById('card-container').innerHTML = pageItems.map(renderCard).join('');
-    const pg = document.getElementById('pagination'); pg.innerHTML='';
-    for(let p=1;p<=totalPages;p++){ const btn=document.createElement('button'); btn.textContent=p; if(p===currentPage) btn.disabled=true; btn.onclick=()=>{currentPage=p;render();}; pg.appendChild(btn);}  }
-
-  document.getElementById('filter-manufacturer').onchange=()=>{currentPage=1;render();};
-  document.getElementById('filter-discount').onchange=()=>{currentPage=1;render();};
+    const pg = document.getElementById('pagination'); pg.innerHTML = '';
+    for (let p = 1; p <= totalPages; p++) {
+      const btn = document.createElement('button'); btn.textContent = p;
+      if (p === currentPage) btn.disabled = true;
+      btn.onclick = () => { currentPage = p; render(); };
+      pg.appendChild(btn);
+    }
+  }
+  document.getElementById('filter-manufacturer').onchange = () => { currentPage = 1; render(); };
+  document.getElementById('filter-discount').onchange    = () => { currentPage = 1; render(); };
   render();
 </script>
 </body>
