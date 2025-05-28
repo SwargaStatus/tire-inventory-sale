@@ -2,8 +2,13 @@ name: Update Tire Inventory
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Run daily at noon UTC
+    - cron: '0 12 * * *'  # Run daily at noon UTC (fixed missing *)
   workflow_dispatch: # Manual trigger
+  push:
+    branches: ["main"]
+    paths: 
+      - 'flyer_data*.csv'
+      - '.github/workflows/update-inventory.js'
 
 permissions:
   contents: write
@@ -14,17 +19,29 @@ jobs:
   update-inventory:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
+        
     - name: Run inventory update
       run: node .github/workflows/update-inventory.js
-    - name: Commit and push updated index.html
+      
+    - name: Check for changes
+      id: git-check
       run: |
-        git config --global user.name "Tire Bot"
-        git config --global user.email "bot@sturgeon-tire.com"
+        git diff --exit-code index.html || echo "changes=true" >> $GITHUB_OUTPUT
+        
+    - name: Commit and push updated index.html
+      if: steps.git-check.outputs.changes == 'true'
+      run: |
+        git config --local user.name "Tire Bot"
+        git config --local user.email "bot@sturgeon-tire.com"
         git add index.html
-        git commit -m "Auto-update tire inventory $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git commit -m "🤖 Auto-update tire inventory $(date +'%Y-%m-%d %H:%M')"
         git push
-        fi
