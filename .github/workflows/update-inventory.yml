@@ -18,14 +18,14 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '18'
-    - run: |
-        npm install csv-parser axios
-        node update-inventory.js
-    - run: |
+    - name: Run inventory update
+      run: node .github/workflows/update-inventory.js
+    - name: Commit and push if changed
+      run: |
         git config --local user.email "automation@sturgeontire.com"
         git config --local user.name "Tire Bot"
         if [[ -n $(git status --porcelain) ]]; then
           git add index.html
-          git commit -m "🤖 Auto-update $(date)"
+          git commit -m "🤖 Auto-update tire inventory $(date +%Y-%m-%d)"
           git push
         fi
