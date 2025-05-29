@@ -88,7 +88,19 @@ function generateHTML(items) {
     .stock-low{background:#fdecea;color:#c0392b}.stock-medium{background:#fff8e1;color:#f57c00}.stock-good{background:#e8f5e9;color:#2e7d32}.stock-excellent{background:#e3f2fd;color:#1565c0}
     .btn-add-quote{background:#27ae60;color:white;border:none;padding:12px 16px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:14px;width:100%}
     .btn-add-quote:hover{background:#229954}
-    .quote-counter{position:fixed;bottom:20px;right:20px;background:#e74c3c;color:white;padding:12px 16px;border-radius:25px;cursor:pointer;font-weight:bold;display:none;z-index:1000}
+    .quote-counter{position:fixed;top:20px;right:20px;background:#e74c3c;color:white;padding:12px 16px;border-radius:25px;cursor:pointer;font-weight:bold;display:none;z-index:1000;box-shadow:0 4px 15px rgba(231,76,60,0.3);transition:all 0.3s ease}
+    .quote-counter:hover{background:#c0392b;transform:translateY(-2px);box-shadow:0 6px 20px rgba(231,76,60,0.4)}
+    .quote-counter.pulse{animation:pulse 0.6s ease-out}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+    .quantity-controls{display:flex;align-items:center;gap:5px;background:#f8f9fa;border-radius:8px;padding:2px}
+    .qty-btn{width:28px;height:28px;border:none;background:#007bff;color:white;border-radius:6px;cursor:pointer;font-weight:bold;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+    .qty-btn:hover{background:#0056b3;transform:scale(1.1)}
+    .qty-btn:active{transform:scale(0.95)}
+    .qty-input{width:50px;height:28px;border:1px solid #ddd;border-radius:4px;text-align:center;font-weight:bold;margin:0 2px}
+    .notification{position:fixed;top:80px;right:20px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:12px 20px;border-radius:8px;z-index:3000;font-weight:500;box-shadow:0 4px 20px rgba(39,174,96,0.3);transform:translateX(400px);transition:all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);max-width:280px}
+    .success-notification{background:linear-gradient(135deg,#3498db,#2980b9);padding:20px 25px;border-radius:12px;box-shadow:0 8px 32px rgba(52,152,219,0.4);position:relative;overflow:hidden}
+    .success-notification::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);animation:confetti 2s linear infinite}
+    @keyframes confetti{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
     .quote-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000}
     .quote-modal-content{background:white;margin:5% auto;padding:20px;width:90%;max-width:600px;border-radius:8px;max-height:80vh;overflow-y:auto}
     .quote-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
@@ -216,7 +228,131 @@ function generateHTML(items) {
       }
       let html = '<h3>Items:</h3>';
       quoteItems.forEach(item => {
-        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div style="display:flex;align-items:center;gap:10px;"><input type="number" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + item.item + '\\', this.value)" style="width:60px;padding:4px;text-align:center;"><small>/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">×</button></div></div>';
+        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • 
+      container.innerHTML = html;
+    }
+
+    function submitQuote() {
+      const name = document.getElementById('customer-name').value;
+      const email = document.getElementById('customer-email').value;
+      const phone = document.getElementById('customer-phone').value;
+      const company = document.getElementById('customer-company').value;
+      const notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+      }
+      
+      const submitBtn = document.querySelector('.submit-quote');
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+      
+      const tireDetails = quoteItems.map((item, index) => \`\${index + 1}. Item: \${item.item} - Qty: \${item.quantity}\`).join('\\n');
+      const quoteSummary = \`TIRE QUOTE REQUEST
+
+CUSTOMER:
+Name: \${name}
+Email: \${email}
+Phone: \${phone || 'Not provided'}
+Company: \${company || 'Not provided'}
+
+ITEMS:
+\${tireDetails}
+
+NOTES: \${notes || 'None'}\`;
+      
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('company', company);
+      formData.append('items', tireDetails);
+      formData.append('message', quoteSummary);
+      formData.append('_subject', \`Tire Quote - \${name}\`);
+      formData.append('_replyto', email);
+      
+      fetch('https://formspree.io/f/xdkgqyzr', {
+        method: 'POST',
+        body: formData,
+        headers: {'Accept': 'application/json'}
+      })
+      .then(response => {
+        if (response.ok) {
+          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+          submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+          showSuccessNotification('🎉 Quote sent successfully! We\\'ll contact you soon with pricing and availability.');
+          setTimeout(() => {
+            quoteItems = [];
+            updateQuoteCounter();
+            closeQuoteModal();
+            submitBtn.innerHTML = 'Request Quote';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 3000);
+        } else {
+          const subject = \`Tire Quote - \${name}\`;
+          const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+          window.open(mailtoLink, '_blank');
+          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(() => {
+        const subject = \`Tire Quote - \${name}\`;
+        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+        window.open(mailtoLink, '_blank');
+        submitBtn.innerHTML = 'Request Quote';
+        submitBtn.disabled = false;
+      });
+    }
+
+    document.getElementById('filter-manufacturer').addEventListener('change', render);
+    document.getElementById('filter-discount').addEventListener('change', render);
+    render();
+  </script>
+</body>
+</html>`;
+}
+
+async function main() {
+  try {
+    console.log('🔄 Processing tire data...');
+    const raw = readLocalCSV();
+    const data = parseCSV(raw);
+
+    const items = data.map(d => {
+      const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
+      const sale = parseFloat(d['SalePrice']) || 0;
+      const reg = parseFloat(d['Net']) || 0;
+      const save = Math.round(reg - sale);
+      const manufacturer = d['Manufacturer'] || 'Unknown';
+      
+      return {
+        manufacturer,
+        logo: d['Brand_Logo_URL'] || '',
+        model: d['Model'] || 'TIRE',
+        item: d['Item'] || '',
+        disc, sale, reg, save,
+        stock: parseInt(d['AvailableQuantity']) || 0
+      };
+    }).sort((a, b) => b.disc - a.disc);
+    
+    if (items.length === 0) throw new Error('No deals found');
+    
+    const html = generateHTML(items);
+    fs.writeFileSync('index.html', html);
+    
+    console.log('✅ Website updated successfully!');
+    console.log(`📈 ${items.length} deals processed`);
+    
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(1);
+  }
+}
+
+main(); + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity - 1) + ')">−</button><input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + item.item + '\\', this.value)"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity + 1) + ')">+</button><small style="margin-left:8px">/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">×</button></div></div>';
       });
       container.innerHTML = html;
     }
