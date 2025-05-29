@@ -62,19 +62,19 @@ function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
   const itemsJson = JSON.stringify(items);
   
-  return `<!DOCTYPE html>
+  return <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Sturgeon Tire Bargain Bin!</title>
+  <title>Sturgeon Tire Live Deals</title>
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
     .container{max-width:1200px;margin:0 auto;padding:0}
     .header{background:linear-gradient(135deg,var(--primary) 0%,#1e4f72 100%);color:#fff;padding:20px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.1);margin-bottom:0}
     .header h1{margin:0;font-size:1.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px}
-    .company-logo {height: 44px;filter: drop-shadow(0 0 3px white);}
+    .company-logo{height:44px;width:auto}
     .update-time{font-size:0.8rem;opacity:0.8;font-weight:400}
     .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;padding:18px;background:#fff;margin:16px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
     .stats div{text-align:center;min-width:100px}
@@ -122,37 +122,16 @@ function generateHTML(items) {
     .qty-input{width:50px;height:28px;border:1px solid #ddd;border-radius:4px;text-align:center;font-weight:bold;margin:0 2px}
     .notification{position:fixed;top:120px;right:20px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:12px 20px;border-radius:8px;z-index:3000;font-weight:500;box-shadow:0 4px 20px rgba(39,174,96,0.3);transform:translateX(400px);transition:all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);max-width:280px}
     .success-notification{background:linear-gradient(135deg,#3498db,#2980b9);padding:20px 25px;border-radius:12px;box-shadow:0 8px 32px rgba(52,152,219,0.4);position:relative;overflow:hidden}
+    .success-notification::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);animation:confetti 2s linear infinite}
+    @keyframes confetti{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
     .quote-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000}
-
-    /* <<< NEW MODAL & FORM STYLES >>> */
-    .quote-modal-content {
-      display: flex;
-      flex-direction: column;
-      background: #fff;
-      padding: 16px;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: fadeSlideIn 0.3s ease;
-      border-radius: 8px;
-    }
-    .quote-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 16px;
-    }
-    .quote-form input,
-    .quote-form textarea,
-    .quote-form button {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0);    }
-    }
-
-    /* your remaining footer/mobile media styles… */
+    .quote-modal-content{background:white;margin:5% auto;padding:20px;width:90%;max-width:600px;border-radius:8px;max-height:80vh;overflow-y:auto}
+    .quote-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
+    .quote-form{margin-top:20px;padding-top:20px;border-top:2px solid #eee}
+    .quote-form input,.quote-form textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}
+    .submit-quote{background:#27ae60;color:white;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-weight:bold;width:100%}
+    .close-modal{float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#aaa}
+    .remove-item{background:#e74c3c;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px}
     .footer{text-align:center;padding:20px;background:#fff;margin:16px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
     .footer a{margin:0 15px;color:var(--primary);text-decoration:none;font-weight:bold;padding:10px 20px;border:2px solid var(--primary);border-radius:8px;transition:all 0.2s}
     .footer a:hover{background:var(--primary);color:white}
@@ -162,21 +141,46 @@ function generateHTML(items) {
       .quote-counter{right:16px;font-size:14px;padding:12px 16px}
       .filters{margin:20px;padding:24px;flex-direction:column;align-items:stretch;gap:24px}
       .search-container{min-width:unset;max-width:unset;width:100%;box-sizing:border-box}
+      .search-container input{box-sizing:border-box}
+      .filter-group{width:100%;min-width:unset;box-sizing:border-box}
+      .filters select{box-sizing:border-box}
       .stats{margin:16px;gap:20px;padding:20px}
       .stats .num{font-size:2rem}
       .stats .label{font-size:0.8rem}
     }
-    @media (max-width:600px) {
-      .quote-items{flex:1;overflow-y:auto;margin-bottom:10px}
-      .quote-form{padding-bottom:env(safe-area-inset-bottom)}
-    }
+  /* —— Make the “Submit Quote” button stick into view on mobile —— */
+.quote-modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);  /* leave a little breathing room at top */
+}
+.quote-items {
+  flex: 1;
+  overflow-y: auto;                /* scroll only the items list */
+}
+.quote-form {
+  margin-top: auto;                /* push the form to the bottom */
+  position: sticky;
+  bottom: 0;
+  background: #fff;                /* match your modal background */
+  padding: 1rem;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+/* —— Give your logo a “pop” —— */
+.company-logo {
+  background: #fff;                /* white circle behind it */
+  padding: 0.5rem;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="header">
-      <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Bargain Bin!</h1>
+      <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Live Deals</h1>
       <div class="update-time">Updated: ${new Date().toLocaleString('en-CA', { timeZone: 'America/Winnipeg', dateStyle: 'short', timeStyle: 'short' })}</div>
     </div>
     
@@ -195,14 +199,14 @@ function generateHTML(items) {
         <span class="filter-label">Manufacturer</span>
         <select id="filter-manufacturer">
           <option value="">All Manufacturers</option>
-          ${manufacturers.map(m => `<option value="${m}">${m}</option>`).join('')}
+          ${manufacturers.map(m => <option value="${m}">${m}</option>).join('')}
         </select>
       </div>
     </div>
     
     <div class="grid" id="card-container"></div>
     
-    <div class="footer"><a href="tel:+12049854040">Call (204) 985-4040</a><a href="mailto:nileshn@sturgeontire.com">Get Quote</a></div>
+    <div class="footer"><a href="tel:+12049355559">Call (204) 935-5559</a><a href="mailto:nileshn@sturgeontire.com">Get Quote</a></div>
   </div>
   
   <div class="quote-counter" id="quote-counter" onclick="openQuoteModal()">
@@ -214,11 +218,7 @@ function generateHTML(items) {
     <div class="quote-modal-content">
       <span class="close-modal" onclick="closeQuoteModal()">&times;</span>
       <h2>Request Quote</h2>
-
-      <!-- List of items -->
-      <div id="quote-items" class="quote-items"></div>
-
-      <!-- Form container: wrap all inputs & button here -->
+      <div id="quote-items"></div>
       <div class="quote-form">
         <input type="text" id="customer-name" placeholder="Your Name *" required>
         <input type="email" id="customer-email" placeholder="Email *" required>
@@ -229,7 +229,6 @@ function generateHTML(items) {
       </div>
     </div>
   </div>
-
   
   <script>
     var items = ${itemsJson};
@@ -481,27 +480,17 @@ function generateHTML(items) {
       })
       .then(function(response) {
         if (response.ok) {
-          submitBtn.innerHTML = 'Quote Sent Successfully!';
+          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
           submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-        showSuccessNotification('Quote sent successfully! We’ll contact you shortly.');
-        
-        const myCanvas = document.getElementById('confetti-canvas');
-        const myConfetti = confetti.create(myCanvas, { resize: true, useWorker: true });
-        
-        myConfetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-        
-        setTimeout(() => {
-          quoteItems = [];
-          updateQuoteCounter();
-          closeQuoteModal();
-          submitBtn.innerHTML = 'Request Quote';
-          submitBtn.style.background = '';
-          submitBtn.disabled = false;
-        }, 3000);
+          showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
+          setTimeout(function() {
+            quoteItems = [];
+            updateQuoteCounter();
+            closeQuoteModal();
+            submitBtn.innerHTML = 'Request Quote';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 3000);
         } else {
           var subject = 'Tire Quote - ' + name;
           var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
@@ -557,10 +546,8 @@ function generateHTML(items) {
       render();
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000;"></canvas>
 </body>
-</html>`;
+</html>;
 }
 
 async function main() {
@@ -596,7 +583,7 @@ async function main() {
     fs.writeFileSync('index.html', html);
     
     console.log('✅ Website updated successfully!');
-    console.log(`📈 ${items.length} deals processed`);
+    console.log(📈 ${items.length} deals processed);
     console.log('🎯 Features: search, filters, quote system, responsive design');
     
   } catch (error) {
