@@ -62,7 +62,7 @@ function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
   const itemsJson = JSON.stringify(items);
   
-  return <!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -172,7 +172,7 @@ function generateHTML(items) {
         <span class="filter-label">Manufacturer</span>
         <select id="filter-manufacturer">
           <option value="">All Manufacturers</option>
-          ${manufacturers.map(m => <option value="${m}">${m}</option>).join('')}
+          ${manufacturers.map(m => `<option value="${m}">${m}</option>`).join('')}
         </select>
       </div>
     </div>
@@ -520,7 +520,7 @@ function generateHTML(items) {
     }
   </script>
 </body>
-</html>;
+</html>`;
 }
 
 async function main() {
@@ -556,7 +556,7 @@ async function main() {
     fs.writeFileSync('index.html', html);
     
     console.log('✅ Website updated successfully!');
-    console.log(📈 ${items.length} deals processed);
+    console.log(`📈 ${items.length} deals processed`);
     console.log('🎯 Features: search, filters, quote system, responsive design');
     
   } catch (error) {
