@@ -80,18 +80,18 @@ function generateHTML(items) {
     .stats div{text-align:center;min-width:100px}
     .stats .num{font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:4px;line-height:1}
     .stats .label{font-size:0.8rem;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-    .filters{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-items:center;margin:16px auto;padding:24px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);max-width:900px}
-    .filter-group{position:relative;display:flex;align-items:center;min-width:200px}
-    .filter-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#6c757d;font-size:16px;pointer-events:none;z-index:1}
-    .filters select{width:100%;padding:12px 16px 12px 42px;border-radius:25px;border:2px solid #e1e5e9;background:#f8f9fa;font-size:14px;transition:all 0.3s;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236c757d' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
-    .filters select:hover{background-color:#fff;border-color:#d1d5db}
-    .filters select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(46,111,163,0.1);background-color:#fff}
-    .search-container{flex:1;min-width:280px;max-width:450px;position:relative}
-    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#6c757d;font-size:16px;pointer-events:none;z-index:1}
-    .search-container input{width:100%;padding:12px 16px 12px 42px;border:2px solid #e1e5e9;border-radius:25px;font-size:14px;transition:all 0.3s;font-weight:500;background:#f8f9fa}
-    .search-container input::placeholder{color:#9ca3af}
-    .search-container input:hover{background:#fff;border-color:#d1d5db}
-    .search-container input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(46,111,163,0.1);background:#fff}
+    .filters{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;align-items:center;margin:20px auto;padding:28px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);max-width:1000px}
+    .filter-group{position:relative;display:flex;align-items:center;min-width:220px}
+    .filter-label{position:absolute;left:16px;top:-8px;background:#fff;padding:0 6px;font-size:12px;color:#6c757d;font-weight:600;z-index:1}
+    .filters select{width:100%;padding:14px 20px;border-radius:12px;border:1.5px solid #e1e5e9;background:#fff;font-size:15px;transition:all 0.2s;font-weight:500;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236c757d' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 20px center;padding-right:48px}
+    .filters select:hover{border-color:#c1c7ce}
+    .filters select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,111,163,0.08)}
+    .search-container{flex:1;min-width:320px;max-width:500px;position:relative}
+    .search-label{position:absolute;left:16px;top:-8px;background:#fff;padding:0 6px;font-size:12px;color:#6c757d;font-weight:600;z-index:1}
+    .search-container input{width:100%;padding:14px 20px;border:1.5px solid #e1e5e9;border-radius:12px;font-size:15px;transition:all 0.2s;font-weight:500;background:#fff}
+    .search-container input::placeholder{color:#9ca3af;font-weight:400}
+    .search-container input:hover{border-color:#c1c7ce}
+    .search-container input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,111,163,0.08)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;padding:20px 16px;max-width:1200px;margin:0 auto}
     .card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative;overflow:hidden;transition:all 0.3s ease}
     .card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.15)}
@@ -163,11 +163,11 @@ function generateHTML(items) {
     
     <div class="filters">
       <div class="search-container">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search-bar" placeholder="Search by brand, model, size, winter, or item...">
+        <span class="search-label">Search</span>
+        <input type="text" id="search-bar" placeholder="Brand, model, size, winter, or item...">
       </div>
       <div class="filter-group">
-        <span class="filter-icon">🏭</span>
+        <span class="filter-label">Manufacturer</span>
         <select id="filter-manufacturer">
           <option value="">All Manufacturers</option>
           ${manufacturers.map(m => `<option value="${m}">${m}</option>`).join('')}
