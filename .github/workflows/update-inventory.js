@@ -203,8 +203,12 @@ function generateHTML(items) {
     <div class="quote-modal-content">
       <span class="close-modal" onclick="closeQuoteModal()">&times;</span>
       <h2>Request Quote</h2>
+
+      <!-- List of items -->
       <div id="quote-items" class="quote-items"></div>
-      <div class="quote-form">…</div>
+
+      <!-- Form container: wrap all inputs & button here -->
+      <div class="quote-form">
         <input type="text" id="customer-name" placeholder="Your Name *" required>
         <input type="email" id="customer-email" placeholder="Email *" required>
         <input type="tel" id="customer-phone" placeholder="Phone">
@@ -214,6 +218,7 @@ function generateHTML(items) {
       </div>
     </div>
   </div>
+
   
   <script>
     var items = ${itemsJson};
