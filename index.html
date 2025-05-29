@@ -20,9 +20,11 @@
     .filters label{font-size:0.9rem;font-weight:600;color:#444;display:flex;align-items:center;gap:8px}
     .filters select{padding:8px 12px;border-radius:8px;border:2px solid #e1e5e9;background:#fff;font-size:14px;min-width:140px;transition:all 0.2s;font-weight:500}
     .filters select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,111,163,0.1)}
-    .search-container{flex:1;min-width:280px;max-width:380px}
-    .search-container input{width:100%;padding:10px 14px;border:2px solid #e1e5e9;border-radius:8px;font-size:14px;transition:all 0.2s;font-weight:500}
-    .search-container input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,111,163,0.1)}
+    .search-container{flex:1;min-width:280px;max-width:380px;position:relative}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#6c757d;font-size:16px;pointer-events:none}
+    .search-container input{width:100%;padding:12px 16px 12px 42px;border:2px solid #e1e5e9;border-radius:25px;font-size:14px;transition:all 0.3s;font-weight:500;background:#f8f9fa}
+    .search-container input:hover{background:#fff;border-color:#d1d5db}
+    .search-container input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(46,111,163,0.1);background:#fff}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;padding:20px 16px;max-width:1200px;margin:0 auto}
     .card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative;overflow:hidden;transition:all 0.3s ease}
     .card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.15)}
@@ -83,7 +85,7 @@
   <div class="container">
     <div class="header">
       <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Live Deals</h1>
-      <div class="update-time">Updated: 5/29/2025, 6:43:38 PM</div>
+      <div class="update-time">Updated: 5/29/2025, 7:09:46 PM</div>
     </div>
     
     <div class="stats">
@@ -94,7 +96,8 @@
     
     <div class="filters">
       <div class="search-container">
-        <input type="text" id="search-bar" placeholder="🔍 Search by brand, model, size, winter, or item...">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-bar" placeholder="Search by brand, model, size, winter, or item...">
       </div>
       <label>Manufacturer: <select id="filter-manufacturer"><option value="">All</option><option value="BOTO">BOTO</option><option value="CONTINENTAL">CONTINENTAL</option><option value="DELIUM">DELIUM</option><option value="FORERUNNER">FORERUNNER</option><option value="GENERAL">GENERAL</option><option value="HANKOOK">HANKOOK</option><option value="MICHELIN">MICHELIN</option><option value="Yokohama">Yokohama</option></select></label>
     </div>
