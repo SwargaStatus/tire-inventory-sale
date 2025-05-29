@@ -206,6 +206,8 @@ function generateHTML(items) {
     overflow:hidden;   /* body can’t scroll, modal can            */
   }
   </style>
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -408,15 +410,6 @@ function generateHTML(items) {
       }
     }
 
-    function openQuoteModal() {
-      updateQuoteModal();
-      document.getElementById('quote-modal').style.display = 'block';
-    }
-
-    function closeQuoteModal() {
-      document.getElementById('quote-modal').style.display = 'none';
-    }
-
     function updateQuoteModal() {
       var container = document.getElementById('quote-items');
       if (quoteItems.length === 0) {
@@ -513,6 +506,7 @@ function generateHTML(items) {
           submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
           submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
           showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
+          confetti({ particleCount: 140, spread: 70, origin: { y: 0.6 }, zIndex: 4000 });
           setTimeout(function() {
             quoteItems = [];
             updateQuoteCounter();
