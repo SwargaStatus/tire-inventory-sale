@@ -449,8 +449,7 @@ function generateHTML(items) {
         body: formData,
         headers: {'Accept': 'application/json'}
       })
-      .then(function(res
-      ponse) {
+      .then(function(response) {
         if (response.ok) {
           submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
           submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
