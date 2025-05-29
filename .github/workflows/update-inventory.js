@@ -175,7 +175,7 @@ function generateHTML(items) {
 <body>
   <div class="container">
     <div class="header">
-      <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Live Deals</h1>
+      <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Bargain Bin</h1>
       <div class="update-time">Updated: ${new Date().toLocaleString('en-CA', { timeZone: 'America/Winnipeg', dateStyle: 'short', timeStyle: 'short' })}</div>
     </div>
     
@@ -201,7 +201,7 @@ function generateHTML(items) {
     
     <div class="grid" id="card-container"></div>
     
-    <div class="footer"><a href="tel:+12049355559">Call (204) 935-5559</a><a href="mailto:nileshn@sturgeontire.com">Get Quote</a></div>
+    <div class="footer"><a href="tel:+12049854040">Call (204) 985-4040</a><a href="mailto:nileshn@sturgeontire.com">Get Quote</a></div>
   </div>
   
   <div class="quote-counter" id="quote-counter" onclick="openQuoteModal()">
