@@ -15,12 +15,16 @@
     .stats div{text-align:center;min-width:80px}
     .stats .num{font-size:1.4rem;font-weight:bold;color:var(--primary)}
     .stats .label{font-size:0.8rem;color:#666}
-    .filters{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px}
-    .filters select{padding:4px;border-radius:4px}
+    .filters{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;margin:12px;padding:12px;background:#fff;border-radius:8px}
+    .filters label{font-size:0.9rem;display:flex;align-items:center;gap:6px}
+    .filters select{padding:6px;border-radius:4px;border:1px solid #ddd}
+    .search-container{flex:1;min-width:300px;max-width:400px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;padding:12px}
     .card{background:#fff;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.1);position:relative;overflow:hidden}
     .badge{position:absolute;top:8px;right:8px;padding:4px 6px;border-radius:4px;color:#fff;font-size:0.75rem}
     .badge-sale{background:var(--accent)}.badge-good{background:var(--primary)}.badge-great{background:#ffb300}.badge-huge{background:#ff6d00}.badge-free{background:var(--dark)}
+    .winter-indicator{position:absolute;top:8px;left:8px;width:20px;height:20px;z-index:3}
+    .winter-indicator img{width:100%;height:100%;object-fit:contain}
     .content{padding:10px}
     .logo{height:48px;width:auto;max-width:120px;object-fit:contain;vertical-align:middle;margin-right:8px;margin-bottom:8px}
     .title{font-size:1.1rem;font-weight:bold;color:var(--dark);margin-bottom:6px}
@@ -63,7 +67,7 @@
 </head>
 <body>
   <div class="header">
-    <div class="update-time">Updated: 5/29/2025, 4:54:12 PM</div>
+    <div class="update-time">Updated: 5/29/2025, 5:22:49 PM</div>
     <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Live Deals</h1>
   </div>
   
@@ -74,6 +78,9 @@
   </div>
   
   <div class="filters">
+    <div class="search-container">
+      <input type="text" id="search-bar" placeholder="🔍 Search by brand, model, size, winter, or item..." style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;width:300px;margin-right:12px">
+    </div>
     <label>Manufacturer: <select id="filter-manufacturer"><option value="">All</option><option value="BOTO">BOTO</option><option value="CONTINENTAL">CONTINENTAL</option><option value="DELIUM">DELIUM</option><option value="FORERUNNER">FORERUNNER</option><option value="GENERAL">GENERAL</option><option value="HANKOOK">HANKOOK</option><option value="MICHELIN">MICHELIN</option><option value="Yokohama">Yokohama</option></select></label>
     <label>Min Discount: <select id="filter-discount"><option value="0">0%</option><option value="20">20%</option><option value="40">40%</option></select></label>
   </div>
@@ -109,6 +116,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hankook_Logo_2024.svg/2560px-Hankook_Logo_2024.svg.png",
     "model": "DL12",
     "item": "3002335",
+    "tireSize": "11R22.5 14PR",
+    "sizeStripped": "1122514",
+    "tireType": "Medium Truck",
+    "isWinterTire": false,
     "disc": 49,
     "sale": 285,
     "reg": 556,
@@ -120,6 +131,10 @@
     "logo": "https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg",
     "model": "XDN2",
     "item": "72805",
+    "tireSize": "11R22.5",
+    "sizeStripped": "11225",
+    "tireType": "Medium Truck",
+    "isWinterTire": false,
     "disc": 37,
     "sale": 493,
     "reg": 781,
@@ -131,6 +146,10 @@
     "logo": "https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg",
     "model": "XTE",
     "item": "21307",
+    "tireSize": "11R22.5",
+    "sizeStripped": "11225",
+    "tireType": "Medium Truck",
+    "isWinterTire": false,
     "disc": 37,
     "sale": 430,
     "reg": 680,
@@ -142,6 +161,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR X-AT",
     "item": "110116024",
+    "tireSize": "LT305/55R20",
+    "sizeStripped": "3055520",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 33,
     "sale": 327,
     "reg": 489,
@@ -153,6 +176,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "GCB3",
     "item": "B101012",
+    "tireSize": "14.00R24",
+    "sizeStripped": "140024",
+    "tireType": "O.T.R.",
+    "isWinterTire": false,
     "disc": 27,
     "sale": 1229,
     "reg": 1674,
@@ -164,6 +191,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR X-AT",
     "item": "110116035",
+    "tireSize": "33X12.50R20",
+    "sizeStripped": "33125020",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 24,
     "sale": 352,
     "reg": 462,
@@ -175,6 +206,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR X-CV",
     "item": "110157001",
+    "tireSize": "255/55R18",
+    "sizeStripped": "2555518",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 24,
     "sale": 196,
     "reg": 257,
@@ -186,6 +221,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR X-AT",
     "item": "110116036",
+    "tireSize": "35X12.50R20",
+    "sizeStripped": "35125020",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 24,
     "sale": 373,
     "reg": 492,
@@ -197,6 +236,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "AVID ASCEND LX",
     "item": "110132810",
+    "tireSize": "205/60R16",
+    "sizeStripped": "2056016",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 23,
     "sale": 115,
     "reg": 148,
@@ -208,6 +251,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "AVID ASCEND LX",
     "item": "110132811",
+    "tireSize": "205/65R16",
+    "sizeStripped": "2056516",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 23,
     "sale": 115,
     "reg": 150,
@@ -219,6 +266,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "AVID ASCEND LX",
     "item": "110132831",
+    "tireSize": "235/60R17",
+    "sizeStripped": "2356017",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 23,
     "sale": 149,
     "reg": 194,
@@ -230,6 +281,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ICEGUARD IG53",
     "item": "110115345",
+    "tireSize": "225/45R18",
+    "sizeStripped": "2254518",
+    "tireType": "Passenger - Winter",
+    "isWinterTire": true,
     "disc": 22,
     "sale": 165,
     "reg": 211,
@@ -241,6 +296,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "BT556",
     "item": "B312135",
+    "tireSize": "11R22.5",
+    "sizeStripped": "11225",
+    "tireType": "Medium Truck",
+    "isWinterTire": false,
     "disc": 22,
     "sale": 259,
     "reg": 331,
@@ -252,6 +311,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR X-AT",
     "item": "110116034",
+    "tireSize": "33X12.50R18",
+    "sizeStripped": "33125018",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 20,
     "sale": 338,
     "reg": 425,
@@ -263,6 +326,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN FLEVA",
     "item": "110170164",
+    "tireSize": "225/35R19",
+    "sizeStripped": "2253519",
+    "tireType": "Performance",
+    "isWinterTire": false,
     "disc": 19,
     "sale": 211,
     "reg": 261,
@@ -274,6 +341,10 @@
     "logo": "https://www.atvstore.com.au/assets/webshop/cms/06/5406.png?1649739533",
     "model": "VULCAN",
     "item": "K846920",
+    "tireSize": "AT26X9-12",
+    "sizeStripped": "26912",
+    "tireType": "Lawn/Garden/Trailer Tires",
+    "isWinterTire": false,
     "disc": 15,
     "sale": 118,
     "reg": 140,
@@ -285,6 +356,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ICEGUARD IG53",
     "item": "110115346",
+    "tireSize": "225/50R18",
+    "sizeStripped": "2255018",
+    "tireType": "Passenger - Winter",
+    "isWinterTire": true,
     "disc": 14,
     "sale": 186,
     "reg": 216,
@@ -296,6 +371,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR H/T G056",
     "item": "110105664",
+    "tireSize": "LT245/70R17",
+    "sizeStripped": "2457017",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 13,
     "sale": 204,
     "reg": 235,
@@ -307,6 +386,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN SPORT A/S+",
     "item": "110140617",
+    "tireSize": "225/45R17",
+    "sizeStripped": "2254517",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 12,
     "sale": 160,
     "reg": 181,
@@ -318,6 +401,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN SPORT A/S+",
     "item": "110140616",
+    "tireSize": "215/55R17",
+    "sizeStripped": "2155517",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 12,
     "sale": 164,
     "reg": 186,
@@ -329,6 +416,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "AVID ASCEND GT",
     "item": "110132714",
+    "tireSize": "205/65R16",
+    "sizeStripped": "2056516",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 12,
     "sale": 127,
     "reg": 144,
@@ -340,6 +431,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR CV G058",
     "item": "110105812",
+    "tireSize": "215/65R17",
+    "sizeStripped": "2156517",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 11,
     "sale": 152,
     "reg": 171,
@@ -351,6 +446,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN SPORT V105",
     "item": "110110549",
+    "tireSize": "225/40ZR19 (93Y) XL",
+    "sizeStripped": "2254019(93)",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 11,
     "sale": 245,
     "reg": 275,
@@ -362,6 +461,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR X-AT",
     "item": "110116006",
+    "tireSize": "LT265/70R17",
+    "sizeStripped": "2657017",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 10,
     "sale": 277,
     "reg": 309,
@@ -373,6 +476,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "AVID ASCEND LX",
     "item": "110132828",
+    "tireSize": "225/60R17",
+    "sizeStripped": "2256017",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 10,
     "sale": 162,
     "reg": 181,
@@ -384,6 +491,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "Geolandar A/T G015",
     "item": "110101680",
+    "tireSize": "LT245/65R17",
+    "sizeStripped": "2456517",
+    "tireType": "ALL WEATHER LT",
+    "isWinterTire": false,
     "disc": 9,
     "sale": 250,
     "reg": 274,
@@ -395,6 +506,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "Geolandar A/T G015",
     "item": "110101625",
+    "tireSize": "31X10.50R15",
+    "sizeStripped": "31105015",
+    "tireType": "ALL WEATHER PASSENGER",
+    "isWinterTire": false,
     "disc": 9,
     "sale": 213,
     "reg": 234,
@@ -406,6 +521,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "GEOLANDAR X-AT",
     "item": "110116028",
+    "tireSize": "LT265/65R17",
+    "sizeStripped": "2656517",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 9,
     "sale": 271,
     "reg": 297,
@@ -417,6 +536,10 @@
     "logo": "https://www.atvstore.com.au/assets/webshop/cms/06/5406.png?1649739533",
     "model": "ATLAS",
     "item": "K836840",
+    "tireSize": "AT26x8-14",
+    "sizeStripped": "26814",
+    "tireType": "Lawn/Garden/Trailer Tires",
+    "isWinterTire": false,
     "disc": 9,
     "sale": 102,
     "reg": 113,
@@ -428,6 +551,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "Geolandar A/T G015",
     "item": "110101641",
+    "tireSize": "LT285/70R17",
+    "sizeStripped": "2857017",
+    "tireType": "ALL WEATHER LT",
+    "isWinterTire": false,
     "disc": 9,
     "sale": 299,
     "reg": 328,
@@ -439,6 +566,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "BS68",
     "item": "B821580",
+    "tireSize": "215/50R18",
+    "sizeStripped": "2155018",
+    "tireType": "Passenger - Winter",
+    "isWinterTire": true,
     "disc": 9,
     "sale": 109,
     "reg": 121,
@@ -450,6 +581,10 @@
     "logo": "https://deliumtires.com/cdn/shop/files/1539168771Delium_e5fe28e8-10c6-4f67-b7a9-cf496cc2151b.jpg?v=1632319242",
     "model": "IA-207",
     "item": "D221050",
+    "tireSize": "31X10.50R15LT",
+    "sizeStripped": "31105015",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 8,
     "sale": 174,
     "reg": 189,
@@ -461,6 +596,10 @@
     "logo": "https://deliumtires.com/cdn/shop/files/1539168771Delium_e5fe28e8-10c6-4f67-b7a9-cf496cc2151b.jpg?v=1632319242",
     "model": "IA-207",
     "item": "D226675",
+    "tireSize": "265/65R17",
+    "sizeStripped": "2656517",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 8,
     "sale": 173,
     "reg": 188,
@@ -472,6 +611,10 @@
     "logo": "https://www.atvstore.com.au/assets/webshop/cms/06/5406.png?1649739533",
     "model": "VULCAN",
     "item": "K845820",
+    "tireSize": "AT25x8-12",
+    "sizeStripped": "25812",
+    "tireType": "Lawn/Garden/Trailer Tires",
+    "isWinterTire": false,
     "disc": 8,
     "sale": 114,
     "reg": 123,
@@ -483,6 +626,10 @@
     "logo": "https://deliumtires.com/cdn/shop/files/1539168771Delium_e5fe28e8-10c6-4f67-b7a9-cf496cc2151b.jpg?v=1632319242",
     "model": "IA-207",
     "item": "D226760",
+    "tireSize": "265/70R16",
+    "sizeStripped": "2657016",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 8,
     "sale": 173,
     "reg": 188,
@@ -494,6 +641,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "AVID ASCEND GT",
     "item": "110132729",
+    "tireSize": "235/60R17",
+    "sizeStripped": "2356017",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 7,
     "sale": 172,
     "reg": 184,
@@ -505,6 +656,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN SPORT A/S+",
     "item": "110140671",
+    "tireSize": "285/30R20",
+    "sizeStripped": "2853020",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 7,
     "sale": 329,
     "reg": 355,
@@ -516,6 +671,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN SPORT A/S+",
     "item": "110140651",
+    "tireSize": "245/35R19",
+    "sizeStripped": "2453519",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 7,
     "sale": 261,
     "reg": 281,
@@ -527,6 +686,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "BT957",
     "item": "B301621",
+    "tireSize": "235/75R17.5-16",
+    "sizeStripped": "2357517516",
+    "tireType": "Medium Truck",
+    "isWinterTire": false,
     "disc": 7,
     "sale": 180,
     "reg": 194,
@@ -538,6 +701,10 @@
     "logo": "https://www.atvstore.com.au/assets/webshop/cms/06/5406.png?1649739533",
     "model": "MIDAS",
     "item": "K832190",
+    "tireSize": "AT22x11-9",
+    "sizeStripped": "22119",
+    "tireType": "Lawn/Garden/Trailer Tires",
+    "isWinterTire": false,
     "disc": 7,
     "sale": 89,
     "reg": 95,
@@ -549,6 +716,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN SPORT A/S+",
     "item": "110140618",
+    "tireSize": "225/50R17",
+    "sizeStripped": "2255017",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 6,
     "sale": 179,
     "reg": 190,
@@ -560,6 +731,10 @@
     "logo": "https://1000logos.net/wp-content/uploads/2022/11/Continental-Logo.png",
     "model": "PureContact LS",
     "item": "15508770000",
+    "tireSize": "235/50R18",
+    "sizeStripped": "2355018",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 3,
     "sale": 223,
     "reg": 231,
@@ -571,6 +746,10 @@
     "logo": "https://1000logos.net/wp-content/uploads/2022/11/Continental-Logo.png",
     "model": "PureContact LS",
     "item": "15509360000",
+    "tireSize": "195/55R16",
+    "sizeStripped": "1955516",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 3,
     "sale": 148,
     "reg": 153,
@@ -582,6 +761,10 @@
     "logo": "https://1000logos.net/wp-content/uploads/2022/11/Continental-Logo.png",
     "model": "PureContact LS",
     "item": "15571180000",
+    "tireSize": "215/55R16",
+    "sizeStripped": "2155516",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 3,
     "sale": 162,
     "reg": 168,
@@ -593,6 +776,10 @@
     "logo": "https://1000logos.net/wp-content/uploads/2022/11/Continental-Logo.png",
     "model": "PureContact LS",
     "item": "15508370000",
+    "tireSize": "235/45R17",
+    "sizeStripped": "2354517",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 3,
     "sale": 189,
     "reg": 196,
@@ -604,6 +791,10 @@
     "logo": "https://1000logos.net/wp-content/uploads/2022/11/Continental-Logo.png",
     "model": "CrossContact ATR",
     "item": "03594630000",
+    "tireSize": "225/65R17",
+    "sizeStripped": "2256517",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 3,
     "sale": 224,
     "reg": 232,
@@ -615,6 +806,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Grabber HTS60",
     "item": "04505170000",
+    "tireSize": "LT265/70R17",
+    "sizeStripped": "2657017",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 256,
     "reg": 262,
@@ -626,6 +821,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "GRABBER ARCTIC",
     "item": "15502560000",
+    "tireSize": "255/55R18",
+    "sizeStripped": "2555518",
+    "tireType": "Passenger - Winter",
+    "isWinterTire": true,
     "disc": 2,
     "sale": 213,
     "reg": 217,
@@ -637,6 +836,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Grabber A/TX",
     "item": "04505590000",
+    "tireSize": "31X10.50R15LT",
+    "sizeStripped": "31105015",
+    "tireType": "ALL WEATHER LT",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 237,
     "reg": 242,
@@ -648,6 +851,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Grabber A/TX",
     "item": "04507150000",
+    "tireSize": "35X12.50R17LT",
+    "sizeStripped": "35125017",
+    "tireType": "ALL WEATHER LT",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 386,
     "reg": 394,
@@ -659,6 +866,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Grabber APT",
     "item": "04508100000",
+    "tireSize": "275/55R20",
+    "sizeStripped": "2755520",
+    "tireType": "ALL WEATHER PASSENGER",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 313,
     "reg": 320,
@@ -670,6 +881,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Grabber HTS",
     "item": "04503240000",
+    "tireSize": "LT265/60R20",
+    "sizeStripped": "2656020",
+    "tireType": "Light Truck",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 353,
     "reg": 361,
@@ -681,6 +896,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Grabber APT",
     "item": "04508020000",
+    "tireSize": "265/65R17",
+    "sizeStripped": "2656517",
+    "tireType": "ALL WEATHER PASSENGER",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 247,
     "reg": 252,
@@ -692,6 +911,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Grabber APT",
     "item": "04507980000",
+    "tireSize": "265/70R17",
+    "sizeStripped": "2657017",
+    "tireType": "ALL WEATHER PASSENGER",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 245,
     "reg": 250,
@@ -703,6 +926,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "AltiMAX RT45",
     "item": "15576180000",
+    "tireSize": "205/60R16",
+    "sizeStripped": "2056016",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 124,
     "reg": 127,
@@ -714,6 +941,10 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/ea/General_Tire_logo.svg/1280px-General_Tire_logo.svg.png",
     "model": "Altimax 365AW",
     "item": "15574890000",
+    "tireSize": "235/45R17",
+    "sizeStripped": "2354517",
+    "tireType": "ALL WEATHER PASSENGER",
+    "isWinterTire": false,
     "disc": 2,
     "sale": 192,
     "reg": 197,
@@ -725,6 +956,10 @@
     "logo": "https://1000logos.net/wp-content/uploads/2022/11/Continental-Logo.png",
     "model": "PureContact LS",
     "item": "15571170000",
+    "tireSize": "195/65R15",
+    "sizeStripped": "1956515",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 1,
     "sale": 131,
     "reg": 133,
@@ -736,6 +971,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "SPORTSTAR BH19",
     "item": "B560422",
+    "tireSize": "305/45R22",
+    "sizeStripped": "3054522",
+    "tireType": "Performance",
+    "isWinterTire": false,
     "disc": 0,
     "sale": 169,
     "reg": 169,
@@ -747,6 +986,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "BV11+",
     "item": "B608680",
+    "tireSize": "285/60R18",
+    "sizeStripped": "2856018",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 0,
     "sale": 167,
     "reg": 167,
@@ -758,6 +1001,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "SASQUA H/T",
     "item": "B586675",
+    "tireSize": "265/65R17",
+    "sizeStripped": "2656517",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": 0,
     "sale": 145,
     "reg": 145,
@@ -769,6 +1016,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "SPORTSTAR BH19",
     "item": "B560425",
+    "tireSize": "305/40R22",
+    "sizeStripped": "3054022",
+    "tireType": "Performance",
+    "isWinterTire": false,
     "disc": 0,
     "sale": 166,
     "reg": 166,
@@ -780,6 +1031,10 @@
     "logo": "https://be.fitandfix.com/media/brands/1681305666170.png",
     "model": "SPORTSTAR BH19",
     "item": "B564322",
+    "tireSize": "245/30ZR22",
+    "sizeStripped": "2453022",
+    "tireType": "Performance",
+    "isWinterTire": false,
     "disc": 0,
     "sale": 117,
     "reg": 117,
@@ -791,6 +1046,10 @@
     "logo": "https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg",
     "model": "ADVAN SPORT A/S+",
     "item": "110140669",
+    "tireSize": "275/35R20",
+    "sizeStripped": "2753520",
+    "tireType": "Passenger",
+    "isWinterTire": false,
     "disc": -1,
     "sale": 300,
     "reg": 295,
@@ -802,16 +1061,68 @@
 
     function renderCard(i) {
       const badgeType = i.disc >= 99 ? 'free' : i.disc >= 40 ? 'huge' : i.disc >= 30 ? 'great' : i.disc >= 20 ? 'good' : 'sale';
-      const priceHtml = i.disc >= 99 ? '<span class="free-price">FREE</span><span class="orig-price">$' + i.reg + '</span>' : '<span class="sale-price">$' + i.sale + '</span><span class="orig-price">$' + i.reg + '</span>';
+      const priceHtml = i.disc >= 99 
+        ? '<span class="free-price">FREE</span><span class="orig-price">$' + i.reg + '</span>' 
+        : '<span class="sale-price">$' + i.sale + '</span><span class="orig-price">$' + i.reg + '</span>';
       const stockClass = i.stock <= 5 ? 'low' : i.stock <= 15 ? 'medium' : i.stock <= 50 ? 'good' : 'excellent';
-      return '<div class="card" data-manufacturer="' + i.manufacturer + '"><div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div><div class="content">' + (i.logo ? '<img src="' + i.logo + '" class="logo" alt="' + i.manufacturer + '">' : '') + '<div class="title">' + i.model + '</div><div class="details">Item: ' + i.item + '</div><div class="pricing">' + priceHtml + '</div><div class="save">Save $' + i.save + '</div><div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div><button class="btn-add-quote" onclick="addToQuote(\'' + i.item + '\')">Add to Quote</button></div></div>';
+      
+      // Build details line with available info
+      let details = 'Item: ' + i.item;
+      if (i.tireSize) details += ' • Size: ' + i.tireSize;
+      if (i.tireType) details += ' • ' + i.tireType;
+      
+      return '<div class="card" data-manufacturer="' + i.manufacturer + '">' +
+        '<div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div>' +
+        '<div class="content">' + 
+        (i.logo ? '<img src="' + i.logo + '" class="logo" alt="' + i.manufacturer + '">' : '') +
+        '<div class="title">' + i.model + '</div>' +
+        '<div class="details">' + details + '</div>' +
+        '<div class="pricing">' + priceHtml + '</div>' +
+        '<div class="save">Save $' + i.save + '</div>' +
+        '<div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div>' +
+        '<button class="btn-add-quote" onclick="addToQuote(\'\'' + i.item + '\'\'')">Add to Quote</button>' +
+        '</div></div>';
     }
 
     function render() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase();
       const mf = document.getElementById('filter-manufacturer').value;
       const md = parseInt(document.getElementById('filter-discount').value);
-      const filtered = items.filter(i => (!mf || i.manufacturer === mf) && i.disc >= md);
+      
+      const filtered = items.filter(i => {
+        // Search across multiple fields including winter tire status
+        const searchableText = [
+          i.manufacturer,
+          i.model,
+          i.item,
+          i.tireSize || '',
+          i.sizeStripped || '',
+          i.tireType || '',
+          i.isWinterTire ? 'winter' : ''
+        ].join(' ').toLowerCase();
+        
+        const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
+        const matchesManufacturer = !mf || i.manufacturer === mf;
+        const matchesDiscount = i.disc >= md;
+        
+        return matchesSearch && matchesManufacturer && matchesDiscount;
+      });
+      
       document.getElementById('card-container').innerHTML = filtered.slice(0, 50).map(renderCard).join('');
+      
+      // Update stats for filtered results
+      updateFilteredStats(filtered);
+    }
+
+    function updateFilteredStats(filtered) {
+      const totalDeals = document.querySelector('.stats .num');
+      if (totalDeals && filtered.length !== items.length) {
+        totalDeals.textContent = filtered.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Filtered Deals';
+      } else if (totalDeals) {
+        totalDeals.textContent = items.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Deals';
+      }
     }
 
     function addToQuote(itemCode) {
@@ -876,7 +1187,15 @@
       }
       let html = '<h3>Items:</h3>';
       quoteItems.forEach(item => {
-        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\'' + item.item + '\', ' + (item.quantity - 1) + ')">−</button><input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + item.item + '\', this.value)"><button class="qty-btn" onclick="updateQuantity(\'' + item.item + '\', ' + (item.quantity + 1) + ')">+</button><small style="margin-left:8px">/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\'' + item.item + '\')">×</button></div></div>';
+        html += '<div class="quote-item">' +
+          '<div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div>' +
+          '<div class="quantity-controls">' +
+          '<button class="qty-btn" onclick="updateQuantity(\'\'' + item.item + '\'\'', ' + (item.quantity - 1) + ')">−</button>' +
+          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'\'' + item.item + '\'\'', this.value)">' +
+          '<button class="qty-btn" onclick="updateQuantity(\'\'' + item.item + '\'\'', ' + (item.quantity + 1) + ')">+</button>' +
+          '<small style="margin-left:8px">/ ' + item.stock + '</small>' +
+          '<button class="remove-item" onclick="removeFromQuote(\'\'' + item.item + '\'\'')">×</button>' +
+          '</div></div>';
       });
       container.innerHTML = html;
     }
@@ -982,6 +1301,7 @@ NOTES: ${notes || 'None'}`;
       });
     }
 
+    document.getElementById('search-bar').addEventListener('input', render);
     document.getElementById('filter-manufacturer').addEventListener('change', render);
     document.getElementById('filter-discount').addEventListener('change', render);
     window.addEventListener('click', (event) => {
