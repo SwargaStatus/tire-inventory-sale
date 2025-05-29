@@ -62,7 +62,7 @@ function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
   const itemsJson = JSON.stringify(items);
   
-  return <!DOCTYPE html>
+  return '<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -542,7 +542,7 @@ function generateHTML(items) {
     }
   </script>
 </body>
-</html>;
+</html>';
 }
 
 async function main() {
