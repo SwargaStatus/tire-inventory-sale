@@ -64,7 +64,7 @@ function generateHTML(items) {
     .header{background:var(--primary);color:#fff;padding:16px;text-align:center;position:relative}
     .header h1{margin:0;font-size:1.6rem;display:flex;align-items:center;justify-content:center;gap:12px}
     .company-logo{height:40px;width:auto}
-    .update-time{position:absolute;top:8px;right:12px;font-size:0.7rem;opacity:0.8}
+    .update-time{position:absolute;top:8px;left:12px;font-size:0.7rem;opacity:0.8}
     .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:12px;background:#fff;margin:12px 0;border-radius:8px}
     .stats div{text-align:center;min-width:80px}
     .stats .num{font-size:1.4rem;font-weight:bold;color:var(--primary)}
@@ -76,7 +76,7 @@ function generateHTML(items) {
     .badge{position:absolute;top:8px;right:8px;padding:4px 6px;border-radius:4px;color:#fff;font-size:0.75rem}
     .badge-sale{background:var(--accent)}.badge-good{background:var(--primary)}.badge-great{background:#ffb300}.badge-huge{background:#ff6d00}.badge-free{background:var(--dark)}
     .content{padding:10px}
-    .logo{height:24px;vertical-align:middle;margin-right:6px}
+    .logo{height:32px;width:auto;max-width:80px;object-fit:contain;vertical-align:middle;margin-right:6px}
     .title{font-size:1.1rem;font-weight:bold;color:var(--dark);margin-bottom:6px}
     .details{font-size:0.85rem;color:#555;margin-bottom:6px}
     .pricing{margin-bottom:6px}
@@ -88,9 +88,10 @@ function generateHTML(items) {
     .stock-low{background:#fdecea;color:#c0392b}.stock-medium{background:#fff8e1;color:#f57c00}.stock-good{background:#e8f5e9;color:#2e7d32}.stock-excellent{background:#e3f2fd;color:#1565c0}
     .btn-add-quote{background:#27ae60;color:white;border:none;padding:12px 16px;border-radius:6px;cursor:pointer;font-weight:bold;font-size:14px;width:100%}
     .btn-add-quote:hover{background:#229954}
-    .quote-counter{position:fixed;top:20px;right:20px;background:#e74c3c;color:white;padding:12px 16px;border-radius:25px;cursor:pointer;font-weight:bold;display:none;z-index:1000;box-shadow:0 4px 15px rgba(231,76,60,0.3);transition:all 0.3s ease}
+    .quote-counter{position:fixed;top:20px;right:20px;background:#e74c3c;color:white;padding:16px 20px;border-radius:25px;cursor:pointer;font-weight:bold;display:none;z-index:1000;box-shadow:0 4px 15px rgba(231,76,60,0.3);transition:all 0.3s ease;font-size:16px;min-width:120px;text-align:center}
     .quote-counter:hover{background:#c0392b;transform:translateY(-2px);box-shadow:0 6px 20px rgba(231,76,60,0.4)}
     .quote-counter.pulse{animation:pulse 0.6s ease-out}
+    .quote-cta{font-size:12px;opacity:0.9;margin-top:4px;font-weight:normal}
     @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
     .quantity-controls{display:flex;align-items:center;gap:5px;background:#f8f9fa;border-radius:8px;padding:2px}
     .qty-btn{width:28px;height:28px;border:none;background:#007bff;color:white;border-radius:6px;cursor:pointer;font-weight:bold;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
@@ -111,7 +112,7 @@ function generateHTML(items) {
     .remove-item{background:#e74c3c;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px}
     .footer{text-align:center;padding:20px;background:#fff;margin:12px 0;border-radius:8px}
     .footer a{margin:0 15px;color:var(--primary);text-decoration:none;font-weight:bold;padding:8px 16px;border:2px solid var(--primary);border-radius:4px}
-    @media (max-width:768px){.grid{grid-template-columns:1fr}.update-time{position:static;text-align:center;margin-top:8px}.header h1{flex-direction:column}}
+    @media (max-width:768px){.grid{grid-template-columns:1fr}.update-time{position:static;text-align:center;margin-top:8px}.header h1{flex-direction:column}.quote-counter{right:10px;font-size:14px;padding:12px 16px}}
   </style>
 </head>
 <body>
@@ -134,7 +135,10 @@ function generateHTML(items) {
   <div class="grid" id="card-container"></div>
   <div class="footer"><a href="tel:+12049355559">Call (204) 935-5559</a><a href="mailto:nileshn@sturgeontire.com">Get Quote</a></div>
   
-  <div class="quote-counter" id="quote-counter" onclick="openQuoteModal()">Quote (<span id="quote-count">0</span>)</div>
+  <div class="quote-counter" id="quote-counter" onclick="openQuoteModal()">
+    <div>Quote (<span id="quote-count">0</span>)</div>
+    <div class="quote-cta">Click to Review →</div>
+  </div>
   
   <div class="quote-modal" id="quote-modal">
     <div class="quote-modal-content">
