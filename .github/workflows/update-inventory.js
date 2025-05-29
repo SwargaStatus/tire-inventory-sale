@@ -69,21 +69,21 @@ function generateHTML(items) {
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
     .container{max-width:1200px;margin:0 auto;padding:0}
-    .header{background:linear-gradient(135deg,var(--primary) 0%,#1e4f72 100%);color:#fff;padding:32px 20px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.1);margin-bottom:0}
-    .header h1{margin:0;font-size:2.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px}
-    .company-logo{height:52px;width:auto}
-    .update-time{font-size:0.9rem;opacity:0.85;font-weight:400}
-    .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:32px;padding:24px;background:#fff;margin:20px 16px;border-radius:16px;box-shadow:0 2px 15px rgba(0,0,0,0.08)}
-    .stats div{text-align:center;min-width:110px}
-    .stats .num{font-size:2.4rem;font-weight:800;color:var(--primary);margin-bottom:6px;line-height:1}
-    .stats .label{font-size:0.9rem;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-    .filters{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-items:center;margin:20px 16px;padding:24px;background:#fff;border-radius:16px;box-shadow:0 2px 15px rgba(0,0,0,0.08);max-width:1100px;margin-left:auto;margin-right:auto}
-    .filters label{font-size:0.95rem;font-weight:600;color:#444;display:flex;align-items:center;gap:10px}
-    .filters select{padding:10px 14px;border-radius:10px;border:2px solid #e1e5e9;background:#fff;font-size:14px;min-width:130px;transition:all 0.3s;font-weight:500}
-    .filters select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(46,111,163,0.12);transform:translateY(-1px)}
-    .search-container{flex:1;min-width:300px;max-width:420px}
-    .search-container input{width:100%;padding:14px 18px;border:2px solid #e1e5e9;border-radius:10px;font-size:15px;transition:all 0.3s;font-weight:500}
-    .search-container input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(46,111,163,0.12);transform:translateY(-1px)}
+    .header{background:linear-gradient(135deg,var(--primary) 0%,#1e4f72 100%);color:#fff;padding:20px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.1);margin-bottom:0}
+    .header h1{margin:0;font-size:1.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px}
+    .company-logo{height:44px;width:auto}
+    .update-time{font-size:0.8rem;opacity:0.8;font-weight:400}
+    .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;padding:18px;background:#fff;margin:16px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+    .stats div{text-align:center;min-width:100px}
+    .stats .num{font-size:2rem;font-weight:800;color:var(--primary);margin-bottom:4px;line-height:1}
+    .stats .label{font-size:0.8rem;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+    .filters{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center;margin:16px;padding:18px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);max-width:800px;margin-left:auto;margin-right:auto}
+    .filters label{font-size:0.9rem;font-weight:600;color:#444;display:flex;align-items:center;gap:8px}
+    .filters select{padding:8px 12px;border-radius:8px;border:2px solid #e1e5e9;background:#fff;font-size:14px;min-width:140px;transition:all 0.2s;font-weight:500}
+    .filters select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,111,163,0.1)}
+    .search-container{flex:1;min-width:280px;max-width:380px}
+    .search-container input{width:100%;padding:10px 14px;border:2px solid #e1e5e9;border-radius:8px;font-size:14px;transition:all 0.2s;font-weight:500}
+    .search-container input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(46,111,163,0.1)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;padding:20px 16px;max-width:1200px;margin:0 auto}
     .card{background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative;overflow:hidden;transition:all 0.3s ease}
     .card:hover{transform:translateY(-4px);box-shadow:0 8px 25px rgba(0,0,0,0.15)}
@@ -216,9 +216,9 @@ function generateHTML(items) {
     }
 
     function render() {
+      console.log('Render called, items count:', items.length);
       var searchTerm = document.getElementById('search-bar').value.toLowerCase();
       var mf = document.getElementById('filter-manufacturer').value;
-      var md = parseInt(document.getElementById('filter-discount').value);
       
       var filtered = items.filter(function(i) {
         var searchableText = [
@@ -233,12 +233,15 @@ function generateHTML(items) {
         
         var matchesSearch = !searchTerm || searchableText.indexOf(searchTerm) !== -1;
         var matchesManufacturer = !mf || i.manufacturer === mf;
-        var matchesDiscount = i.disc >= md;
         
-        return matchesSearch && matchesManufacturer && matchesDiscount;
+        return matchesSearch && matchesManufacturer;
       });
       
-      document.getElementById('card-container').innerHTML = filtered.slice(0, 50).map(renderCard).join('');
+      console.log('Filtered items count:', filtered.length);
+      var cardHTML = filtered.slice(0, 50).map(renderCard).join('');
+      console.log('Generated HTML length:', cardHTML.length);
+      
+      document.getElementById('card-container').innerHTML = cardHTML;
       updateFilteredStats(filtered);
     }
 
@@ -432,7 +435,6 @@ function generateHTML(items) {
 
     document.getElementById('search-bar').addEventListener('input', render);
     document.getElementById('filter-manufacturer').addEventListener('change', render);
-    document.getElementById('filter-discount').addEventListener('change', render);
     window.addEventListener('click', function(event) {
       var modal = document.getElementById('quote-modal');
       if (event.target === modal) {
@@ -440,7 +442,8 @@ function generateHTML(items) {
       }
     });
     
-    // Initialize
+    // Initialize - make sure this runs
+    console.log('Initializing with items:', items.length);
     render();
   </script>
 </body>
