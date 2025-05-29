@@ -4,9 +4,12 @@ on:
   schedule:
     - cron: '0 12 * * *'  # Run daily at noon UTC
   workflow_dispatch: # Manual trigger
+  workflow_run:
+    workflows: ["Deploy static content to Pages"]
+    types: [completed]
   push:
     branches: ["main"]
-  # Trigger on any push to main, then check if CSV changed
+  # Trigger after Pages workflow completes (when Power Automate updates CSV)
 
 permissions:
   contents: write
@@ -27,20 +30,27 @@ jobs:
       with:
         node-version: '18'
         
-    - name: Check if CSV changed
-      id: csv-check
+    - name: Check if should run
+      id: should-run
       run: |
-        # Check if CSV file was modified in the last commit
-        if git diff HEAD~1 --name-only | grep -q "flyer_data.csv"; then
-          echo "CSV file changed, proceeding with update"
-          echo "csv_changed=true" >> $GITHUB_OUTPUT
+        # Always run on manual trigger or schedule
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" || "${{ github.event_name }}" == "schedule" ]]; then
+          echo "should_run=true" >> $GITHUB_OUTPUT
+          echo "Running due to manual trigger or schedule"
+          exit 0
+        fi
+        
+        # Check if CSV file was modified in recent commits
+        if git log --since="10 minutes ago" --name-only --pretty=format: | grep -q "flyer_data.csv"; then
+          echo "should_run=true" >> $GITHUB_OUTPUT
+          echo "CSV file was recently updated"
         else
-          echo "CSV file not changed, skipping unless manual trigger"
-          echo "csv_changed=false" >> $GITHUB_OUTPUT
+          echo "should_run=false" >> $GITHUB_OUTPUT
+          echo "No recent CSV changes detected"
         fi
         
     - name: Debug - List files
-      if: steps.csv-check.outputs.csv_changed == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+      if: steps.should-run.outputs.should_run == 'true'
       run: |
         echo "Current directory:"
         ls -la
@@ -50,11 +60,11 @@ jobs:
         head -5 flyer_data.csv || echo "Cannot read CSV"
         
     - name: Run inventory update
-      if: steps.csv-check.outputs.csv_changed == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+      if: steps.should-run.outputs.should_run == 'true'
       run: node .github/workflows/update-inventory.js
       
     - name: Check for changes
-      if: steps.csv-check.outputs.csv_changed == 'true' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+      if: steps.should-run.outputs.should_run == 'true'
       id: git-check
       run: |
         git diff --exit-code index.html || echo "changes=true" >> $GITHUB_OUTPUT
