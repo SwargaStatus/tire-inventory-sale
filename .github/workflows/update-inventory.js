@@ -158,7 +158,6 @@ function generateHTML(items) {
         <input type="text" id="search-bar" placeholder="🔍 Search by brand, model, size, winter, or item...">
       </div>
       <label>Manufacturer: <select id="filter-manufacturer"><option value="">All</option>${manufacturers.map(m => `<option value="${m}">${m}</option>`).join('')}</select></label>
-      <label>Min Discount: <select id="filter-discount"><option value="0">0%</option><option value="20">20%</option><option value="40">40%</option></select></label>
     </div>
     
     <div class="grid" id="card-container"></div>
@@ -216,9 +215,23 @@ function generateHTML(items) {
     }
 
     function render() {
-      console.log('Render called, items count:', items.length);
-      var searchTerm = document.getElementById('search-bar').value.toLowerCase();
-      var mf = document.getElementById('filter-manufacturer').value;
+      console.log('🔄 Render function called');
+      console.log('📊 Total items available:', items.length);
+      
+      // Get filter values
+      var searchBar = document.getElementById('search-bar');
+      var manufacturerSelect = document.getElementById('filter-manufacturer');
+      
+      if (!searchBar || !manufacturerSelect) {
+        console.error('❌ Filter elements not found!');
+        return;
+      }
+      
+      var searchTerm = searchBar.value.toLowerCase();
+      var mf = manufacturerSelect.value;
+      
+      console.log('🔍 Search term:', searchTerm);
+      console.log('🏭 Manufacturer filter:', mf);
       
       var filtered = items.filter(function(i) {
         var searchableText = [
@@ -237,11 +250,23 @@ function generateHTML(items) {
         return matchesSearch && matchesManufacturer;
       });
       
-      console.log('Filtered items count:', filtered.length);
-      var cardHTML = filtered.slice(0, 50).map(renderCard).join('');
-      console.log('Generated HTML length:', cardHTML.length);
+      console.log('✅ Filtered items count:', filtered.length);
       
-      document.getElementById('card-container').innerHTML = cardHTML;
+      // Generate cards HTML
+      var cardHTML = filtered.slice(0, 50).map(renderCard).join('');
+      console.log('📝 Generated HTML length:', cardHTML.length);
+      console.log('🎯 First card preview:', cardHTML.substring(0, 200) + '...');
+      
+      // Insert into DOM
+      var container = document.getElementById('card-container');
+      if (!container) {
+        console.error('❌ Card container not found!');
+        return;
+      }
+      
+      container.innerHTML = cardHTML;
+      console.log('✅ Cards inserted into DOM');
+      
       updateFilteredStats(filtered);
     }
 
@@ -433,18 +458,43 @@ function generateHTML(items) {
       });
     }
 
-    document.getElementById('search-bar').addEventListener('input', render);
-    document.getElementById('filter-manufacturer').addEventListener('change', render);
-    window.addEventListener('click', function(event) {
-      var modal = document.getElementById('quote-modal');
-      if (event.target === modal) {
-        closeQuoteModal();
-      }
-    });
+    // Wait for DOM to be ready, then initialize
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 DOM loaded, initializing...');
+        initializeApp();
+      });
+    } else {
+      console.log('🚀 DOM already ready, initializing...');
+      initializeApp();
+    }
     
-    // Initialize - make sure this runs
-    console.log('Initializing with items:', items.length);
-    render();
+    function initializeApp() {
+      console.log('📊 Initializing with', items.length, 'items');
+      
+      // Add event listeners
+      var searchBar = document.getElementById('search-bar');
+      var manufacturerSelect = document.getElementById('filter-manufacturer');
+      
+      if (searchBar && manufacturerSelect) {
+        searchBar.addEventListener('input', render);
+        manufacturerSelect.addEventListener('change', render);
+        console.log('✅ Event listeners added');
+      } else {
+        console.error('❌ Could not find filter elements for event listeners');
+      }
+      
+      // Modal click handler
+      window.addEventListener('click', function(event) {
+        var modal = document.getElementById('quote-modal');
+        if (event.target === modal) {
+          closeQuoteModal();
+        }
+      });
+      
+      // Initial render
+      render();
+    }
   </script>
 </body>
 </html>`;
