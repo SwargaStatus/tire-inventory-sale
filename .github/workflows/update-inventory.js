@@ -69,12 +69,16 @@ function generateHTML(items) {
     .stats div{text-align:center;min-width:80px}
     .stats .num{font-size:1.4rem;font-weight:bold;color:var(--primary)}
     .stats .label{font-size:0.8rem;color:#666}
-    .filters{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px}
-    .filters select{padding:4px;border-radius:4px}
+    .filters{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;margin:12px;padding:12px;background:#fff;border-radius:8px}
+    .filters label{font-size:0.9rem;display:flex;align-items:center;gap:6px}
+    .filters select{padding:6px;border-radius:4px;border:1px solid #ddd}
+    .search-container{flex:1;min-width:300px;max-width:400px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;padding:12px}
     .card{background:#fff;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.1);position:relative;overflow:hidden}
     .badge{position:absolute;top:8px;right:8px;padding:4px 6px;border-radius:4px;color:#fff;font-size:0.75rem}
     .badge-sale{background:var(--accent)}.badge-good{background:var(--primary)}.badge-great{background:#ffb300}.badge-huge{background:#ff6d00}.badge-free{background:var(--dark)}
+    .winter-indicator{position:absolute;top:8px;left:8px;width:20px;height:20px;z-index:3}
+    .winter-indicator img{width:100%;height:100%;object-fit:contain}
     .content{padding:10px}
     .logo{height:48px;width:auto;max-width:120px;object-fit:contain;vertical-align:middle;margin-right:8px;margin-bottom:8px}
     .title{font-size:1.1rem;font-weight:bold;color:var(--dark);margin-bottom:6px}
@@ -128,6 +132,9 @@ function generateHTML(items) {
   </div>
   
   <div class="filters">
+    <div class="search-container">
+      <input type="text" id="search-bar" placeholder="🔍 Search by brand, model, size, winter, or item..." style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;width:300px;margin-right:12px">
+    </div>
     <label>Manufacturer: <select id="filter-manufacturer"><option value="">All</option>${manufacturers.map(m => `<option value="${m}">${m}</option>`).join('')}</select></label>
     <label>Min Discount: <select id="filter-discount"><option value="0">0%</option><option value="20">20%</option><option value="40">40%</option></select></label>
   </div>
@@ -162,16 +169,314 @@ function generateHTML(items) {
 
     function renderCard(i) {
       const badgeType = i.disc >= 99 ? 'free' : i.disc >= 40 ? 'huge' : i.disc >= 30 ? 'great' : i.disc >= 20 ? 'good' : 'sale';
-      const priceHtml = i.disc >= 99 ? '<span class="free-price">FREE</span><span class="orig-price">$' + i.reg + '</span>' : '<span class="sale-price">$' + i.sale + '</span><span class="orig-price">$' + i.reg + '</span>';
-      const stockClass = i.stock <= 5 ? 'low' : i.stock <= 15 ? 'medium' : i.stock <= 50 ? 'good' : 'excellent';
-      return '<div class="card" data-manufacturer="' + i.manufacturer + '"><div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div><div class="content">' + (i.logo ? '<img src="' + i.logo + '" class="logo" alt="' + i.manufacturer + '">' : '') + '<div class="title">' + i.model + '</div><div class="details">Item: ' + i.item + '</div><div class="pricing">' + priceHtml + '</div><div class="save">Save $' + i.save + '</div><div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div><button class="btn-add-quote" onclick="addToQuote(\\'' + i.item + '\\')">Add to Quote</button></div></div>';
-    }
+      const priceHtml = i.disc >= 99 ? '<span class="free-price">FREE</span><span class="orig-price">
 
     function render() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase();
       const mf = document.getElementById('filter-manufacturer').value;
       const md = parseInt(document.getElementById('filter-discount').value);
-      const filtered = items.filter(i => (!mf || i.manufacturer === mf) && i.disc >= md);
+      
+      const filtered = items.filter(i => {
+        // Search across multiple fields including winter tire status
+        const searchableText = [
+          i.manufacturer,
+          i.model,
+          i.item,
+          i.tireSize || '',
+          i.sizeStripped || '',
+          i.tireType || '',
+          i.isWinterTire ? 'winter' : ''
+        ].join(' ').toLowerCase();
+        
+        const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
+        const matchesManufacturer = !mf || i.manufacturer === mf;
+        const matchesDiscount = i.disc >= md;
+        
+        return matchesSearch && matchesManufacturer && matchesDiscount;
+      });
+      
       document.getElementById('card-container').innerHTML = filtered.slice(0, 50).map(renderCard).join('');
+      
+      // Update stats for filtered results
+      updateFilteredStats(filtered);
+    }
+
+    function updateFilteredStats(filtered) {
+      const totalDeals = document.querySelector('.stats .num');
+      if (totalDeals && filtered.length !== items.length) {
+        totalDeals.textContent = filtered.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Filtered Deals';
+      } else if (totalDeals) {
+        totalDeals.textContent = items.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Deals';
+      }
+    }
+
+    function addToQuote(itemCode) {
+      const item = items.find(i => i.item === itemCode);
+      if (!item) return;
+      const existingIndex = quoteItems.findIndex(q => q.item === item.item);
+      if (existingIndex >= 0) {
+        quoteItems[existingIndex].quantity += 1;
+      } else {
+        quoteItems.push({...item, quantity: 1});
+      }
+      updateQuoteCounter();
+      showNotification('✓ Added to quote!');
+    }
+
+    function removeFromQuote(itemCode) {
+      quoteItems = quoteItems.filter(item => item.item !== itemCode);
+      updateQuoteCounter();
+      updateQuoteModal();
+    }
+
+    function updateQuantity(itemCode, newQuantity) {
+      const qty = parseInt(newQuantity);
+      const itemIndex = quoteItems.findIndex(item => item.item === itemCode);
+      if (itemIndex === -1) return;
+      if (qty <= 0) {
+        removeFromQuote(itemCode);
+      } else {
+        const maxQty = quoteItems[itemIndex].stock;
+        quoteItems[itemIndex].quantity = Math.min(Math.max(qty, 1), maxQty);
+        updateQuoteModal();
+      }
+    }
+
+    function updateQuoteCounter() {
+      const counter = document.getElementById('quote-counter');
+      const count = document.getElementById('quote-count');
+      if (quoteItems.length > 0) {
+        counter.style.display = 'block';
+        counter.classList.add('pulse');
+        setTimeout(() => counter.classList.remove('pulse'), 600);
+        count.textContent = quoteItems.length;
+      } else {
+        counter.style.display = 'none';
+      }
+    }
+
+    function openQuoteModal() {
+      updateQuoteModal();
+      document.getElementById('quote-modal').style.display = 'block';
+    }
+
+    function closeQuoteModal() {
+      document.getElementById('quote-modal').style.display = 'none';
+    }
+
+    function updateQuoteModal() {
+      const container = document.getElementById('quote-items');
+      if (quoteItems.length === 0) {
+        container.innerHTML = '<p>No items in quote yet.</p>';
+        return;
+      }
+      let html = '<h3>Items:</h3>';
+      quoteItems.forEach(item => {
+        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity - 1) + ')">−</button><input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + item.item + '\\', this.value)"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity + 1) + ')">+</button><small style="margin-left:8px">/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">×</button></div></div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 400);
+      }, 3000);
+    }
+
+    function showSuccessNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification success-notification';
+      notification.innerHTML = '<div style="position:relative;z-index:1">' + message + '</div>';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 500);
+      }, 4000);
+    }
+
+    function submitQuote() {
+      const name = document.getElementById('customer-name').value;
+      const email = document.getElementById('customer-email').value;
+      const phone = document.getElementById('customer-phone').value;
+      const company = document.getElementById('customer-company').value;
+      const notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+      }
+      
+      const submitBtn = document.querySelector('.submit-quote');
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+      
+      const tireDetails = quoteItems.map((item, index) => \`\${index + 1}. Item: \${item.item} - Qty: \${item.quantity}\`).join('\\n');
+      const quoteSummary = \`TIRE QUOTE REQUEST
+
+CUSTOMER:
+Name: \${name}
+Email: \${email}
+Phone: \${phone || 'Not provided'}
+Company: \${company || 'Not provided'}
+
+ITEMS:
+\${tireDetails}
+
+NOTES: \${notes || 'None'}\`;
+      
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('company', company);
+      formData.append('items', tireDetails);
+      formData.append('message', quoteSummary);
+      formData.append('_subject', \`Tire Quote - \${name}\`);
+      formData.append('_replyto', email);
+      
+      fetch('https://formspree.io/f/xdkgqyzr', {
+        method: 'POST',
+        body: formData,
+        headers: {'Accept': 'application/json'}
+      })
+      .then(response => {
+        if (response.ok) {
+          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+          submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+          showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
+          setTimeout(() => {
+            quoteItems = [];
+            updateQuoteCounter();
+            closeQuoteModal();
+            submitBtn.innerHTML = 'Request Quote';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 3000);
+        } else {
+          const subject = \`Tire Quote - \${name}\`;
+          const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+          window.open(mailtoLink, '_blank');
+          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(() => {
+        const subject = \`Tire Quote - \${name}\`;
+        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+        window.open(mailtoLink, '_blank');
+        submitBtn.innerHTML = 'Request Quote';
+        submitBtn.disabled = false;
+      });
+    }
+
+    document.getElementById('search-bar').addEventListener('input', render);
+    document.getElementById('filter-manufacturer').addEventListener('change', render);
+    document.getElementById('filter-discount').addEventListener('change', render);
+    window.addEventListener('click', (event) => {
+      const modal = document.getElementById('quote-modal');
+      if (event.target === modal) {
+        closeQuoteModal();
+      }
+    });
+    render();
+  </script>
+</body>
+</html>`;
+}
+
+async function main() {
+  try {
+    console.log('🔄 Processing tire data...');
+    const raw = readLocalCSV();
+    const data = parseCSV(raw);
+
+    const items = data.map(d => {
+      const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
+      const sale = parseFloat(d['SalePrice']) || 0;
+      const reg = parseFloat(d['Net']) || 0;
+      const save = Math.round(reg - sale);
+      const manufacturer = d['Manufacturer'] || 'Unknown';
+      
+      return {
+        manufacturer,
+        logo: d['Brand_Logo_URL'] || '',
+        model: d['Model'] || 'TIRE',
+        item: d['Item'] || '',
+        tireSize: d['Size'] || '',
+        sizeStripped: d['StrippedSize'] || '',
+        tireType: d['TypeDescription'] || '',
+        isWinterTire: d['WinterTire'] === 'true' || d['WinterTire'] === 'True' || d['WinterTire'] === 'TRUE',
+        disc, sale, reg, save,
+        stock: parseInt(d['AvailableQuantity']) || 0
+      };
+    }).sort((a, b) => b.disc - a.disc);
+    
+    if (items.length === 0) throw new Error('No deals found');
+    
+    const html = generateHTML(items);
+    fs.writeFileSync('index.html', html);
+    
+    console.log('✅ Website updated successfully with enhanced features!');
+    console.log(`📈 ${items.length} deals processed`);
+    console.log('🎯 Features included: animations, quote system, Formspree integration');
+    
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(1);
+  }
+}
+
+main(); + i.reg + '</span>' : '<span class="sale-price">
+
+    function render() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+      const mf = document.getElementById('filter-manufacturer').value;
+      const md = parseInt(document.getElementById('filter-discount').value);
+      
+      const filtered = items.filter(i => {
+        // Search across multiple fields
+        const searchableText = [
+          i.manufacturer,
+          i.model,
+          i.item,
+          i.tireSize || '',
+          i.sizeStripped || '',
+          i.tireType || ''
+        ].join(' ').toLowerCase();
+        
+        const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
+        const matchesManufacturer = !mf || i.manufacturer === mf;
+        const matchesDiscount = i.disc >= md;
+        
+        return matchesSearch && matchesManufacturer && matchesDiscount;
+      });
+      
+      document.getElementById('card-container').innerHTML = filtered.slice(0, 50).map(renderCard).join('');
+      
+      // Update stats for filtered results
+      updateFilteredStats(filtered);
+    }
+
+    function updateFilteredStats(filtered) {
+      const totalDeals = document.querySelector('.stats .num');
+      if (totalDeals && filtered.length !== items.length) {
+        totalDeals.textContent = filtered.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Filtered Deals';
+      } else if (totalDeals) {
+        totalDeals.textContent = items.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Deals';
+      }
     }
 
     function addToQuote(itemCode) {
@@ -374,6 +679,817 @@ async function main() {
         logo: d['Brand_Logo_URL'] || '',
         model: d['Model'] || 'TIRE',
         item: d['Item'] || '',
+        tireSize: d['Tire_Size'] || '',
+        sizeStripped: d['Size_Stripped'] || '',
+        tireType: d['Tire_Type'] || '',
+        vehicleType: d['Vehicle_Type'] || '',
+        disc, sale, reg, save,
+        stock: parseInt(d['AvailableQuantity']) || 0
+      };
+    }).sort((a, b) => b.disc - a.disc);
+    
+    if (items.length === 0) throw new Error('No deals found');
+    
+    const html = generateHTML(items);
+    fs.writeFileSync('index.html', html);
+    
+    console.log('✅ Website updated successfully with enhanced features!');
+    console.log(`📈 ${items.length} deals processed`);
+    console.log('🎯 Features included: animations, quote system, Formspree integration');
+    
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(1);
+  }
+}
+
+main(); + i.sale + '</span><span class="orig-price">
+
+    function render() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+      const mf = document.getElementById('filter-manufacturer').value;
+      const md = parseInt(document.getElementById('filter-discount').value);
+      
+      const filtered = items.filter(i => {
+        // Search across multiple fields
+        const searchableText = [
+          i.manufacturer,
+          i.model,
+          i.item,
+          i.tireSize || '',
+          i.sizeStripped || '',
+          i.tireType || ''
+        ].join(' ').toLowerCase();
+        
+        const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
+        const matchesManufacturer = !mf || i.manufacturer === mf;
+        const matchesDiscount = i.disc >= md;
+        
+        return matchesSearch && matchesManufacturer && matchesDiscount;
+      });
+      
+      document.getElementById('card-container').innerHTML = filtered.slice(0, 50).map(renderCard).join('');
+      
+      // Update stats for filtered results
+      updateFilteredStats(filtered);
+    }
+
+    function updateFilteredStats(filtered) {
+      const totalDeals = document.querySelector('.stats .num');
+      if (totalDeals && filtered.length !== items.length) {
+        totalDeals.textContent = filtered.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Filtered Deals';
+      } else if (totalDeals) {
+        totalDeals.textContent = items.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Deals';
+      }
+    }
+
+    function addToQuote(itemCode) {
+      const item = items.find(i => i.item === itemCode);
+      if (!item) return;
+      const existingIndex = quoteItems.findIndex(q => q.item === item.item);
+      if (existingIndex >= 0) {
+        quoteItems[existingIndex].quantity += 1;
+      } else {
+        quoteItems.push({...item, quantity: 1});
+      }
+      updateQuoteCounter();
+      showNotification('✓ Added to quote!');
+    }
+
+    function removeFromQuote(itemCode) {
+      quoteItems = quoteItems.filter(item => item.item !== itemCode);
+      updateQuoteCounter();
+      updateQuoteModal();
+    }
+
+    function updateQuantity(itemCode, newQuantity) {
+      const qty = parseInt(newQuantity);
+      const itemIndex = quoteItems.findIndex(item => item.item === itemCode);
+      if (itemIndex === -1) return;
+      if (qty <= 0) {
+        removeFromQuote(itemCode);
+      } else {
+        const maxQty = quoteItems[itemIndex].stock;
+        quoteItems[itemIndex].quantity = Math.min(Math.max(qty, 1), maxQty);
+        updateQuoteModal();
+      }
+    }
+
+    function updateQuoteCounter() {
+      const counter = document.getElementById('quote-counter');
+      const count = document.getElementById('quote-count');
+      if (quoteItems.length > 0) {
+        counter.style.display = 'block';
+        counter.classList.add('pulse');
+        setTimeout(() => counter.classList.remove('pulse'), 600);
+        count.textContent = quoteItems.length;
+      } else {
+        counter.style.display = 'none';
+      }
+    }
+
+    function openQuoteModal() {
+      updateQuoteModal();
+      document.getElementById('quote-modal').style.display = 'block';
+    }
+
+    function closeQuoteModal() {
+      document.getElementById('quote-modal').style.display = 'none';
+    }
+
+    function updateQuoteModal() {
+      const container = document.getElementById('quote-items');
+      if (quoteItems.length === 0) {
+        container.innerHTML = '<p>No items in quote yet.</p>';
+        return;
+      }
+      let html = '<h3>Items:</h3>';
+      quoteItems.forEach(item => {
+        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity - 1) + ')">−</button><input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + item.item + '\\', this.value)"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity + 1) + ')">+</button><small style="margin-left:8px">/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">×</button></div></div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 400);
+      }, 3000);
+    }
+
+    function showSuccessNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification success-notification';
+      notification.innerHTML = '<div style="position:relative;z-index:1">' + message + '</div>';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 500);
+      }, 4000);
+    }
+
+    function submitQuote() {
+      const name = document.getElementById('customer-name').value;
+      const email = document.getElementById('customer-email').value;
+      const phone = document.getElementById('customer-phone').value;
+      const company = document.getElementById('customer-company').value;
+      const notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+      }
+      
+      const submitBtn = document.querySelector('.submit-quote');
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+      
+      const tireDetails = quoteItems.map((item, index) => \`\${index + 1}. Item: \${item.item} - Qty: \${item.quantity}\`).join('\\n');
+      const quoteSummary = \`TIRE QUOTE REQUEST
+
+CUSTOMER:
+Name: \${name}
+Email: \${email}
+Phone: \${phone || 'Not provided'}
+Company: \${company || 'Not provided'}
+
+ITEMS:
+\${tireDetails}
+
+NOTES: \${notes || 'None'}\`;
+      
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('company', company);
+      formData.append('items', tireDetails);
+      formData.append('message', quoteSummary);
+      formData.append('_subject', \`Tire Quote - \${name}\`);
+      formData.append('_replyto', email);
+      
+      fetch('https://formspree.io/f/xdkgqyzr', {
+        method: 'POST',
+        body: formData,
+        headers: {'Accept': 'application/json'}
+      })
+      .then(response => {
+        if (response.ok) {
+          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+          submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+          showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
+          setTimeout(() => {
+            quoteItems = [];
+            updateQuoteCounter();
+            closeQuoteModal();
+            submitBtn.innerHTML = 'Request Quote';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 3000);
+        } else {
+          const subject = \`Tire Quote - \${name}\`;
+          const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+          window.open(mailtoLink, '_blank');
+          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(() => {
+        const subject = \`Tire Quote - \${name}\`;
+        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+        window.open(mailtoLink, '_blank');
+        submitBtn.innerHTML = 'Request Quote';
+        submitBtn.disabled = false;
+      });
+    }
+
+    document.getElementById('filter-manufacturer').addEventListener('change', render);
+    document.getElementById('filter-discount').addEventListener('change', render);
+    window.addEventListener('click', (event) => {
+      const modal = document.getElementById('quote-modal');
+      if (event.target === modal) {
+        closeQuoteModal();
+      }
+    });
+    render();
+  </script>
+</body>
+</html>`;
+}
+
+async function main() {
+  try {
+    console.log('🔄 Processing tire data...');
+    const raw = readLocalCSV();
+    const data = parseCSV(raw);
+
+    const items = data.map(d => {
+      const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
+      const sale = parseFloat(d['SalePrice']) || 0;
+      const reg = parseFloat(d['Net']) || 0;
+      const save = Math.round(reg - sale);
+      const manufacturer = d['Manufacturer'] || 'Unknown';
+      
+      return {
+        manufacturer,
+        logo: d['Brand_Logo_URL'] || '',
+        model: d['Model'] || 'TIRE',
+        item: d['Item'] || '',
+        tireSize: d['Tire_Size'] || '',
+        sizeStripped: d['Size_Stripped'] || '',
+        tireType: d['Tire_Type'] || '',
+        vehicleType: d['Vehicle_Type'] || '',
+        disc, sale, reg, save,
+        stock: parseInt(d['AvailableQuantity']) || 0
+      };
+    }).sort((a, b) => b.disc - a.disc);
+    
+    if (items.length === 0) throw new Error('No deals found');
+    
+    const html = generateHTML(items);
+    fs.writeFileSync('index.html', html);
+    
+    console.log('✅ Website updated successfully with enhanced features!');
+    console.log(`📈 ${items.length} deals processed`);
+    console.log('🎯 Features included: animations, quote system, Formspree integration');
+    
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(1);
+  }
+}
+
+main(); + i.reg + '</span>';
+      const stockClass = i.stock <= 5 ? 'low' : i.stock <= 15 ? 'medium' : i.stock <= 50 ? 'good' : 'excellent';
+      
+      // Build details line with available info
+      let details = 'Item: ' + i.item;
+      if (i.tireSize) details += ' • Size: ' + i.tireSize;
+      if (i.tireType) details += ' • ' + i.tireType;
+      
+      return '<div class="card" data-manufacturer="' + i.manufacturer + '"><div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div><div class="content">' + (i.logo ? '<img src="' + i.logo + '" class="logo" alt="' + i.manufacturer + '">' : '') + '<div class="title">' + i.model + '</div><div class="details">' + details + '</div><div class="pricing">' + priceHtml + '</div><div class="save">Save 
+
+    function render() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+      const mf = document.getElementById('filter-manufacturer').value;
+      const md = parseInt(document.getElementById('filter-discount').value);
+      
+      const filtered = items.filter(i => {
+        // Search across multiple fields
+        const searchableText = [
+          i.manufacturer,
+          i.model,
+          i.item,
+          i.tireSize || '',
+          i.sizeStripped || '',
+          i.tireType || ''
+        ].join(' ').toLowerCase();
+        
+        const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
+        const matchesManufacturer = !mf || i.manufacturer === mf;
+        const matchesDiscount = i.disc >= md;
+        
+        return matchesSearch && matchesManufacturer && matchesDiscount;
+      });
+      
+      document.getElementById('card-container').innerHTML = filtered.slice(0, 50).map(renderCard).join('');
+      
+      // Update stats for filtered results
+      updateFilteredStats(filtered);
+    }
+
+    function updateFilteredStats(filtered) {
+      const totalDeals = document.querySelector('.stats .num');
+      if (totalDeals && filtered.length !== items.length) {
+        totalDeals.textContent = filtered.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Filtered Deals';
+      } else if (totalDeals) {
+        totalDeals.textContent = items.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Deals';
+      }
+    }
+
+    function addToQuote(itemCode) {
+      const item = items.find(i => i.item === itemCode);
+      if (!item) return;
+      const existingIndex = quoteItems.findIndex(q => q.item === item.item);
+      if (existingIndex >= 0) {
+        quoteItems[existingIndex].quantity += 1;
+      } else {
+        quoteItems.push({...item, quantity: 1});
+      }
+      updateQuoteCounter();
+      showNotification('✓ Added to quote!');
+    }
+
+    function removeFromQuote(itemCode) {
+      quoteItems = quoteItems.filter(item => item.item !== itemCode);
+      updateQuoteCounter();
+      updateQuoteModal();
+    }
+
+    function updateQuantity(itemCode, newQuantity) {
+      const qty = parseInt(newQuantity);
+      const itemIndex = quoteItems.findIndex(item => item.item === itemCode);
+      if (itemIndex === -1) return;
+      if (qty <= 0) {
+        removeFromQuote(itemCode);
+      } else {
+        const maxQty = quoteItems[itemIndex].stock;
+        quoteItems[itemIndex].quantity = Math.min(Math.max(qty, 1), maxQty);
+        updateQuoteModal();
+      }
+    }
+
+    function updateQuoteCounter() {
+      const counter = document.getElementById('quote-counter');
+      const count = document.getElementById('quote-count');
+      if (quoteItems.length > 0) {
+        counter.style.display = 'block';
+        counter.classList.add('pulse');
+        setTimeout(() => counter.classList.remove('pulse'), 600);
+        count.textContent = quoteItems.length;
+      } else {
+        counter.style.display = 'none';
+      }
+    }
+
+    function openQuoteModal() {
+      updateQuoteModal();
+      document.getElementById('quote-modal').style.display = 'block';
+    }
+
+    function closeQuoteModal() {
+      document.getElementById('quote-modal').style.display = 'none';
+    }
+
+    function updateQuoteModal() {
+      const container = document.getElementById('quote-items');
+      if (quoteItems.length === 0) {
+        container.innerHTML = '<p>No items in quote yet.</p>';
+        return;
+      }
+      let html = '<h3>Items:</h3>';
+      quoteItems.forEach(item => {
+        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity - 1) + ')">−</button><input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + item.item + '\\', this.value)"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity + 1) + ')">+</button><small style="margin-left:8px">/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">×</button></div></div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 400);
+      }, 3000);
+    }
+
+    function showSuccessNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification success-notification';
+      notification.innerHTML = '<div style="position:relative;z-index:1">' + message + '</div>';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 500);
+      }, 4000);
+    }
+
+    function submitQuote() {
+      const name = document.getElementById('customer-name').value;
+      const email = document.getElementById('customer-email').value;
+      const phone = document.getElementById('customer-phone').value;
+      const company = document.getElementById('customer-company').value;
+      const notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+      }
+      
+      const submitBtn = document.querySelector('.submit-quote');
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+      
+      const tireDetails = quoteItems.map((item, index) => \`\${index + 1}. Item: \${item.item} - Qty: \${item.quantity}\`).join('\\n');
+      const quoteSummary = \`TIRE QUOTE REQUEST
+
+CUSTOMER:
+Name: \${name}
+Email: \${email}
+Phone: \${phone || 'Not provided'}
+Company: \${company || 'Not provided'}
+
+ITEMS:
+\${tireDetails}
+
+NOTES: \${notes || 'None'}\`;
+      
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('company', company);
+      formData.append('items', tireDetails);
+      formData.append('message', quoteSummary);
+      formData.append('_subject', \`Tire Quote - \${name}\`);
+      formData.append('_replyto', email);
+      
+      fetch('https://formspree.io/f/xdkgqyzr', {
+        method: 'POST',
+        body: formData,
+        headers: {'Accept': 'application/json'}
+      })
+      .then(response => {
+        if (response.ok) {
+          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+          submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+          showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
+          setTimeout(() => {
+            quoteItems = [];
+            updateQuoteCounter();
+            closeQuoteModal();
+            submitBtn.innerHTML = 'Request Quote';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 3000);
+        } else {
+          const subject = \`Tire Quote - \${name}\`;
+          const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+          window.open(mailtoLink, '_blank');
+          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(() => {
+        const subject = \`Tire Quote - \${name}\`;
+        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+        window.open(mailtoLink, '_blank');
+        submitBtn.innerHTML = 'Request Quote';
+        submitBtn.disabled = false;
+      });
+    }
+
+    document.getElementById('filter-manufacturer').addEventListener('change', render);
+    document.getElementById('filter-discount').addEventListener('change', render);
+    window.addEventListener('click', (event) => {
+      const modal = document.getElementById('quote-modal');
+      if (event.target === modal) {
+        closeQuoteModal();
+      }
+    });
+    render();
+  </script>
+</body>
+</html>`;
+}
+
+async function main() {
+  try {
+    console.log('🔄 Processing tire data...');
+    const raw = readLocalCSV();
+    const data = parseCSV(raw);
+
+    const items = data.map(d => {
+      const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
+      const sale = parseFloat(d['SalePrice']) || 0;
+      const reg = parseFloat(d['Net']) || 0;
+      const save = Math.round(reg - sale);
+      const manufacturer = d['Manufacturer'] || 'Unknown';
+      
+      return {
+        manufacturer,
+        logo: d['Brand_Logo_URL'] || '',
+        model: d['Model'] || 'TIRE',
+        item: d['Item'] || '',
+        tireSize: d['Tire_Size'] || '',
+        sizeStripped: d['Size_Stripped'] || '',
+        tireType: d['Tire_Type'] || '',
+        vehicleType: d['Vehicle_Type'] || '',
+        disc, sale, reg, save,
+        stock: parseInt(d['AvailableQuantity']) || 0
+      };
+    }).sort((a, b) => b.disc - a.disc);
+    
+    if (items.length === 0) throw new Error('No deals found');
+    
+    const html = generateHTML(items);
+    fs.writeFileSync('index.html', html);
+    
+    console.log('✅ Website updated successfully with enhanced features!');
+    console.log(`📈 ${items.length} deals processed`);
+    console.log('🎯 Features included: animations, quote system, Formspree integration');
+    
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(1);
+  }
+}
+
+main(); + i.save + '</div><div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div><button class="btn-add-quote" onclick="addToQuote(\\'' + i.item + '\\')">Add to Quote</button></div></div>';
+    }
+
+    function render() {
+      const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+      const mf = document.getElementById('filter-manufacturer').value;
+      const md = parseInt(document.getElementById('filter-discount').value);
+      
+      const filtered = items.filter(i => {
+        // Search across multiple fields
+        const searchableText = [
+          i.manufacturer,
+          i.model,
+          i.item,
+          i.tireSize || '',
+          i.sizeStripped || '',
+          i.tireType || ''
+        ].join(' ').toLowerCase();
+        
+        const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
+        const matchesManufacturer = !mf || i.manufacturer === mf;
+        const matchesDiscount = i.disc >= md;
+        
+        return matchesSearch && matchesManufacturer && matchesDiscount;
+      });
+      
+      document.getElementById('card-container').innerHTML = filtered.slice(0, 50).map(renderCard).join('');
+      
+      // Update stats for filtered results
+      updateFilteredStats(filtered);
+    }
+
+    function updateFilteredStats(filtered) {
+      const totalDeals = document.querySelector('.stats .num');
+      if (totalDeals && filtered.length !== items.length) {
+        totalDeals.textContent = filtered.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Filtered Deals';
+      } else if (totalDeals) {
+        totalDeals.textContent = items.length;
+        totalDeals.parentElement.querySelector('.label').textContent = 'Deals';
+      }
+    }
+
+    function addToQuote(itemCode) {
+      const item = items.find(i => i.item === itemCode);
+      if (!item) return;
+      const existingIndex = quoteItems.findIndex(q => q.item === item.item);
+      if (existingIndex >= 0) {
+        quoteItems[existingIndex].quantity += 1;
+      } else {
+        quoteItems.push({...item, quantity: 1});
+      }
+      updateQuoteCounter();
+      showNotification('✓ Added to quote!');
+    }
+
+    function removeFromQuote(itemCode) {
+      quoteItems = quoteItems.filter(item => item.item !== itemCode);
+      updateQuoteCounter();
+      updateQuoteModal();
+    }
+
+    function updateQuantity(itemCode, newQuantity) {
+      const qty = parseInt(newQuantity);
+      const itemIndex = quoteItems.findIndex(item => item.item === itemCode);
+      if (itemIndex === -1) return;
+      if (qty <= 0) {
+        removeFromQuote(itemCode);
+      } else {
+        const maxQty = quoteItems[itemIndex].stock;
+        quoteItems[itemIndex].quantity = Math.min(Math.max(qty, 1), maxQty);
+        updateQuoteModal();
+      }
+    }
+
+    function updateQuoteCounter() {
+      const counter = document.getElementById('quote-counter');
+      const count = document.getElementById('quote-count');
+      if (quoteItems.length > 0) {
+        counter.style.display = 'block';
+        counter.classList.add('pulse');
+        setTimeout(() => counter.classList.remove('pulse'), 600);
+        count.textContent = quoteItems.length;
+      } else {
+        counter.style.display = 'none';
+      }
+    }
+
+    function openQuoteModal() {
+      updateQuoteModal();
+      document.getElementById('quote-modal').style.display = 'block';
+    }
+
+    function closeQuoteModal() {
+      document.getElementById('quote-modal').style.display = 'none';
+    }
+
+    function updateQuoteModal() {
+      const container = document.getElementById('quote-items');
+      if (quoteItems.length === 0) {
+        container.innerHTML = '<p>No items in quote yet.</p>';
+        return;
+      }
+      let html = '<h3>Items:</h3>';
+      quoteItems.forEach(item => {
+        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity - 1) + ')">−</button><input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + item.item + '\\', this.value)"><button class="qty-btn" onclick="updateQuantity(\\'' + item.item + '\\', ' + (item.quantity + 1) + ')">+</button><small style="margin-left:8px">/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\\'' + item.item + '\\')">×</button></div></div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 400);
+      }, 3000);
+    }
+
+    function showSuccessNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification success-notification';
+      notification.innerHTML = '<div style="position:relative;z-index:1">' + message + '</div>';
+      document.body.appendChild(notification);
+      
+      setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => document.body.removeChild(notification), 500);
+      }, 4000);
+    }
+
+    function submitQuote() {
+      const name = document.getElementById('customer-name').value;
+      const email = document.getElementById('customer-email').value;
+      const phone = document.getElementById('customer-phone').value;
+      const company = document.getElementById('customer-company').value;
+      const notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+      }
+      
+      const submitBtn = document.querySelector('.submit-quote');
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+      
+      const tireDetails = quoteItems.map((item, index) => \`\${index + 1}. Item: \${item.item} - Qty: \${item.quantity}\`).join('\\n');
+      const quoteSummary = \`TIRE QUOTE REQUEST
+
+CUSTOMER:
+Name: \${name}
+Email: \${email}
+Phone: \${phone || 'Not provided'}
+Company: \${company || 'Not provided'}
+
+ITEMS:
+\${tireDetails}
+
+NOTES: \${notes || 'None'}\`;
+      
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('company', company);
+      formData.append('items', tireDetails);
+      formData.append('message', quoteSummary);
+      formData.append('_subject', \`Tire Quote - \${name}\`);
+      formData.append('_replyto', email);
+      
+      fetch('https://formspree.io/f/xdkgqyzr', {
+        method: 'POST',
+        body: formData,
+        headers: {'Accept': 'application/json'}
+      })
+      .then(response => {
+        if (response.ok) {
+          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+          submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+          showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
+          setTimeout(() => {
+            quoteItems = [];
+            updateQuoteCounter();
+            closeQuoteModal();
+            submitBtn.innerHTML = 'Request Quote';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 3000);
+        } else {
+          const subject = \`Tire Quote - \${name}\`;
+          const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+          window.open(mailtoLink, '_blank');
+          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(() => {
+        const subject = \`Tire Quote - \${name}\`;
+        const mailtoLink = \`mailto:nileshn@sturgeontire.com?subject=\${encodeURIComponent(subject)}&body=\${encodeURIComponent(quoteSummary)}\`;
+        window.open(mailtoLink, '_blank');
+        submitBtn.innerHTML = 'Request Quote';
+        submitBtn.disabled = false;
+      });
+    }
+
+    document.getElementById('filter-manufacturer').addEventListener('change', render);
+    document.getElementById('filter-discount').addEventListener('change', render);
+    window.addEventListener('click', (event) => {
+      const modal = document.getElementById('quote-modal');
+      if (event.target === modal) {
+        closeQuoteModal();
+      }
+    });
+    render();
+  </script>
+</body>
+</html>`;
+}
+
+async function main() {
+  try {
+    console.log('🔄 Processing tire data...');
+    const raw = readLocalCSV();
+    const data = parseCSV(raw);
+
+    const items = data.map(d => {
+      const disc = Math.round(parseFloat(d['B2B_Discount_Percentage']) || 0);
+      const sale = parseFloat(d['SalePrice']) || 0;
+      const reg = parseFloat(d['Net']) || 0;
+      const save = Math.round(reg - sale);
+      const manufacturer = d['Manufacturer'] || 'Unknown';
+      
+      return {
+        manufacturer,
+        logo: d['Brand_Logo_URL'] || '',
+        model: d['Model'] || 'TIRE',
+        item: d['Item'] || '',
+        tireSize: d['Tire_Size'] || '',
+        sizeStripped: d['Size_Stripped'] || '',
+        tireType: d['Tire_Type'] || '',
+        vehicleType: d['Vehicle_Type'] || '',
         disc, sale, reg, save,
         stock: parseInt(d['AvailableQuantity']) || 0
       };
