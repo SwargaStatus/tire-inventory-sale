@@ -125,10 +125,6 @@ function generateHTML(items) {
     .quote-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000}
     .quote-modal-content {display: flex;flex-direction: column;max-height: 90vh;overflow: hidden;}
     .quote-items {overflow-y: auto;flex: 1;margin-bottom: 10px;}
-    .quote-form input,
-    .quote-form textarea,
-    .quote-form select,
-    .submit-quote {font-size: 16px;}
     .submit-quote{background:#27ae60;color:white;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-weight:bold;width:100%}
     .close-modal{float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#aaa}
     .remove-item{background:#e74c3c;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px}
@@ -172,6 +168,21 @@ function generateHTML(items) {
     padding-bottom: env(safe-area-inset-bottom); /* for iPhones with notch */
   }
 }
+  .quote-modal-content {
+    animation: fadeSlideIn 0.3s ease;
+  }
+  
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   </style>
 </head>
 <body>
@@ -215,8 +226,8 @@ function generateHTML(items) {
     <div class="quote-modal-content">
       <span class="close-modal" onclick="closeQuoteModal()">&times;</span>
       <h2>Request Quote</h2>
-      <div id="quote-items"></div>
-      <div class="quote-form">
+      <div id="quote-items" class="quote-items"></div>
+      <div class="quote-form">…</div>
         <input type="text" id="customer-name" placeholder="Your Name *" required>
         <input type="email" id="customer-email" placeholder="Email *" required>
         <input type="tel" id="customer-phone" placeholder="Phone">
