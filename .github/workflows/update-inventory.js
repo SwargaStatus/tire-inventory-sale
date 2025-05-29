@@ -155,15 +155,30 @@ function generateHTML(items) {
   }
 }
 
-  /* --- 2. Make the “Request Quote” button stick to the bottom of the modal --- */
-  .quote-modal-content{
-    display:flex;             /* turn the modal into a flex column          */
-    flex-direction:column;
-    max-height:80vh;          /* you already had this – keeps it on screen  */
+    @media (max-width:768px){
+      .quote-modal-content{
+        width: calc(100% - 24px); /* 12-px left + right gutter   */
+        margin: 5% auto;          /* still vertically centred    */
+        box-sizing:border-box;    /* so padding doesn’t add size */
+        padding-left:12px;
+        padding-right:12px;
+      }
+    }
+
+    #quote-items{
+    flex:1 1 auto;
+    overflow-y:auto;            /* already there, keep it      */
+    padding-right:4px;          /* tiny room for scrollbar     */
   }
-  #quote-items{
-    flex:1 1 auto;            /* items section grows & scrolls              */
-    overflow-y:auto;
+  
+  .quote-item>div:first-child{
+    flex:1 1 60%;               /* text can take multiple lines*/
+    word-break:break-word;
+  }
+  
+  .quote-item{
+    gap:8px;                    /* a little breathing room     */
+    align-items:flex-start;     /* text tops align with buttons*/
   }
   .quote-form{
     flex:0 0 auto;            /* form stays at the bottom                   */
@@ -176,6 +191,19 @@ function generateHTML(items) {
     bottom:0;
     width:100%;
     border-radius:0;          /* square edges look like a native footer     */
+  }
+    /* keep minus / input / plus vertically centred */
+  .quantity-controls{
+    align-items:center;
+  }
+  
+  .quantity-controls small{
+    font-size:.75rem;      /* a hair smaller looks intentional      */
+    line-height:1;         /* kills extra baseline drift            */
+    align-self:center;     /* centres the “/4” vertically           */
+  }
+    body.modal-open{
+    overflow:hidden;   /* body can’t scroll, modal can            */
   }
   </style>
 </head>
@@ -519,6 +547,16 @@ function generateHTML(items) {
     } else {
       console.log('🚀 DOM already ready, initializing...');
       initializeApp();
+    }
+        function openQuoteModal(){
+      updateQuoteModal();
+      document.getElementById('quote-modal').style.display='block';
+      document.body.classList.add('modal-open');        // NEW
+    }
+
+    function closeQuoteModal(){
+      document.getElementById('quote-modal').style.display='none';
+      document.body.classList.remove('modal-open');     // NEW
     }
     
     function initializeApp() {
