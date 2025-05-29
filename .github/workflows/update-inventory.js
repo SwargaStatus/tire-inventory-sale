@@ -1,4 +1,4 @@
-const fs = require('fs');
+How do I make our logo pop out and not get drowned out const fs = require('fs');
 const path = require('path');
 
 function readLocalCSV() {
@@ -62,12 +62,12 @@ function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
   const itemsJson = JSON.stringify(items);
   
-  return `<!DOCTYPE html>
+  return <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Sturgeon Tire Live Deals</title>
+  <title>Sturgeon Tire Bargain Bin</title>
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
@@ -148,28 +148,6 @@ function generateHTML(items) {
       .stats .num{font-size:2rem}
       .stats .label{font-size:0.8rem}
     }
-  /* —— Make the “Submit Quote” button stick into view on mobile —— */
-.quote-modal-content {
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 2rem);  /* leave a little breathing room at top */
-  overflow: visible !important;    /* override the old scrolling behavior */
-}
-
-.quote-items {
-  flex: 1;
-  overflow-y: auto;                /* only the items list scrolls now */
-}
-
-.quote-form {
-  margin-top: auto;                /* push the form to the bottom */
-  position: sticky;
-  bottom: 0;
-  background: #fff;                /* match modal bg */
-  padding: 1rem;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
-  z-index: 1;
-}
   </style>
 </head>
 <body>
@@ -542,7 +520,7 @@ function generateHTML(items) {
     }
   </script>
 </body>
-</html>`;
+</html>;
 }
 
 async function main() {
