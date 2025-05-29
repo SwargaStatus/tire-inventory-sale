@@ -22,7 +22,7 @@
     .badge{position:absolute;top:8px;right:8px;padding:4px 6px;border-radius:4px;color:#fff;font-size:0.75rem}
     .badge-sale{background:var(--accent)}.badge-good{background:var(--primary)}.badge-great{background:#ffb300}.badge-huge{background:#ff6d00}.badge-free{background:var(--dark)}
     .content{padding:10px}
-    .logo{height:32px;width:auto;max-width:80px;object-fit:contain;vertical-align:middle;margin-right:6px}
+    .logo{height:48px;width:auto;max-width:120px;object-fit:contain;vertical-align:middle;margin-right:8px;margin-bottom:8px}
     .title{font-size:1.1rem;font-weight:bold;color:var(--dark);margin-bottom:6px}
     .details{font-size:0.85rem;color:#555;margin-bottom:6px}
     .pricing{margin-bottom:6px}
@@ -44,7 +44,7 @@
     .qty-btn:hover{background:#0056b3;transform:scale(1.1)}
     .qty-btn:active{transform:scale(0.95)}
     .qty-input{width:50px;height:28px;border:1px solid #ddd;border-radius:4px;text-align:center;font-weight:bold;margin:0 2px}
-    .notification{position:fixed;top:80px;right:20px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:12px 20px;border-radius:8px;z-index:3000;font-weight:500;box-shadow:0 4px 20px rgba(39,174,96,0.3);transform:translateX(400px);transition:all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);max-width:280px}
+    .notification{position:fixed;top:120px;right:20px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;padding:12px 20px;border-radius:8px;z-index:3000;font-weight:500;box-shadow:0 4px 20px rgba(39,174,96,0.3);transform:translateX(400px);transition:all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);max-width:280px}
     .success-notification{background:linear-gradient(135deg,#3498db,#2980b9);padding:20px 25px;border-radius:12px;box-shadow:0 8px 32px rgba(52,152,219,0.4);position:relative;overflow:hidden}
     .success-notification::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);animation:confetti 2s linear infinite}
     @keyframes confetti{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
@@ -63,7 +63,7 @@
 </head>
 <body>
   <div class="header">
-    <div class="update-time">Updated: 5/29/2025, 4:13:09 PM</div>
+    <div class="update-time">Updated: 5/29/2025, 4:30:15 PM</div>
     <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Live Deals</h1>
   </div>
   
@@ -804,7 +804,7 @@
       const badgeType = i.disc >= 99 ? 'free' : i.disc >= 40 ? 'huge' : i.disc >= 30 ? 'great' : i.disc >= 20 ? 'good' : 'sale';
       const priceHtml = i.disc >= 99 ? '<span class="free-price">FREE</span><span class="orig-price">$' + i.reg + '</span>' : '<span class="sale-price">$' + i.sale + '</span><span class="orig-price">$' + i.reg + '</span>';
       const stockClass = i.stock <= 5 ? 'low' : i.stock <= 15 ? 'medium' : i.stock <= 50 ? 'good' : 'excellent';
-      return '<div class="card"><div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div><div class="content">' + (i.logo ? '<img src="' + i.logo + '" class="logo">' : '') + '<div class="title">' + i.model + '</div><div class="details">Item: ' + i.item + ' • ' + i.manufacturer + '</div><div class="pricing">' + priceHtml + '</div><div class="save">Save $' + i.save + '</div><div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div><button class="btn-add-quote" onclick="addToQuote(\''+i.item+'\')">Add to Quote</button></div></div>';
+      return '<div class="card" data-manufacturer="' + i.manufacturer + '"><div class="badge badge-' + badgeType + '">' + i.disc + '% OFF</div><div class="content">' + (i.logo ? '<img src="' + i.logo + '" class="logo" alt="' + i.manufacturer + '">' : '') + '<div class="title">' + i.model + '</div><div class="details">Item: ' + i.item + '</div><div class="pricing">' + priceHtml + '</div><div class="save">Save $' + i.save + '</div><div class="stock stock-' + stockClass + '">Qty: ' + i.stock + '</div><button class="btn-add-quote" onclick="addToQuote(\'' + i.item + '\')">Add to Quote</button></div></div>';
     }
 
     function render() {
@@ -876,7 +876,7 @@
       }
       let html = '<h3>Items:</h3>';
       quoteItems.forEach(item => {
-        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\''+item.item+'\', '+(item.quantity-1)+')">−</button><input type="number" class="qty-input" min="1" max="'+item.stock+'" value="'+item.quantity+'" onchange="updateQuantity(\''+item.item+'\', this.value)"><button class="qty-btn" onclick="updateQuantity(\''+item.item+'\', '+(item.quantity+1)+')">+</button><small style="margin-left:8px">/ '+item.stock+'</small><button class="remove-item" onclick="removeFromQuote(\''+item.item+'\')">×</button></div></div>';
+        html += '<div class="quote-item"><div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(\'' + item.item + '\', ' + (item.quantity - 1) + ')">−</button><input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + item.item + '\', this.value)"><button class="qty-btn" onclick="updateQuantity(\'' + item.item + '\', ' + (item.quantity + 1) + ')">+</button><small style="margin-left:8px">/ ' + item.stock + '</small><button class="remove-item" onclick="removeFromQuote(\'' + item.item + '\')">×</button></div></div>';
       });
       container.innerHTML = html;
     }
