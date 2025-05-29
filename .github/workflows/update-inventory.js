@@ -451,17 +451,18 @@ function generateHTML(items) {
       })
       .then(function(response) {
         if (response.ok) {
-          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+          submitBtn.innerHTML = 'Quote Sent Successfully!';
           submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-        showSuccessNotification('🎉 Quote sent successfully! We’ll contact you shortly.');
+        showSuccessNotification('Quote sent successfully! We’ll contact you shortly.');
         
-        setTimeout(() => {
-          confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
-        }, 200);
+        const myCanvas = document.getElementById('confetti-canvas');
+        const myConfetti = confetti.create(myCanvas, { resize: true, useWorker: true });
+        
+        myConfetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
         
         setTimeout(() => {
           quoteItems = [];
@@ -527,6 +528,7 @@ function generateHTML(items) {
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000;"></canvas>
 </body>
 </html>`;
 }
