@@ -148,6 +148,35 @@ function generateHTML(items) {
       .stats .num{font-size:2rem}
       .stats .label{font-size:0.8rem}
     }
+    @media (max-width: 768px) {
+  .container{               /* your existing wrapper */
+    padding-left: 12px;     /* 12-16 px feels like a native-app gutter   */
+    padding-right: 12px;    /* keeps the iframe / cards off the screen edge */
+  }
+}
+
+  /* --- 2. Make the “Request Quote” button stick to the bottom of the modal --- */
+  .quote-modal-content{
+    display:flex;             /* turn the modal into a flex column          */
+    flex-direction:column;
+    max-height:80vh;          /* you already had this – keeps it on screen  */
+  }
+  #quote-items{
+    flex:1 1 auto;            /* items section grows & scrolls              */
+    overflow-y:auto;
+  }
+  .quote-form{
+    flex:0 0 auto;            /* form stays at the bottom                   */
+    padding-bottom:8px;
+    background:#fff;          /* white strip so it isn’t floating           */
+    box-shadow:0 -2px 6px rgba(0,0,0,.08);
+  }
+  .submit-quote{              /* full-width CTA bar                        */
+    position:sticky;          /* sticks within the modal, not the viewport */
+    bottom:0;
+    width:100%;
+    border-radius:0;          /* square edges look like a native footer     */
+  }
   </style>
 </head>
 <body>
