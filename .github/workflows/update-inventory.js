@@ -50,14 +50,17 @@ function parseCSV(text) {
 }
 
 function escapeHtml(text) {
-  const div = { innerHTML: '' };
-  div.textContent = text;
-  return div.innerHTML;
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
-  const itemsJson = JSON.stringify(items).replace(/'/g, "\\'");
+  const itemsJson = JSON.stringify(items);
   
   return `<!DOCTYPE html>
 <html lang="en">
@@ -201,17 +204,23 @@ function generateHTML(items) {
       if (item.tireSize) details += ' • Size: ' + item.tireSize;
       if (item.tireType) details += ' • ' + item.tireType;
       
-      return '<div class="card" data-manufacturer="' + item.manufacturer + '">' +
+      return '<div class="card" data-manufacturer="' + escapeHtml(item.manufacturer) + '">' +
         '<div class="badge badge-' + badgeType + '">' + item.disc + '% OFF</div>' +
         '<div class="content">' + 
-        (item.logo ? '<img src="' + item.logo + '" class="logo" alt="' + item.manufacturer + '">' : '') +
-        '<div class="title">' + item.model + '</div>' +
-        '<div class="details">' + details + '</div>' +
+        (item.logo ? '<img src="' + escapeHtml(item.logo) + '" class="logo" alt="' + escapeHtml(item.manufacturer) + '">' : '') +
+        '<div class="title">' + escapeHtml(item.model) + '</div>' +
+        '<div class="details">' + escapeHtml(details) + '</div>' +
         '<div class="pricing">' + priceHtml + '</div>' +
         '<div class="save">Save $' + item.save + '</div>' +
         '<div class="stock stock-' + stockClass + '">Qty: ' + item.stock + '</div>' +
-        '<button class="btn-add-quote" onclick="addToQuote(\'' + item.item + '\')">Add to Quote</button>' +
+        '<button class="btn-add-quote" onclick="addToQuote(\\'' + escapeHtml(item.item) + '\\')">Add to Quote</button>' +
         '</div></div>';
+    }
+
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     function render() {
@@ -346,13 +355,13 @@ function generateHTML(items) {
       var html = '<h3>Items:</h3>';
       quoteItems.forEach(function(item) {
         html += '<div class="quote-item">' +
-          '<div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div>' +
+          '<div><strong>' + escapeHtml(item.manufacturer) + ' ' + escapeHtml(item.model) + '</strong><br>Item: ' + escapeHtml(item.item) + ' • $' + item.sale + ' each</div>' +
           '<div class="quantity-controls">' +
-          '<button class="qty-btn" onclick="updateQuantity(\'' + item.item + '\', ' + (item.quantity - 1) + ')">−</button>' +
-          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + item.item + '\', this.value)">' +
-          '<button class="qty-btn" onclick="updateQuantity(\'' + item.item + '\', ' + (item.quantity + 1) + ')">+</button>' +
+          '<button class="qty-btn" onclick="updateQuantity(\\'' + escapeHtml(item.item) + '\\', ' + (item.quantity - 1) + ')">−</button>' +
+          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + escapeHtml(item.item) + '\\', this.value)">' +
+          '<button class="qty-btn" onclick="updateQuantity(\\'' + escapeHtml(item.item) + '\\', ' + (item.quantity + 1) + ')">+</button>' +
           '<small style="margin-left:8px">/ ' + item.stock + '</small>' +
-          '<button class="remove-item" onclick="removeFromQuote(\'' + item.item + '\')">×</button>' +
+          '<button class="remove-item" onclick="removeFromQuote(\\'' + escapeHtml(item.item) + '\\')">×</button>' +
           '</div></div>';
       });
       container.innerHTML = html;
