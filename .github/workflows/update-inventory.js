@@ -1,4 +1,4 @@
-How do I make our logo pop out and not get drowned out const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 function readLocalCSV() {
