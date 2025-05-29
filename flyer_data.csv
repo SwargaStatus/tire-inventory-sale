@@ -10,6 +10,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 33,162,0,-327,💰 GREAT DEAL,4,$327 (reg $489),Save $162 per tire!,646,33,162,1,1,Yes,110116024,GEOLANDAR X-AT,0,489,327,4,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 49,271,65,530,🔥 HUGE SAVINGS,5,$285 (reg $556),Save $271 per tire!,1085,49,271,1,1,Yes,3002335,DL12,815,556,285,4,1,https://commons.wikimedia.org/wiki/File:Hankook_logo_as_of_2019.png,HANKOOK
 2,5,44,187,,1,$237 (reg $242),Save $5 per tire!,20,2,5,0,1,Yes,04505590000,Grabber A/TX,424,242,237,4,0,,GENERAL
+11,29,0,-245,💵 ON SALE,2,$245 (reg $275),Save $29 per tire!,117,11,29,0,1,Yes,110110549,ADVAN SPORT V105,0,275,245,4,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 23,33,0,-115,⭐ GOOD DEAL,3,$115 (reg $148),Save $33 per tire!,33,23,33,0,1,Yes,110132810,AVID ASCEND LX,0,148,115,1,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 23,35,0,-115,⭐ GOOD DEAL,3,$115 (reg $150),Save $35 per tire!,35,23,35,0,1,Yes,110132811,AVID ASCEND LX,0,150,115,1,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 7,13,0,-172,,1,$172 (reg $184),Save $13 per tire!,13,7,13,0,1,Yes,110132729,AVID ASCEND GT,0,184,172,1,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
@@ -23,10 +24,9 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 10,32,0,-277,💵 ON SALE,2,$277 (reg $309),Save $32 per tire!,253,10,32,0,1,Yes,110116006,GEOLANDAR X-AT,0,309,277,8,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 12,21,0,-160,💵 ON SALE,2,$160 (reg $181),Save $21 per tire!,167,12,21,0,1,Yes,110140617,ADVAN SPORT A/S+,0,181,160,8,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 2,7,44,248,,1,$313 (reg $320),Save $7 per tire!,54,2,7,0,1,Yes,04508100000,Grabber APT,561,320,313,8,0,,GENERAL
-3,5,43,112,,1,$148 (reg $153),Save $5 per tire!,42,3,5,0,1,Yes,15509360000,PureContact LS,260,153,148,8,0,https://upload.wikimedia.org/wikipedia/commons/6/69/Continental_wordmark.svg,CONTINENTAL
+3,5,43,112,,1,$148 (reg $153),Save $5 per tire!,37,3,5,0,1,Yes,15509360000,PureContact LS,260,153,148,7,0,https://upload.wikimedia.org/wikipedia/commons/6/69/Continental_wordmark.svg,CONTINENTAL
 7,20,0,-261,,1,$261 (reg $281),Save $20 per tire!,162,7,20,0,1,Yes,110140651,ADVAN SPORT A/S+,0,281,261,8,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 10,19,0,-162,💵 ON SALE,2,$162 (reg $181),Save $19 per tire!,57,10,19,0,1,Yes,110132828,AVID ASCEND LX,0,181,162,3,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
-6,15,0,-220,,1,$220 (reg $236),Save $15 per tire!,15,6,15,0,1,Yes,110140653,ADVAN SPORT A/S+,0,236,220,1,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 19,49,0,-211,💵 ON SALE,2,$211 (reg $261),Save $49 per tire!,294,19,49,0,1,Yes,110170164,ADVAN FLEVA,0,261,211,6,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 13,31,0,-204,💵 ON SALE,2,$204 (reg $235),Save $31 per tire!,186,13,31,0,1,Yes,110105664,GEOLANDAR H/T G056,0,235,204,6,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 12,22,0,-164,💵 ON SALE,2,$164 (reg $186),Save $22 per tire!,263,12,22,0,1,Yes,110140616,ADVAN SPORT A/S+,0,186,164,12,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
@@ -37,7 +37,6 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 24,119,0,-373,⭐ GOOD DEAL,3,$373 (reg $492),Save $119 per tire!,595,24,119,0,1,Yes,110116036,GEOLANDAR X-AT,0,492,373,5,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 9,26,0,-271,,1,$271 (reg $297),Save $26 per tire!,130,9,26,0,1,Yes,110116028,GEOLANDAR X-AT,0,297,271,5,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 7,7,48,82,,1,$89 (reg $95),Save $7 per tire!,34,7,7,0,1,Yes,K832190,MIDAS,170,95,89,5,0,,FORERUNNER
-11,29,0,-245,💵 ON SALE,2,$245 (reg $275),Save $29 per tire!,117,11,29,0,1,Yes,110110549,ADVAN SPORT V105,0,275,245,4,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 12,17,0,-127,💵 ON SALE,2,$127 (reg $144),Save $17 per tire!,183,12,17,0,1,Yes,110132714,AVID ASCEND GT,0,144,127,11,0,https://upload.wikimedia.org/wikipedia/commons/b/b7/Yokohama_Tire_new_logo.svg,Yokohama
 2,5,44,195,,1,$247 (reg $252),Save $5 per tire!,127,2,5,0,1,Yes,04508020000,Grabber APT,442,252,247,24,0,,GENERAL
 2,5,44,194,,1,$245 (reg $250),Save $5 per tire!,53,2,5,0,1,Yes,04507980000,Grabber APT,439,250,245,10,0,,GENERAL
@@ -53,7 +52,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 0,0,46,142,,1,$167,,0,0,0,0,1,Yes,B608680,BV11+,309,167,167,53,0,,BOTO
 3,7,43,143,,1,$189 (reg $196),Save $7 per tire!,47,3,7,0,1,Yes,15508370000,PureContact LS,332,196,189,7,0,https://upload.wikimedia.org/wikipedia/commons/6/69/Continental_wordmark.svg,CONTINENTAL
 1,2,43,99,,1,$131 (reg $133),Save $2 per tire!,32,1,2,0,1,Yes,15571170000,PureContact LS,230,133,131,19,0,https://upload.wikimedia.org/wikipedia/commons/6/69/Continental_wordmark.svg,CONTINENTAL
-8,15,0,-173,,1,$173 (reg $188),Save $15 per tire!,240,8,15,0,1,Yes,D226760,IA-207,0,188,173,16,0,,DELIUM
+8,15,0,-173,,1,$173 (reg $188),Save $15 per tire!,180,8,15,0,1,Yes,D226760,IA-207,0,188,173,12,0,,DELIUM
 0,0,46,123,,1,$145,,0,0,0,0,1,Yes,B586675,SASQUA H/T,269,145,145,53,0,,BOTO
 27,445,0,-1229,⭐ GOOD DEAL,3,"$1,229 (reg $1,674)",Save $445 per tire!,3118,27,445,0,1,Yes,B101012,GCB3,0,1674,1229,7,0,,BOTO
 3,8,43,169,,1,$224 (reg $232),Save $8 per tire!,55,3,8,0,1,Yes,03594630000,CrossContact ATR,393,232,224,7,0,https://upload.wikimedia.org/wikipedia/commons/6/69/Continental_wordmark.svg,CONTINENTAL
