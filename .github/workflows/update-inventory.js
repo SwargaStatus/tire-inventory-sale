@@ -74,7 +74,7 @@ function generateHTML(items) {
     .container{max-width:1200px;margin:0 auto;padding:0}
     .header{background:linear-gradient(135deg,var(--primary) 0%,#1e4f72 100%);color:#fff;padding:20px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.1);margin-bottom:0}
     .header h1{margin:0;font-size:1.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px}
-    .company-logo {height: 44px;filter: drop-shadow(0 0 3px white); /* adds subtle outline glow */}
+    .company-logo {height: 54px;background: white;border-radius: 50%;padding: 4px;filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.2));}
     .update-time{font-size:0.8rem;opacity:0.8;font-weight:400}
     .stats{display:flex;flex-wrap:wrap;justify-content:center;gap:28px;padding:18px;background:#fff;margin:16px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
     .stats div{text-align:center;min-width:100px}
