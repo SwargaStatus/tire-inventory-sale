@@ -83,7 +83,7 @@
   <div class="container">
     <div class="header">
       <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Live Deals</h1>
-      <div class="update-time">Updated: 5/29/2025, 6:20:22 PM</div>
+      <div class="update-time">Updated: 5/29/2025, 6:38:38 PM</div>
     </div>
     
     <div class="stats">
@@ -140,17 +140,23 @@
       if (item.tireSize) details += ' • Size: ' + item.tireSize;
       if (item.tireType) details += ' • ' + item.tireType;
       
-      return '<div class="card" data-manufacturer="' + item.manufacturer + '">' +
+      return '<div class="card" data-manufacturer="' + escapeHtml(item.manufacturer) + '">' +
         '<div class="badge badge-' + badgeType + '">' + item.disc + '% OFF</div>' +
         '<div class="content">' + 
-        (item.logo ? '<img src="' + item.logo + '" class="logo" alt="' + item.manufacturer + '">' : '') +
-        '<div class="title">' + item.model + '</div>' +
-        '<div class="details">' + details + '</div>' +
+        (item.logo ? '<img src="' + escapeHtml(item.logo) + '" class="logo" alt="' + escapeHtml(item.manufacturer) + '">' : '') +
+        '<div class="title">' + escapeHtml(item.model) + '</div>' +
+        '<div class="details">' + escapeHtml(details) + '</div>' +
         '<div class="pricing">' + priceHtml + '</div>' +
         '<div class="save">Save $' + item.save + '</div>' +
         '<div class="stock stock-' + stockClass + '">Qty: ' + item.stock + '</div>' +
-        '<button class="btn-add-quote" onclick="addToQuote('' + item.item + '')">Add to Quote</button>' +
+        '<button class="btn-add-quote" onclick="addToQuote(\'' + escapeHtml(item.item) + '\')">Add to Quote</button>' +
         '</div></div>';
+    }
+
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     function render() {
@@ -285,13 +291,13 @@
       var html = '<h3>Items:</h3>';
       quoteItems.forEach(function(item) {
         html += '<div class="quote-item">' +
-          '<div><strong>' + item.manufacturer + ' ' + item.model + '</strong><br>Item: ' + item.item + ' • $' + item.sale + ' each</div>' +
+          '<div><strong>' + escapeHtml(item.manufacturer) + ' ' + escapeHtml(item.model) + '</strong><br>Item: ' + escapeHtml(item.item) + ' • $' + item.sale + ' each</div>' +
           '<div class="quantity-controls">' +
-          '<button class="qty-btn" onclick="updateQuantity('' + item.item + '', ' + (item.quantity - 1) + ')">−</button>' +
-          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity('' + item.item + '', this.value)">' +
-          '<button class="qty-btn" onclick="updateQuantity('' + item.item + '', ' + (item.quantity + 1) + ')">+</button>' +
+          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity - 1) + ')">−</button>' +
+          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + escapeHtml(item.item) + '\', this.value)">' +
+          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity + 1) + ')">+</button>' +
           '<small style="margin-left:8px">/ ' + item.stock + '</small>' +
-          '<button class="remove-item" onclick="removeFromQuote('' + item.item + '')">×</button>' +
+          '<button class="remove-item" onclick="removeFromQuote(\'' + escapeHtml(item.item) + '\')">×</button>' +
           '</div></div>';
       });
       container.innerHTML = html;
