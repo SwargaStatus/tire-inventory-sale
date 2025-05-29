@@ -153,27 +153,22 @@ function generateHTML(items) {
   display: flex;
   flex-direction: column;
   max-height: calc(100vh - 2rem);  /* leave a little breathing room at top */
+  overflow: visible !important;    /* override the old scrolling behavior */
 }
+
 .quote-items {
   flex: 1;
-  overflow-y: auto;                /* scroll only the items list */
+  overflow-y: auto;                /* only the items list scrolls now */
 }
+
 .quote-form {
   margin-top: auto;                /* push the form to the bottom */
   position: sticky;
   bottom: 0;
-  background: #fff;                /* match your modal background */
+  background: #fff;                /* match modal bg */
   padding: 1rem;
   box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
   z-index: 1;
-}
-
-/* —— Give your logo a “pop” —— */
-.company-logo {
-  background: #fff;                /* white circle behind it */
-  padding: 0.5rem;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
   </style>
 </head>
