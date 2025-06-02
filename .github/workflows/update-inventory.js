@@ -128,7 +128,7 @@ function generateHTML(items) {
     .quote-modal-content{background:white;margin:5% auto;padding:20px;width:90%;max-width:600px;border-radius:8px;max-height:80vh;overflow-y:auto}
     .quote-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
     .quote-form{margin-top:20px;padding-top:20px;border-top:2px solid #eee}
-    .quote-form input,.quote-form textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;font-size:16px}
+    .quote-form input,.quote-form textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}
     .submit-quote{background:#27ae60;color:white;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-weight:bold;width:100%}
     .close-modal{float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#aaa}
     .remove-item{background:#e74c3c;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px}
@@ -502,20 +502,28 @@ function generateHTML(items) {
         headers: {'Accept': 'application/json'}
       })
       .then(function(response) {
-        if (response.ok) {
-          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
-          submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-          showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
-          confetti({ particleCount: 140, spread: 70, origin: { y: 0.6 }, zIndex: 4000 });
-          setTimeout(function() {
-            quoteItems = [];
-            updateQuoteCounter();
-            closeQuoteModal();
-            submitBtn.innerHTML = 'Request Quote';
-            submitBtn.style.background = '';
-            submitBtn.disabled = false;
-          }, 3000);
-        } else {
+      if (response.ok) {
+        submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+        submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+        
+        // Create beautiful success overlay
+        showSuccessOverlay();
+        confetti({ particleCount: 140, spread: 70, origin: { y: 0.6 }, zIndex: 4000 });
+        
+        // More confetti after a delay for extra celebration
+        setTimeout(function() {
+          confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 }, zIndex: 4000 });
+        }, 400);
+        
+        setTimeout(function() {
+          quoteItems = [];
+          updateQuoteCounter();
+          closeQuoteModal();
+          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.style.background = '';
+          submitBtn.disabled = false;
+        }, 4000);
+      } else {
           var subject = 'Tire Quote - ' + name;
           var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
           window.open(mailtoLink, '_blank');
