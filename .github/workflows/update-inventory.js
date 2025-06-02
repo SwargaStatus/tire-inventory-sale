@@ -595,7 +595,10 @@ function generateHTML(items) {
       })
       .then(function(response) {
         if (response.ok) {
-          // Immediately show the impressive full-screen success
+          // Update button text immediately
+          submitBtn.innerHTML = 'Quote Sent!';
+          
+          // Show overlay and confetti
           showSuccessOverlay();
           
           // Massive confetti celebration
@@ -659,10 +662,9 @@ function generateHTML(items) {
     }
     function showSuccessOverlay() {
       // Remove any existing overlay
-      var existingOverlay = document.querySelector('.success-overlay');
-      if (existingOverlay) {
-        document.body.removeChild(existingOverlay);
-      }
+      document.querySelectorAll('.success-overlay').forEach(function(el) {
+        el.remove();
+      });
       
       // Create new overlay
       var overlay = document.createElement('div');
@@ -678,20 +680,16 @@ function generateHTML(items) {
       
       document.body.appendChild(overlay);
       
-      // Show with animation
-      setTimeout(function() {
+      // First frame: element exists with opacity:0
+      requestAnimationFrame(function() {
+        // Second frame: toggle the class - now a real change
         overlay.classList.add('show');
-      }, 100);
+      });
       
-      // Auto-remove after 4 seconds
+      // Auto-remove after 4.5 seconds to match cleanup timing
       setTimeout(function() {
-        overlay.classList.remove('show');
-        setTimeout(function() {
-          if (document.body.contains(overlay)) {
-            document.body.removeChild(overlay);
-          }
-        }, 500);
-      }, 3500);
+        overlay.remove();
+      }, 4500);
     }
     function initializeApp() {
       console.log('📊 Initializing with', items.length, 'items');
@@ -767,4 +765,3 @@ async function main() {
 }
 
 main();
-
