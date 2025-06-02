@@ -125,99 +125,89 @@ function generateHTML(items) {
     .success-notification::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);animation:confetti 2s linear infinite}
     @keyframes confetti{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
     .success-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 5000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: all 0.5s ease;
-}
-
-.success-overlay.show {
-  opacity: 1;
-}
-
-.success-message {
-  background: linear-gradient(135deg, #27ae60, #2ecc71);
-  color: white;
-  padding: 40px 50px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(39, 174, 96, 0.4);
-  transform: scale(0.8) translateY(50px);
-  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  max-width: 500px;
-  margin: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.success-overlay.show .success-message {
-  transform: scale(1) translateY(0);
-}
-
-.success-message::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(255, 255, 255, 0.1) 10px,
-    rgba(255, 255, 255, 0.1) 20px
-  );
-  animation: sparkle 3s linear infinite;
-}
-
-@keyframes sparkle {
-  0% { transform: translateX(-100%) translateY(-100%); }
-  100% { transform: translateX(100%) translateY(100%); }
-}
-
-.success-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  display: block;
-  animation: bounce 1s ease infinite alternate;
-}
-
-@keyframes bounce {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-10px); }
-}
-
-.success-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 15px;
-  position: relative;
-  z-index: 1;
-}
-
-.success-text {
-  font-size: 1.2rem;
-  line-height: 1.5;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 1;
-}
-
-.success-subtext {
-  font-size: 1rem;
-  opacity: 0.9;
-  position: relative;
-  z-index: 1;
-}
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 5000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+    .success-overlay.show {
+      opacity: 1;
+    }
+    .success-message {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: white;
+      padding: 40px 50px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(39, 174, 96, 0.4);
+      transform: scale(0.8) translateY(50px);
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      max-width: 500px;
+      margin: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .success-overlay.show .success-message {
+      transform: scale(1) translateY(0);
+    }
+    .success-message::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 255, 255, 0.1) 10px,
+        rgba(255, 255, 255, 0.1) 20px
+      );
+      animation: sparkle 3s linear infinite;
+    }
+    @keyframes sparkle {
+      0% { transform: translateX(-100%) translateY(-100%); }
+      100% { transform: translateX(100%) translateY(100%); }
+    }
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      display: block;
+      animation: bounce 1s ease infinite alternate;
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
+    .success-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 1;
+    }
+    .success-text {
+      font-size: 1.2rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .success-subtext {
+      font-size: 1rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
     .quote-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000}
     .quote-modal-content{background:white;margin:5% auto;padding:20px;width:90%;max-width:600px;border-radius:8px;max-height:80vh;overflow-y:auto}
     .quote-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
@@ -243,62 +233,53 @@ function generateHTML(items) {
       .stats .label{font-size:0.8rem}
     }
     @media (max-width: 768px) {
-  .container{               /* your existing wrapper */
-    padding-left: 12px;     /* 12-16 px feels like a native-app gutter   */
-    padding-right: 12px;    /* keeps the iframe / cards off the screen edge */
-  }
-}
-
+      .container{padding-left: 12px;padding-right: 12px;}
+    }
     @media (max-width:768px){
       .quote-modal-content{
-        width: calc(100% - 24px); /* 12-px left + right gutter   */
-        margin: 5% auto;          /* still vertically centred    */
-        box-sizing:border-box;    /* so padding doesn’t add size */
+        width: calc(100% - 24px);
+        margin: 5% auto;
+        box-sizing:border-box;
         padding-left:12px;
         padding-right:12px;
       }
     }
-
     #quote-items{
-    flex:1 1 auto;
-    overflow-y:auto;            /* already there, keep it      */
-    padding-right:4px;          /* tiny room for scrollbar     */
-  }
-  
-  .quote-item>div:first-child{
-    flex:1 1 60%;               /* text can take multiple lines*/
-    word-break:break-word;
-  }
-  
-  .quote-item{
-    gap:8px;                    /* a little breathing room     */
-    align-items:flex-start;     /* text tops align with buttons*/
-  }
-  .quote-form{
-    flex:0 0 auto;            /* form stays at the bottom                   */
-    padding-bottom:8px;
-    background:#fff;          /* white strip so it isn’t floating           */
-    box-shadow:0 -2px 6px rgba(0,0,0,.08);
-  }
-  .submit-quote{              /* full-width CTA bar                        */
-    position:sticky;          /* sticks within the modal, not the viewport */
-    bottom:0;
-    width:100%;
-    border-radius:0;          /* square edges look like a native footer     */
-  }
-    /* keep minus / input / plus vertically centred */
-  .quantity-controls{
-    align-items:center;
-  }
-  
-  .quantity-controls small{
-    font-size:.75rem;      /* a hair smaller looks intentional      */
-    line-height:1;         /* kills extra baseline drift            */
-    align-self:center;     /* centres the “/4” vertically           */
-  }
+      flex:1 1 auto;
+      overflow-y:auto;
+      padding-right:4px;
+    }
+    .quote-item>div:first-child{
+      flex:1 1 60%;
+      word-break:break-word;
+    }
+    .quote-item{
+      gap:8px;
+      align-items:flex-start;
+    }
+    .quote-form{
+      flex:0 0 auto;
+      padding-bottom:8px;
+      background:#fff;
+      box-shadow:0 -2px 6px rgba(0,0,0,.08);
+    }
+    .submit-quote{
+      position:sticky;
+      bottom:0;
+      width:100%;
+      border-radius:0;
+    }
+    .quantity-controls{
+      align-items:center;
+    }
+    .quantity-controls small{
+      font-size:.75rem;
+      line-height:1;
+      align-self:center;
+    }
     body.modal-open{
-    overflow:hidden;   /* body can’t scroll, modal can            */
-  }
+      overflow:hidden;
+    }
   </style>
   <!-- Confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -391,10 +372,6 @@ function generateHTML(items) {
     }
 
     function render() {
-      console.log('🔄 Render function called');
-      console.log('📊 Total items available:', items.length);
-      
-      // Get filter values
       var searchBar = document.getElementById('search-bar');
       var manufacturerSelect = document.getElementById('filter-manufacturer');
       
@@ -405,9 +382,6 @@ function generateHTML(items) {
       
       var searchTerm = searchBar.value.toLowerCase();
       var mf = manufacturerSelect.value;
-      
-      console.log('🔍 Search term:', searchTerm);
-      console.log('🏭 Manufacturer filter:', mf);
       
       var filtered = items.filter(function(i) {
         var searchableText = [
@@ -426,14 +400,7 @@ function generateHTML(items) {
         return matchesSearch && matchesManufacturer;
       });
       
-      console.log('✅ Filtered items count:', filtered.length);
-      
-      // Generate cards HTML
       var cardHTML = filtered.slice(0, 50).map(renderCard).join('');
-      console.log('📝 Generated HTML length:', cardHTML.length);
-      console.log('🎯 First card preview:', cardHTML.substring(0, 200) + '...');
-      
-      // Insert into DOM
       var container = document.getElementById('card-container');
       if (!container) {
         console.error('❌ Card container not found!');
@@ -441,8 +408,6 @@ function generateHTML(items) {
       }
       
       container.innerHTML = cardHTML;
-      console.log('✅ Cards inserted into DOM');
-      
       updateFilteredStats(filtered);
     }
 
@@ -551,129 +516,13 @@ function generateHTML(items) {
       }, 4000);
     }
 
-    function submitQuote() {
-    var name    = document.getElementById('customer-name').value;
-    var email   = document.getElementById('customer-email').value;
-    var phone   = document.getElementById('customer-phone').value;
-    var company = document.getElementById('customer-company').value;
-    var notes   = document.getElementById('customer-notes').value;
-
-    if (!name || !email) {
-      alert('Please fill in your name and email.');
-      return;
-    }
-
-    var submitBtn = document.querySelector('.submit-quote');
-    submitBtn.innerHTML = 'Sending…';
-    submitBtn.disabled = true;
-
-    // Build a single string summary for “message”
-    var tireDetails = quoteItems.map(function(item, index) {
-      return (index + 1) + '. Item: ' + item.item + ' - Qty: ' + item.quantity;
-    }).join('\n');
-
-    var quoteSummary =
-      'TIRE QUOTE REQUEST\n\n' +
-      'CUSTOMER:\n' +
-      '  Name: ' + name + '\n' +
-      '  Email: ' + email + '\n' +
-      '  Phone: ' + (phone || 'Not provided') + '\n' +
-      '  Company: ' + (company || 'Not provided') + '\n\n' +
-      'ITEMS:\n' + tireDetails + '\n\n' +
-      'NOTES: ' + (notes || 'None');
-
-    // Build FormData exactly per Formspree’s requirements:
-    var formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('phone', phone);
-    formData.append('company', company);
-    formData.append('items', tireDetails);
-    formData.append('notes', notes);
-
-    // ── THESE ARE THE CRITICAL FIELDS ──
-    formData.append('message', quoteSummary);
-    formData.append('_subject', 'Tire Quote – ' + name);
-    formData.append('_replyto', email);
-
-    fetch('https://formspree.io/f/xdkgqyzr', {
-      method: 'POST',
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(function(response) {
-      console.log('Formspree returned:', response.status, response.ok);
-
-      if (response.ok) {
-        // ── SUCCESS PATH: show notification + confetti + reset ──
-        submitBtn.innerText = '🎉 Sent!';
-        submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-
-        showSuccessNotification('Quote sent! We will be in touch shortly.');
-        confetti({ particleCount: 140, spread: 70, origin: { y: 0.6 }, zIndex: 4000 });
-        setTimeout(() => {
-          confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 }, zIndex: 4000 });
-        }, 400);
-
-        setTimeout(() => {
-          quoteItems = [];
-          updateQuoteCounter();
-          closeQuoteModal();
-          submitBtn.innerText = 'Request Quote';
-          submitBtn.style.background = '';
-          submitBtn.disabled = false;
-        }, 3000);
-
-      } else {
-        // ── NON-2xx: fallback to mailto ──
-        var subject = 'Tire Quote – ' + name;
-        var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject='
-          + encodeURIComponent(subject)
-          + '&body=' + encodeURIComponent(quoteSummary);
-        window.open(mailtoLink, '_blank');
-        submitBtn.innerHTML = 'Request Quote';
-        submitBtn.disabled = false;
-      }
-    })
-    .catch(function(err) {
-      // ── NETWORK or JS ERROR: fallback to mailto ──
-      console.error('Fetch error:', err);
-      var subject = 'Tire Quote – ' + name;
-      var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject='
-        + encodeURIComponent(subject)
-        + '&body=' + encodeURIComponent(quoteSummary);
-      window.open(mailtoLink, '_blank');
-      submitBtn.innerHTML = 'Request Quote';
-      submitBtn.disabled = false;
-    });
-  }
-
-    // Wait for DOM to be ready, then initialize
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 DOM loaded, initializing...');
-        initializeApp();
-      });
-    } else {
-      console.log('🚀 DOM already ready, initializing...');
-      initializeApp();
-    }
-        function openQuoteModal(){
-      updateQuoteModal();
-      document.getElementById('quote-modal').style.display='block';
-      document.body.classList.add('modal-open');        // NEW
-    }
-
-    function closeQuoteModal(){
-      document.getElementById('quote-modal').style.display='none';
-      document.body.classList.remove('modal-open');     // NEW
-    }
     function showSuccessOverlay() {
+      console.log('🎯 showSuccessOverlay called');
+      
       // Remove any existing overlay
-      var existingOverlay = document.querySelector('.success-overlay');
-      if (existingOverlay) {
-        document.body.removeChild(existingOverlay);
-      }
+      document.querySelectorAll('.success-overlay').forEach(function(el) {
+        el.remove();
+      });
       
       // Create new overlay
       var overlay = document.createElement('div');
@@ -688,22 +537,127 @@ function generateHTML(items) {
         '</div>';
       
       document.body.appendChild(overlay);
+      console.log('✅ overlay appended');
       
-      // Show with animation
-      setTimeout(function() {
+      // First frame: element exists with opacity:0
+      requestAnimationFrame(function() {
+        // Second frame: toggle the class - now a real change
         overlay.classList.add('show');
-      }, 100);
+        console.log('✅ .show class added');
+      });
       
-      // Auto-remove after 4 seconds
+      // Auto-remove after 4.5 seconds
       setTimeout(function() {
-        overlay.classList.remove('show');
-        setTimeout(function() {
-          if (document.body.contains(overlay)) {
-            document.body.removeChild(overlay);
-          }
-        }, 500);
-      }, 3500);
+        overlay.remove();
+        console.log('🗑️ overlay removed');
+      }, 4500);
     }
+
+    function submitQuote() {
+      var name = document.getElementById('customer-name').value;
+      var email = document.getElementById('customer-email').value;
+      var phone = document.getElementById('customer-phone').value;
+      var company = document.getElementById('customer-company').value;
+      var notes = document.getElementById('customer-notes').value;
+      
+      if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+      }
+      
+      var submitBtn = document.querySelector('.submit-quote');
+      submitBtn.innerHTML = 'Sending...';
+      submitBtn.disabled = true;
+      
+      var tireDetails = quoteItems.map(function(item, index) {
+        return (index + 1) + '. Item: ' + item.item + ' - Qty: ' + item.quantity;
+      }).join('\\n');
+      
+      var quoteSummary = 'TIRE QUOTE REQUEST\\n\\n' +
+        'CUSTOMER:\\n' +
+        'Name: ' + name + '\\n' +
+        'Email: ' + email + '\\n' +
+        'Phone: ' + (phone || 'Not provided') + '\\n' +
+        'Company: ' + (company || 'Not provided') + '\\n\\n' +
+        'ITEMS:\\n' + tireDetails + '\\n\\n' +
+        'NOTES: ' + (notes || 'None');
+      
+      var formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('company', company);
+        formData.append('items', tireDetails);
+        formData.append('notes', notes);
+
+      fetch('https://formspree.io/f/xdkgqyzr', {
+        method: 'POST',
+        body: formData,
+        headers: {'Accept': 'application/json'}
+      })
+      .then(function(response) {
+        if (response.ok) {
+          // Update button text immediately
+          submitBtn.innerHTML = 'Quote Sent!';
+          
+          // Close modal FIRST to avoid stacking context issues
+          closeQuoteModal();
+          
+          // Then show overlay and confetti
+          requestAnimationFrame(function() {
+            showSuccessOverlay();
+          });
+          
+          // Massive confetti celebration
+          confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, zIndex: 4000 });
+          
+          // More confetti waves
+          setTimeout(function() {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.7 }, zIndex: 4000 });
+          }, 300);
+          
+          setTimeout(function() {
+            confetti({ particleCount: 100, spread: 60, origin: { y: 0.5 }, zIndex: 4000 });
+          }, 600);
+          
+          // Clean up after 5 seconds
+          setTimeout(function() {
+            quoteItems = [];
+            updateQuoteCounter();
+            closeQuoteModal();
+            submitBtn.innerHTML = 'Request Quote';
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+          }, 5000);
+        } else {
+          var subject = 'Tire Quote - ' + name;
+          var simpleBody = 'Customer: ' + name + ' (' + email + ')\\nItems: ' + tireDetails + (notes ? '\\nNotes: ' + notes : '');
+          var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
+          window.open(mailtoLink, '_blank');
+          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(function() {
+        var subject = 'Tire Quote - ' + name;
+        var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
+        window.open(mailtoLink, '_blank');
+        submitBtn.innerHTML = 'Request Quote';
+        submitBtn.disabled = false;
+      });
+    }
+
+    function openQuoteModal(){
+      updateQuoteModal();
+      document.getElementById('quote-modal').style.display='block';
+      document.body.classList.add('modal-open');
+    }
+
+    function closeQuoteModal(){
+      document.getElementById('quote-modal').style.display='none';
+      document.body.classList.remove('modal-open');
+    }
+
     function initializeApp() {
       console.log('📊 Initializing with', items.length, 'items');
       
@@ -729,6 +683,17 @@ function generateHTML(items) {
       
       // Initial render
       render();
+    }
+
+    // Wait for DOM to be ready, then initialize
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 DOM loaded, initializing...');
+        initializeApp();
+      });
+    } else {
+      console.log('🚀 DOM already ready, initializing...');
+      initializeApp();
     }
   </script>
 </body>
@@ -769,7 +734,7 @@ async function main() {
     
     console.log('✅ Website updated successfully!');
     console.log(`📈 ${items.length} deals processed`);
-    console.log('🎯 Features: search, filters, quote system, responsive design');
+    console.log('🎯 Features: search, filters, quote system, responsive design, success overlay');
     
   } catch (error) {
     console.error('❌ Error:', error.message);
