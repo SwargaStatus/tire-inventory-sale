@@ -60,11 +60,105 @@
     .success-notification{background:linear-gradient(135deg,#3498db,#2980b9);padding:20px 25px;border-radius:12px;box-shadow:0 8px 32px rgba(52,152,219,0.4);position:relative;overflow:hidden}
     .success-notification::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);animation:confetti 2s linear infinite}
     @keyframes confetti{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    .success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.success-overlay.show {
+  opacity: 1;
+}
+
+.success-message {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  padding: 40px 50px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(39, 174, 96, 0.4);
+  transform: scale(0.8) translateY(50px);
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  max-width: 500px;
+  margin: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.success-overlay.show .success-message {
+  transform: scale(1) translateY(0);
+}
+
+.success-message::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.1) 10px,
+    rgba(255, 255, 255, 0.1) 20px
+  );
+  animation: sparkle 3s linear infinite;
+}
+
+@keyframes sparkle {
+  0% { transform: translateX(-100%) translateY(-100%); }
+  100% { transform: translateX(100%) translateY(100%); }
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  display: block;
+  animation: bounce 1s ease infinite alternate;
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
+.success-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.success-text {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.success-subtext {
+  font-size: 1rem;
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
+}
     .quote-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000}
     .quote-modal-content{background:white;margin:5% auto;padding:20px;width:90%;max-width:600px;border-radius:8px;max-height:80vh;overflow-y:auto}
     .quote-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
     .quote-form{margin-top:20px;padding-top:20px;border-top:2px solid #eee}
-    .quote-form input,.quote-form textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}
+    .quote-form input,.quote-form textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;font-size:16px}
     .submit-quote{background:#27ae60;color:white;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-weight:bold;width:100%}
     .close-modal{float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#aaa}
     .remove-item{background:#e74c3c;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px}
@@ -149,7 +243,7 @@
   <div class="container">
     <div class="header">
       <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Bargain Bin</h1>
-      <div class="update-time">Updated: 2025-06-02, 1:32 p.m.</div>
+      <div class="update-time">Updated: 2025-06-02, 1:42 p.m.</div>
     </div>
     
     <div class="stats">
@@ -394,87 +488,113 @@
     }
 
     function submitQuote() {
-      var name = document.getElementById('customer-name').value;
-      var email = document.getElementById('customer-email').value;
-      var phone = document.getElementById('customer-phone').value;
-      var company = document.getElementById('customer-company').value;
-      var notes = document.getElementById('customer-notes').value;
-      
-      if (!name || !email) {
-        alert('Please fill in your name and email.');
-        return;
-      }
-      
-      var submitBtn = document.querySelector('.submit-quote');
-      submitBtn.innerHTML = 'Sending...';
-      submitBtn.disabled = true;
-      
-      var tireDetails = quoteItems.map(function(item, index) {
-        return (index + 1) + '. Item: ' + item.item + ' - Qty: ' + item.quantity;
-      }).join('\n');
-      
-      var quoteSummary = 'TIRE QUOTE REQUEST\n\n' +
-        'CUSTOMER:\n' +
-        'Name: ' + name + '\n' +
-        'Email: ' + email + '\n' +
-        'Phone: ' + (phone || 'Not provided') + '\n' +
-        'Company: ' + (company || 'Not provided') + '\n\n' +
-        'ITEMS:\n' + tireDetails + '\n\n' +
-        'NOTES: ' + (notes || 'None');
-      
-      var formData = new FormData();
-      formData.append('name', name);
-      formData.append('email', email);
-      formData.append('phone', phone);
-      formData.append('company', company);
-      formData.append('items', tireDetails);
-      formData.append('message', quoteSummary);
-      formData.append('_subject', 'Tire Quote - ' + name);
-      formData.append('_replyto', email);
-      
-      fetch('https://formspree.io/f/xdkgqyzr', {
-        method: 'POST',
-        body: formData,
-        headers: {'Accept': 'application/json'}
-      })
-      .then(function(response) {
+    var name    = document.getElementById('customer-name').value;
+    var email   = document.getElementById('customer-email').value;
+    var phone   = document.getElementById('customer-phone').value;
+    var company = document.getElementById('customer-company').value;
+    var notes   = document.getElementById('customer-notes').value;
+
+    if (!name || !email) {
+      alert('Please fill in your name and email.');
+      return;
+    }
+
+    var submitBtn = document.querySelector('.submit-quote');
+    submitBtn.innerHTML = 'Sending…';
+    submitBtn.disabled = true;
+
+    // Build a single string summary for “message”
+    var tireDetails = quoteItems.map(function(item, index) {
+      return (index + 1) + '. Item: ' + item.item + ' - Qty: ' + item.quantity;
+    }).join('
+');
+
+    var quoteSummary =
+      'TIRE QUOTE REQUEST
+
+' +
+      'CUSTOMER:
+' +
+      '  Name: ' + name + '
+' +
+      '  Email: ' + email + '
+' +
+      '  Phone: ' + (phone || 'Not provided') + '
+' +
+      '  Company: ' + (company || 'Not provided') + '
+
+' +
+      'ITEMS:
+' + tireDetails + '
+
+' +
+      'NOTES: ' + (notes || 'None');
+
+    // Build FormData exactly per Formspree’s requirements:
+    var formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('company', company);
+    formData.append('items', tireDetails);
+    formData.append('notes', notes);
+
+    // ── THESE ARE THE CRITICAL FIELDS ──
+    formData.append('message', quoteSummary);
+    formData.append('_subject', 'Tire Quote – ' + name);
+    formData.append('_replyto', email);
+
+    fetch('https://formspree.io/f/xdkgqyzr', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(response) {
+      console.log('Formspree returned:', response.status, response.ok);
+
       if (response.ok) {
-        submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+        // ── SUCCESS PATH: show notification + confetti + reset ──
+        submitBtn.innerText = '🎉 Sent!';
         submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-        
-        // Create beautiful success overlay
-        showSuccessOverlay();
+
+        showSuccessNotification('Quote sent! We will be in touch shortly.');
         confetti({ particleCount: 140, spread: 70, origin: { y: 0.6 }, zIndex: 4000 });
-        
-        // More confetti after a delay for extra celebration
-        setTimeout(function() {
+        setTimeout(() => {
           confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 }, zIndex: 4000 });
         }, 400);
-        
-        setTimeout(function() {
+
+        setTimeout(() => {
           quoteItems = [];
           updateQuoteCounter();
           closeQuoteModal();
-          submitBtn.innerHTML = 'Request Quote';
+          submitBtn.innerText = 'Request Quote';
           submitBtn.style.background = '';
           submitBtn.disabled = false;
-        }, 4000);
+        }, 3000);
+
       } else {
-          var subject = 'Tire Quote - ' + name;
-          var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
-          window.open(mailtoLink, '_blank');
-          submitBtn.innerHTML = 'Request Quote';
-          submitBtn.disabled = false;
-        }
-      })
-      .catch(function() {
-        var subject = 'Tire Quote - ' + name;
-        var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
+        // ── NON-2xx: fallback to mailto ──
+        var subject = 'Tire Quote – ' + name;
+        var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject='
+          + encodeURIComponent(subject)
+          + '&body=' + encodeURIComponent(quoteSummary);
         window.open(mailtoLink, '_blank');
         submitBtn.innerHTML = 'Request Quote';
         submitBtn.disabled = false;
-      });
-    }
+      }
+    })
+    .catch(function(err) {
+      // ── NETWORK or JS ERROR: fallback to mailto ──
+      console.error('Fetch error:', err);
+      var subject = 'Tire Quote – ' + name;
+      var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject='
+        + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(quoteSummary);
+      window.open(mailtoLink, '_blank');
+      submitBtn.innerHTML = 'Request Quote';
+      submitBtn.disabled = false;
+    });
+  }
 
     // Wait for DOM to be ready, then initialize
     if (document.readyState === 'loading') {
@@ -496,7 +616,42 @@
       document.getElementById('quote-modal').style.display='none';
       document.body.classList.remove('modal-open');     // NEW
     }
-    
+    function showSuccessOverlay() {
+      // Remove any existing overlay
+      var existingOverlay = document.querySelector('.success-overlay');
+      if (existingOverlay) {
+        document.body.removeChild(existingOverlay);
+      }
+      
+      // Create new overlay
+      var overlay = document.createElement('div');
+      overlay.className = 'success-overlay';
+      
+      overlay.innerHTML = 
+        '<div class="success-message">' +
+          '<div class="success-icon">🎉</div>' +
+          '<div class="success-title">Quote Sent Successfully!</div>' +
+          '<div class="success-text">Thank you for your quote request!</div>' +
+          '<div class="success-subtext">A sales representative will contact you shortly with pricing and availability.</div>' +
+        '</div>';
+      
+      document.body.appendChild(overlay);
+      
+      // Show with animation
+      setTimeout(function() {
+        overlay.classList.add('show');
+      }, 100);
+      
+      // Auto-remove after 4 seconds
+      setTimeout(function() {
+        overlay.classList.remove('show');
+        setTimeout(function() {
+          if (document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+          }
+        }, 500);
+      }, 3500);
+    }
     function initializeApp() {
       console.log('📊 Initializing with', items.length, 'items');
       
