@@ -62,7 +62,7 @@ function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
   const itemsJson = JSON.stringify(items);
   
-  return <!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -124,105 +124,11 @@ function generateHTML(items) {
     .success-notification{background:linear-gradient(135deg,#3498db,#2980b9);padding:20px 25px;border-radius:12px;box-shadow:0 8px 32px rgba(52,152,219,0.4);position:relative;overflow:hidden}
     .success-notification::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);animation:confetti 2s linear infinite}
     @keyframes confetti{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-    .success-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 5000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: all 0.5s ease;
-}
-
-.success-overlay.show {
-  opacity: 1;
-}
-
-.success-message {
-  background: linear-gradient(135deg, #27ae60, #2ecc71);
-  color: white;
-  padding: 40px 50px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(39, 174, 96, 0.4);
-  transform: scale(0.8) translateY(50px);
-  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  max-width: 500px;
-  margin: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.success-overlay.show .success-message {
-  transform: scale(1) translateY(0);
-}
-
-.success-message::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(255, 255, 255, 0.1) 10px,
-    rgba(255, 255, 255, 0.1) 20px
-  );
-  animation: sparkle 3s linear infinite;
-}
-
-@keyframes sparkle {
-  0% { transform: translateX(-100%) translateY(-100%); }
-  100% { transform: translateX(100%) translateY(100%); }
-}
-
-.success-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  display: block;
-  animation: bounce 1s ease infinite alternate;
-}
-
-@keyframes bounce {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-10px); }
-}
-
-.success-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 15px;
-  position: relative;
-  z-index: 1;
-}
-
-.success-text {
-  font-size: 1.2rem;
-  line-height: 1.5;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 1;
-}
-
-.success-subtext {
-  font-size: 1rem;
-  opacity: 0.9;
-  position: relative;
-  z-index: 1;
-}
     .quote-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000}
     .quote-modal-content{background:white;margin:5% auto;padding:20px;width:90%;max-width:600px;border-radius:8px;max-height:80vh;overflow-y:auto}
     .quote-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
     .quote-form{margin-top:20px;padding-top:20px;border-top:2px solid #eee}
-    .quote-form input,.quote-form textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;font-size:16px}
+    .quote-form input,.quote-form textarea{width:100%;padding:8px;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}
     .submit-quote{background:#27ae60;color:white;border:none;padding:12px 24px;border-radius:6px;cursor:pointer;font-weight:bold;width:100%}
     .close-modal{float:right;font-size:28px;font-weight:bold;cursor:pointer;color:#aaa}
     .remove-item{background:#e74c3c;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px}
@@ -325,7 +231,7 @@ function generateHTML(items) {
         <span class="filter-label">Manufacturer</span>
         <select id="filter-manufacturer">
           <option value="">All Manufacturers</option>
-          ${manufacturers.map(m => <option value="${m}">${m}</option>).join('')}
+          ${manufacturers.map(m => `<option value="${m}">${m}</option>`).join('')}
         </select>
       </div>
     </div>
@@ -581,13 +487,15 @@ function generateHTML(items) {
         'NOTES: ' + (notes || 'None');
       
       var formData = new FormData();
-        formData.append('name', name);
-        formData.append('email', email);
-        formData.append('phone', phone);
-        formData.append('company', company);
-        formData.append('items', tireDetails);
-        formData.append('notes', notes);
-
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('company', company);
+      formData.append('items', tireDetails);
+      formData.append('message', quoteSummary);
+      formData.append('_subject', 'Tire Quote - ' + name);
+      formData.append('_replyto', email);
+      
       fetch('https://formspree.io/f/xdkgqyzr', {
         method: 'POST',
         body: formData,
@@ -595,25 +503,10 @@ function generateHTML(items) {
       })
       .then(function(response) {
         if (response.ok) {
-          // Update button text immediately
-          submitBtn.innerHTML = 'Quote Sent!';
-          
-          // Show overlay and confetti
-          showSuccessOverlay();
-          
-          // Massive confetti celebration
-          confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, zIndex: 4000 });
-          
-          // More confetti waves
-          setTimeout(function() {
-            confetti({ particleCount: 150, spread: 80, origin: { y: 0.7 }, zIndex: 4000 });
-          }, 300);
-          
-          setTimeout(function() {
-            confetti({ particleCount: 100, spread: 60, origin: { y: 0.5 }, zIndex: 4000 });
-          }, 600);
-          
-          // Clean up after 5 seconds
+          submitBtn.innerHTML = '🎉 Quote Sent Successfully!';
+          submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+          showSuccessNotification('🎉 Quote sent successfully! We will contact you soon with pricing and availability.');
+          confetti({ particleCount: 140, spread: 70, origin: { y: 0.6 }, zIndex: 4000 });
           setTimeout(function() {
             quoteItems = [];
             updateQuoteCounter();
@@ -621,11 +514,10 @@ function generateHTML(items) {
             submitBtn.innerHTML = 'Request Quote';
             submitBtn.style.background = '';
             submitBtn.disabled = false;
-          }, 5000);
+          }, 3000);
         } else {
           var subject = 'Tire Quote - ' + name;
-          var simpleBody = 'Customer: ' + name + ' (' + email + ')\\nItems: ' + tireDetails + (notes ? '\\nNotes: ' + notes : '');
-          var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
+          var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
           window.open(mailtoLink, '_blank');
           submitBtn.innerHTML = 'Request Quote';
           submitBtn.disabled = false;
@@ -660,37 +552,7 @@ function generateHTML(items) {
       document.getElementById('quote-modal').style.display='none';
       document.body.classList.remove('modal-open');     // NEW
     }
-    function showSuccessOverlay() {
-      // Remove any existing overlay
-      document.querySelectorAll('.success-overlay').forEach(function(el) {
-        el.remove();
-      });
-      
-      // Create new overlay
-      var overlay = document.createElement('div');
-      overlay.className = 'success-overlay';
-      
-      overlay.innerHTML = 
-        '<div class="success-message">' +
-          '<div class="success-icon">🎉</div>' +
-          '<div class="success-title">Quote Sent Successfully!</div>' +
-          '<div class="success-text">Thank you for your quote request!</div>' +
-          '<div class="success-subtext">A sales representative will contact you shortly with pricing and availability.</div>' +
-        '</div>';
-      
-      document.body.appendChild(overlay);
-      
-      // First frame: element exists with opacity:0
-      requestAnimationFrame(function() {
-        // Second frame: toggle the class - now a real change
-        overlay.classList.add('show');
-      });
-      
-      // Auto-remove after 4.5 seconds to match cleanup timing
-      setTimeout(function() {
-        overlay.remove();
-      }, 4500);
-    }
+    
     function initializeApp() {
       console.log('📊 Initializing with', items.length, 'items');
       
@@ -719,7 +581,7 @@ function generateHTML(items) {
     }
   </script>
 </body>
-</html>;
+</html>`;
 }
 
 async function main() {
@@ -755,7 +617,7 @@ async function main() {
     fs.writeFileSync('index.html', html);
     
     console.log('✅ Website updated successfully!');
-    console.log(📈 ${items.length} deals processed);
+    console.log(`📈 ${items.length} deals processed`);
     console.log('🎯 Features: search, filters, quote system, responsive design');
     
   } catch (error) {
