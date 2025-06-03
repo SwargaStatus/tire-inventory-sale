@@ -224,7 +224,7 @@
   <div class="container">
     <div class="header">
       <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Bargain Bin</h1>
-      <div class="update-time">Updated: 2025-06-02, 2:19 p.m.</div>
+      <div class="update-time">Updated: 2025-06-02, 9:10 p.m.</div>
     </div>
     
     <div class="stats">
@@ -249,7 +249,7 @@
     
     <div class="grid" id="card-container"></div>
     
-    <div class="footer"><a href="tel:+12049854040">Call (204) 985-4040</a><a href="mailto:nileshn@sturgeontire.com">Get Quote</a></div>
+    <div class="footer"><a href="tel:+12049854040">Call (204) 985-4040</a><a href="mailto:sales@sturgeontire.com">Get Quote</a></div>
   </div>
   
   <div class="quote-counter" id="quote-counter" onclick="openQuoteModal()">
@@ -568,7 +568,7 @@
         } else {
           var subject = 'Tire Quote - ' + name;
           var simpleBody = 'Customer: ' + name + ' (' + email + ')\nItems: ' + tireDetails + (notes ? '\nNotes: ' + notes : '');
-          var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
+          var mailtoLink = 'mailto:sales@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
           window.open(mailtoLink, '_blank');
           submitBtn.innerHTML = 'Request Quote';
           submitBtn.disabled = false;
@@ -576,7 +576,7 @@
       })
       .catch(function() {
         var subject = 'Tire Quote - ' + name;
-        var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
+        var mailtoLink = 'mailto:sales@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
         window.open(mailtoLink, '_blank');
         submitBtn.innerHTML = 'Request Quote';
         submitBtn.disabled = false;

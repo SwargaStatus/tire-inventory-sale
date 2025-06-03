@@ -313,7 +313,7 @@ function generateHTML(items) {
     
     <div class="grid" id="card-container"></div>
     
-    <div class="footer"><a href="tel:+12049854040">Call (204) 985-4040</a><a href="mailto:nileshn@sturgeontire.com">Get Quote</a></div>
+    <div class="footer"><a href="tel:+12049854040">Call (204) 985-4040</a><a href="mailto:sales@sturgeontire.com">Get Quote</a></div>
   </div>
   
   <div class="quote-counter" id="quote-counter" onclick="openQuoteModal()">
@@ -632,7 +632,7 @@ function generateHTML(items) {
         } else {
           var subject = 'Tire Quote - ' + name;
           var simpleBody = 'Customer: ' + name + ' (' + email + ')\\nItems: ' + tireDetails + (notes ? '\\nNotes: ' + notes : '');
-          var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
+          var mailtoLink = 'mailto:sales@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
           window.open(mailtoLink, '_blank');
           submitBtn.innerHTML = 'Request Quote';
           submitBtn.disabled = false;
@@ -640,7 +640,7 @@ function generateHTML(items) {
       })
       .catch(function() {
         var subject = 'Tire Quote - ' + name;
-        var mailtoLink = 'mailto:nileshn@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
+        var mailtoLink = 'mailto:sales@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(quoteSummary);
         window.open(mailtoLink, '_blank');
         submitBtn.innerHTML = 'Request Quote';
         submitBtn.disabled = false;
