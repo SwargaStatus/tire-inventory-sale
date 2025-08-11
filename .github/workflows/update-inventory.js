@@ -62,12 +62,13 @@ function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
   const itemsJson = JSON.stringify(items);
   
-return <!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Sturgeon Tire Bargain Bin</title>
+  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛞</text></svg>">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3V20E24FLR"></script>
   <script>
@@ -90,10 +91,21 @@ return <!DOCTYPE html>
   </script>
   
   <script>
-  mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
-      debug: true,
-      ignore_dnt: true
-  });
+  // Wait for Mixpanel to load before initializing
+  function initMixpanel() {
+    if (window.mixpanel && window.mixpanel.init) {
+      mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
+        debug: true,
+        ignore_dnt: true
+      });
+    } else {
+      // Retry after a short delay if not loaded yet
+      setTimeout(initMixpanel, 100);
+    }
+  }
+  
+  // Start trying to initialize Mixpanel
+  initMixpanel();
   </script>
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
