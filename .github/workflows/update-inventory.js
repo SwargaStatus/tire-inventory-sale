@@ -499,14 +499,18 @@ function generateHTML(items) {
       }
       var html = '<h3>Items:</h3>';
       quoteItems.forEach(function(item) {
+        var escapedItem = item.item.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        var escapedManufacturer = item.manufacturer.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        var escapedModel = item.model.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        
         html += '<div class="quote-item">' +
-          '<div><strong>' + escapeHtml(item.manufacturer) + ' ' + escapeHtml(item.model) + '</strong><br>Item: ' + escapeHtml(item.item) + ' • $' + item.sale + ' each</div>' +
+          '<div><strong>' + escapedManufacturer + ' ' + escapedModel + '</strong><br>Item: ' + escapedItem + ' • $' + item.sale + ' each</div>' +
           '<div class="quantity-controls">' +
-          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity - 1) + ')">−</button>' +
-          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + escapeHtml(item.item) + '\', this.value)">' +
-          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity + 1) + ')">+</button>' +
+          '<button class="qty-btn" onclick="updateQuantity(\'' + escapedItem + '\', ' + (item.quantity - 1) + ')">−</button>' +
+          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + escapedItem + '\', this.value)">' +
+          '<button class="qty-btn" onclick="updateQuantity(\'' + escapedItem + '\', ' + (item.quantity + 1) + ')">+</button>' +
           '<small style="margin-left:8px">/ ' + item.stock + '</small>' +
-          '<button class="remove-item" onclick="removeFromQuote(\'' + escapeHtml(item.item) + '\')">×</button>' +
+          '<button class="remove-item" onclick="removeFromQuote(\'' + escapedItem + '\')">×</button>' +
           '</div></div>';
       });
       container.innerHTML = html;
@@ -719,26 +723,7 @@ function generateHTML(items) {
     }
   </script>
   
-  <!-- Mixpanel: load and init at end of body -->
-  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
-  <script>
-    // Wait for Mixpanel to load
-    function initMixpanel() {
-      if (window.mixpanel && window.mixpanel.init) {
-        mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
-          debug: true,
-          track_pageview: true,
-          persistence: 'localStorage'
-        });
-      } else {
-        // Retry after a short delay
-        setTimeout(initMixpanel, 100);
-      }
-    }
-    
-    // Start initialization
-    initMixpanel();
-  </script>
+
 </body>
 </html>`;
 }
