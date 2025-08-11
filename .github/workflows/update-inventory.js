@@ -610,15 +610,15 @@ function generateHTML(items) {
       
       var tireDetails = quoteItems.map(function(item, index) {
         return (index + 1) + '. Item: ' + item.item + ' - Qty: ' + item.quantity;
-      }).join('\\n');
+      }).join('\n');
       
-      var quoteSummary = 'TIRE QUOTE REQUEST\\n\\n' +
-        'CUSTOMER:\\n' +
-        'Name: ' + name + '\\n' +
-        'Email: ' + email + '\\n' +
-        'Phone: ' + (phone || 'Not provided') + '\\n' +
-        'Company: ' + (company || 'Not provided') + '\\n\\n' +
-        'ITEMS:\\n' + tireDetails + '\\n\\n' +
+      var quoteSummary = 'TIRE QUOTE REQUEST\n\n' +
+        'CUSTOMER:\n' +
+        'Name: ' + name + '\n' +
+        'Email: ' + email + '\n' +
+        'Phone: ' + (phone || 'Not provided') + '\n' +
+        'Company: ' + (company || 'Not provided') + '\n\n' +
+        'ITEMS:\n' + tireDetails + '\n\n' +
         'NOTES: ' + (notes || 'None');
       
       var formData = new FormData();
@@ -670,7 +670,7 @@ function generateHTML(items) {
           }, 5000);
         } else {
           var subject = 'Tire Quote - ' + name;
-          var simpleBody = 'Customer: ' + name + ' (' + email + ')\\nItems: ' + tireDetails + (notes ? '\\nNotes: ' + notes : '');
+          var simpleBody = 'Customer: ' + name + ' (' + email + ')\nItems: ' + tireDetails + (notes ? '\nNotes: ' + notes : '');
           var mailtoLink = 'mailto:sales@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
           window.open(mailtoLink, '_blank');
           submitBtn.innerHTML = 'Request Quote';
