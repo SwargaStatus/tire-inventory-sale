@@ -60,9 +60,12 @@ function escapeHtml(text) {
 
 function generateHTML(items) {
   const manufacturers = Array.from(new Set(items.map(i => i.manufacturer))).sort();
-  const itemsJson = JSON.stringify(items);
+  const itemsJson = JSON.stringify(items)
+    .replace(/</g, '\\u003C')      // prevents </script> breakage
+    .replace(/\u2028/g, '\\u2028') // line separator
+    .replace(/\u2029/g, '\\u2029'); // paragraph separator
   
-  return `<!DOCTYPE html>
+  return String.raw`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -86,12 +89,15 @@ function generateHTML(items) {
     })(window, document, "clarity", "script", "rtts9836eo");
   </script>
   
-  <!-- Mixpanel: loader + init in one -->
-  <script
-    src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"
-    onload="mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5',{debug:true,track_pageview:true,persistence:'localStorage'})"
-    defer
-  ></script>
+  <!-- Mixpanel: load and init before main script -->
+  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
+  <script>
+    mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
+      debug: true,
+      track_pageview: true,
+      persistence: 'localStorage'
+    });
+  </script>
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
