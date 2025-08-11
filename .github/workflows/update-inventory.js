@@ -89,15 +89,7 @@ function generateHTML(items) {
     })(window, document, "clarity", "script", "rtts9836eo");
   </script>
   
-  <!-- Mixpanel: load and init before main script -->
-  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
-  <script>
-    mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
-      debug: true,
-      track_pageview: true,
-      persistence: 'localStorage'
-    });
-  </script>
+
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
@@ -391,7 +383,7 @@ function generateHTML(items) {
         '<div class="pricing">' + priceHtml + '</div>' +
         '<div class="save">Save $' + item.save + '</div>' +
         '<div class="stock stock-' + stockClass + '">Qty: ' + item.stock + '</div>' +
-        '<button class="btn-add-quote" onclick="addToQuote(\\'' + escapeHtml(item.item) + '\\')">Add to Quote</button>' +
+        '<button class="btn-add-quote" onclick="addToQuote(\'' + escapeHtml(item.item) + '\')">Add to Quote</button>' +
         '</div></div>';
     }
 
@@ -724,6 +716,18 @@ function generateHTML(items) {
     } else {
       console.log('🚀 DOM already ready, initializing...');
       initializeApp();
+    }
+  </script>
+  
+  <!-- Mixpanel: load and init at end of body -->
+  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
+  <script>
+    if (window.mixpanel) {
+      mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
+        debug: true,
+        track_pageview: true,
+        persistence: 'localStorage'
+      });
     }
   </script>
 </body>
