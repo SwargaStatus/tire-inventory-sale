@@ -461,12 +461,17 @@ function generateHTML(items) {
       // Track quote addition
       if (typeof mixpanel !== 'undefined' && mixpanel.track) {
         try {
-          mixpanel.track('Item Added to Quote', {
+          mixpanel.track('item_added_to_quote', {
             'item_code': itemCode,
             'manufacturer': item.manufacturer,
             'model': item.model,
             'price': item.sale,
-            'discount': item.disc
+            'discount_percentage': item.disc,
+            'tire_size': item.tireSize || '',
+            'tire_type': item.tireType || '',
+            'is_winter_tire': item.isWinterTire || false,
+            'stock_quantity': item.stock,
+            'page': 'tire_bargain_bin'
           });
         } catch (error) {
           console.log("⚠️ Mixpanel tracking failed:", error);
@@ -483,13 +488,13 @@ function generateHTML(items) {
       // Track item removal from quote
       if (typeof mixpanel !== 'undefined' && mixpanel.track && removedItem) {
         try {
-          mixpanel.track('Item Removed from Quote', {
+          mixpanel.track('item_removed_from_quote', {
             'item_code': itemCode,
             'manufacturer': removedItem.manufacturer,
             'model': removedItem.model,
             'price': removedItem.sale,
             'quantity_removed': removedItem.quantity,
-            'timestamp': new Date().toISOString()
+            'page': 'tire_bargain_bin'
           });
         } catch (error) {
           console.log("⚠️ Mixpanel removal tracking failed:", error);
@@ -515,14 +520,14 @@ function generateHTML(items) {
         // Track quantity change
         if (typeof mixpanel !== 'undefined' && mixpanel.track && newQty !== oldQuantity) {
           try {
-            mixpanel.track('Quantity Changed', {
+            mixpanel.track('quantity_changed', {
               'item_code': itemCode,
               'manufacturer': quoteItems[itemIndex].manufacturer,
               'model': quoteItems[itemIndex].model,
               'old_quantity': oldQuantity,
               'new_quantity': newQty,
               'quantity_difference': newQty - oldQuantity,
-              'timestamp': new Date().toISOString()
+              'page': 'tire_bargain_bin'
             });
           } catch (error) {
             console.log("⚠️ Mixpanel quantity tracking failed:", error);
@@ -702,10 +707,11 @@ function generateHTML(items) {
           // Track successful quote submission
           if (typeof mixpanel !== 'undefined' && mixpanel.track) {
             try {
-              mixpanel.track('Quote Submitted Successfully', {
+              mixpanel.track('quote_submitted', {
                 'items_count': quoteItems.length,
                 'total_value': quoteItems.reduce(function(sum, item) { return sum + (item.sale * item.quantity); }, 0),
-                'customer_email': email
+                'customer_email': email,
+                'page': 'tire_bargain_bin'
               });
             } catch (error) {
               console.log("⚠️ Mixpanel tracking failed:", error);
@@ -747,10 +753,10 @@ function generateHTML(items) {
       // Track quote modal opened
       if (typeof mixpanel !== 'undefined' && mixpanel.track) {
         try {
-          mixpanel.track('Quote Modal Opened', {
+          mixpanel.track('quote_modal_opened', {
             'items_in_quote': quoteItems.length,
             'total_value': quoteItems.reduce(function(sum, item) { return sum + (item.sale * item.quantity); }, 0),
-            'timestamp': new Date().toISOString()
+            'page': 'tire_bargain_bin'
           });
         } catch (error) {
           console.log("⚠️ Mixpanel modal tracking failed:", error);
@@ -765,10 +771,10 @@ function generateHTML(items) {
       // Track quote modal closed
       if (typeof mixpanel !== 'undefined' && mixpanel.track) {
         try {
-          mixpanel.track('Quote Modal Closed', {
+          mixpanel.track('quote_modal_closed', {
             'items_in_quote': quoteItems.length,
             'total_value': quoteItems.reduce(function(sum, item) { return sum + (item.sale * item.quantity); }, 0),
-            'timestamp': new Date().toISOString()
+            'page': 'tire_bargain_bin'
           });
         } catch (error) {
           console.log("⚠️ Mixpanel modal tracking failed:", error);
@@ -784,34 +790,35 @@ function generateHTML(items) {
       var manufacturerSelect = document.getElementById('filter-manufacturer');
       
       if (searchBar && manufacturerSelect) {
-        // Track search queries
-        searchBar.addEventListener('input', function() {
-          var searchTerm = this.value.toLowerCase();
-          if (searchTerm.length > 2) { // Only track searches with 3+ characters
-            if (typeof mixpanel !== 'undefined' && mixpanel.track) {
-              try {
-                mixpanel.track('Search Query', {
-                  'search_term': searchTerm,
-                  'search_length': searchTerm.length,
-                  'timestamp': new Date().toISOString()
-                });
-              } catch (error) {
-                console.log("⚠️ Mixpanel search tracking failed:", error);
-              }
+              // Track search queries
+      searchBar.addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        if (searchTerm.length > 2) { // Only track searches with 3+ characters
+          if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+            try {
+              mixpanel.track('search_performed', {
+                'query': searchTerm,
+                'query_length': searchTerm.length,
+                'search_type': 'product_search',
+                'page': 'tire_bargain_bin'
+              });
+            } catch (error) {
+              console.log("⚠️ Mixpanel search tracking failed:", error);
             }
           }
-          render();
-        });
+        }
+        render();
+      });
         
         // Track manufacturer filter changes
         manufacturerSelect.addEventListener('change', function() {
           var manufacturer = this.value;
           if (typeof mixpanel !== 'undefined' && mixpanel.track) {
             try {
-              mixpanel.track('Filter Changed', {
+              mixpanel.track('filter_applied', {
                 'filter_type': 'manufacturer',
                 'filter_value': manufacturer,
-                'timestamp': new Date().toISOString()
+                'page': 'tire_bargain_bin'
               });
             } catch (error) {
               console.log("⚠️ Mixpanel filter tracking failed:", error);
@@ -837,11 +844,11 @@ function generateHTML(items) {
       function trackPageExit(reason) {
         if (typeof mixpanel !== 'undefined' && mixpanel.track) {
           try {
-            mixpanel.track('Page Exit', {
+            mixpanel.track('page_exit', {
               'exit_reason': reason,
-              'time_on_page': Math.round((Date.now() - window.pageLoadTime) / 1000), // seconds
+              'time_on_page_seconds': Math.round((Date.now() - window.pageLoadTime) / 1000),
               'items_in_quote': quoteItems.length,
-              'timestamp': new Date().toISOString()
+              'page': 'tire_bargain_bin'
             });
           } catch (error) {
             console.log("⚠️ Mixpanel exit tracking failed:", error);
@@ -901,9 +908,9 @@ function generateHTML(items) {
           });
           
           // Track page view
-          mixpanel.track("Page View", {
-            "page": "Tire Bargain Bin",
-            "timestamp": new Date().toISOString()
+          mixpanel.track("page_viewed", {
+            "page": "tire_bargain_bin",
+            "page_title": "Sturgeon Tire Bargain Bin"
           });
           
           console.log("✅ Mixpanel initialized successfully");
