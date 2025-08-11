@@ -457,6 +457,17 @@ function generateHTML(items) {
       }
       updateQuoteCounter();
       showNotification('✓ Added to quote!');
+      
+      // Track quote addition
+      if (typeof mixpanel !== 'undefined') {
+        mixpanel.track('Item Added to Quote', {
+          'item_code': itemCode,
+          'manufacturer': item.manufacturer,
+          'model': item.model,
+          'price': item.sale,
+          'discount': item.disc
+        });
+      }
     }
 
     function removeFromQuote(itemCode) {
@@ -646,6 +657,15 @@ function generateHTML(items) {
             confetti({ particleCount: 100, spread: 60, origin: { y: 0.5 }, zIndex: 4000 });
           }, 600);
           
+          // Track successful quote submission
+          if (typeof mixpanel !== 'undefined') {
+            mixpanel.track('Quote Submitted Successfully', {
+              'items_count': quoteItems.length,
+              'total_value': quoteItems.reduce(function(sum, item) { return sum + (item.sale * item.quantity); }, 0),
+              'customer_email': email
+            });
+          }
+          
           // Clean up after 5 seconds
           setTimeout(function() {
             quoteItems = [];
@@ -723,7 +743,35 @@ function generateHTML(items) {
     }
   </script>
   
-
+  <!-- Mixpanel: Official implementation -->
+  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
+  <script>
+    // Initialize Mixpanel with proper error handling
+    (function() {
+      try {
+        if (typeof mixpanel !== 'undefined') {
+          mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
+            debug: false, // Set to false to reduce console noise
+            track_pageview: true,
+            persistence: 'localStorage',
+            api_host: 'https://api.mixpanel.com'
+          });
+          
+          // Track page view
+          mixpanel.track('Page View', {
+            'page': 'Tire Bargain Bin',
+            'timestamp': new Date().toISOString()
+          });
+          
+          console.log('✅ Mixpanel initialized successfully');
+        } else {
+          console.warn('⚠️ Mixpanel library not loaded');
+        }
+      } catch (error) {
+        console.warn('⚠️ Mixpanel initialization failed:', error.message);
+      }
+    })();
+  </script>
 </body>
 </html>`;
 }
