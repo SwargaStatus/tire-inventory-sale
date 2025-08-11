@@ -502,11 +502,11 @@ function generateHTML(items) {
         html += '<div class="quote-item">' +
           '<div><strong>' + escapeHtml(item.manufacturer) + ' ' + escapeHtml(item.model) + '</strong><br>Item: ' + escapeHtml(item.item) + ' • $' + item.sale + ' each</div>' +
           '<div class="quantity-controls">' +
-          '<button class="qty-btn" onclick="updateQuantity(\\'' + escapeHtml(item.item) + '\\', ' + (item.quantity - 1) + ')">−</button>' +
-          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + escapeHtml(item.item) + '\\', this.value)">' +
-          '<button class="qty-btn" onclick="updateQuantity(\\'' + escapeHtml(item.item) + '\\', ' + (item.quantity + 1) + ')">+</button>' +
+          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity - 1) + ')">−</button>' +
+          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + escapeHtml(item.item) + '\', this.value)">' +
+          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity + 1) + ')">+</button>' +
           '<small style="margin-left:8px">/ ' + item.stock + '</small>' +
-          '<button class="remove-item" onclick="removeFromQuote(\\'' + escapeHtml(item.item) + '\\')">×</button>' +
+          '<button class="remove-item" onclick="removeFromQuote(\'' + escapeHtml(item.item) + '\')">×</button>' +
           '</div></div>';
       });
       container.innerHTML = html;
@@ -722,13 +722,22 @@ function generateHTML(items) {
   <!-- Mixpanel: load and init at end of body -->
   <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
   <script>
-    if (window.mixpanel) {
-      mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
-        debug: true,
-        track_pageview: true,
-        persistence: 'localStorage'
-      });
+    // Wait for Mixpanel to load
+    function initMixpanel() {
+      if (window.mixpanel && window.mixpanel.init) {
+        mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
+          debug: true,
+          track_pageview: true,
+          persistence: 'localStorage'
+        });
+      } else {
+        // Retry after a short delay
+        setTimeout(initMixpanel, 100);
+      }
     }
+    
+    // Start initialization
+    initMixpanel();
   </script>
 </body>
 </html>`;
