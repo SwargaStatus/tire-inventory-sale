@@ -95,6 +95,11 @@ return `<!DOCTYPE html>
       ignore_dnt: true
   });
   </script>
+  mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
+      debug: true,
+      ignore_dnt: true
+  });
+  </script>
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
