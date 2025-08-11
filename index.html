@@ -243,7 +243,7 @@
   <div class="container">
     <div class="header">
       <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Bargain Bin</h1>
-      <div class="update-time">Updated: 2025-08-11, 2:09 p.m.</div>
+      <div class="update-time">Updated: 2025-08-11, 2:16 p.m.</div>
     </div>
     
     <div class="stats">
@@ -408,21 +408,59 @@
     }
 
     function removeFromQuote(itemCode) {
+      var removedItem = quoteItems.find(function(item) { return item.item === itemCode; });
       quoteItems = quoteItems.filter(function(item) { return item.item !== itemCode; });
       updateQuoteCounter();
       updateQuoteModal();
+      
+      // Track item removal from quote
+      if (typeof mixpanel !== 'undefined' && mixpanel.track && removedItem) {
+        try {
+          mixpanel.track('Item Removed from Quote', {
+            'item_code': itemCode,
+            'manufacturer': removedItem.manufacturer,
+            'model': removedItem.model,
+            'price': removedItem.sale,
+            'quantity_removed': removedItem.quantity,
+            'timestamp': new Date().toISOString()
+          });
+        } catch (error) {
+          console.log("⚠️ Mixpanel removal tracking failed:", error);
+        }
+      }
     }
 
     function updateQuantity(itemCode, newQuantity) {
       var qty = parseInt(newQuantity);
       var itemIndex = quoteItems.findIndex(function(item) { return item.item === itemCode; });
       if (itemIndex === -1) return;
+      
+      var oldQuantity = quoteItems[itemIndex].quantity;
+      
       if (qty <= 0) {
         removeFromQuote(itemCode);
       } else {
         var maxQty = quoteItems[itemIndex].stock;
-        quoteItems[itemIndex].quantity = Math.min(Math.max(qty, 1), maxQty);
+        var newQty = Math.min(Math.max(qty, 1), maxQty);
+        quoteItems[itemIndex].quantity = newQty;
         updateQuoteModal();
+        
+        // Track quantity change
+        if (typeof mixpanel !== 'undefined' && mixpanel.track && newQty !== oldQuantity) {
+          try {
+            mixpanel.track('Quantity Changed', {
+              'item_code': itemCode,
+              'manufacturer': quoteItems[itemIndex].manufacturer,
+              'model': quoteItems[itemIndex].model,
+              'old_quantity': oldQuantity,
+              'new_quantity': newQty,
+              'quantity_difference': newQty - oldQuantity,
+              'timestamp': new Date().toISOString()
+            });
+          } catch (error) {
+            console.log("⚠️ Mixpanel quantity tracking failed:", error);
+          }
+        }
       }
     }
 
@@ -638,11 +676,37 @@
       updateQuoteModal();
       document.getElementById('quote-modal').style.display='block';
       document.body.classList.add('modal-open');
+      
+      // Track quote modal opened
+      if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+        try {
+          mixpanel.track('Quote Modal Opened', {
+            'items_in_quote': quoteItems.length,
+            'total_value': quoteItems.reduce(function(sum, item) { return sum + (item.sale * item.quantity); }, 0),
+            'timestamp': new Date().toISOString()
+          });
+        } catch (error) {
+          console.log("⚠️ Mixpanel modal tracking failed:", error);
+        }
+      }
     }
 
     function closeQuoteModal(){
       document.getElementById('quote-modal').style.display='none';
       document.body.classList.remove('modal-open');
+      
+      // Track quote modal closed
+      if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+        try {
+          mixpanel.track('Quote Modal Closed', {
+            'items_in_quote': quoteItems.length,
+            'total_value': quoteItems.reduce(function(sum, item) { return sum + (item.sale * item.quantity); }, 0),
+            'timestamp': new Date().toISOString()
+          });
+        } catch (error) {
+          console.log("⚠️ Mixpanel modal tracking failed:", error);
+        }
+      }
     }
 
     function initializeApp() {
@@ -653,8 +717,42 @@
       var manufacturerSelect = document.getElementById('filter-manufacturer');
       
       if (searchBar && manufacturerSelect) {
-        searchBar.addEventListener('input', render);
-        manufacturerSelect.addEventListener('change', render);
+        // Track search queries
+        searchBar.addEventListener('input', function() {
+          var searchTerm = this.value.toLowerCase();
+          if (searchTerm.length > 2) { // Only track searches with 3+ characters
+            if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+              try {
+                mixpanel.track('Search Query', {
+                  'search_term': searchTerm,
+                  'search_length': searchTerm.length,
+                  'timestamp': new Date().toISOString()
+                });
+              } catch (error) {
+                console.log("⚠️ Mixpanel search tracking failed:", error);
+              }
+            }
+          }
+          render();
+        });
+        
+        // Track manufacturer filter changes
+        manufacturerSelect.addEventListener('change', function() {
+          var manufacturer = this.value;
+          if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+            try {
+              mixpanel.track('Filter Changed', {
+                'filter_type': 'manufacturer',
+                'filter_value': manufacturer,
+                'timestamp': new Date().toISOString()
+              });
+            } catch (error) {
+              console.log("⚠️ Mixpanel filter tracking failed:", error);
+            }
+          }
+          render();
+        });
+        
         console.log('✅ Event listeners added');
       } else {
         console.error('❌ Could not find filter elements for event listeners');
@@ -666,6 +764,42 @@
         if (event.target === modal) {
           closeQuoteModal();
         }
+      });
+      
+      // Track page exit events
+      function trackPageExit(reason) {
+        if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+          try {
+            mixpanel.track('Page Exit', {
+              'exit_reason': reason,
+              'time_on_page': Math.round((Date.now() - window.pageLoadTime) / 1000), // seconds
+              'items_in_quote': quoteItems.length,
+              'timestamp': new Date().toISOString()
+            });
+          } catch (error) {
+            console.log("⚠️ Mixpanel exit tracking failed:", error);
+          }
+        }
+      }
+      
+      // Set page load time
+      window.pageLoadTime = Date.now();
+      
+      // Track tab visibility changes
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          trackPageExit('tab_hidden');
+        }
+      });
+      
+      // Track page unload (tab close, navigation)
+      window.addEventListener('beforeunload', function() {
+        trackPageExit('page_unload');
+      });
+      
+      // Track when user leaves the page
+      window.addEventListener('pagehide', function() {
+        trackPageExit('page_hide');
       });
       
       // Initial render
