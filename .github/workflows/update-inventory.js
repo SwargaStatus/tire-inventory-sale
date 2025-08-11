@@ -790,25 +790,155 @@ function generateHTML(items) {
       var manufacturerSelect = document.getElementById('filter-manufacturer');
       
       if (searchBar && manufacturerSelect) {
-              // Track search queries
+              // Enhanced search tracking for dynamic filter
+      var searchTimeout;
+      var lastSearchTerm = '';
+      var searchHistory = [];
+      var searchStartTime = null;
+      
       searchBar.addEventListener('input', function() {
         var searchTerm = this.value.toLowerCase();
-        if (searchTerm.length > 2) { // Only track searches with 3+ characters
+        var searchLength = searchTerm.length;
+        
+        // Track search start
+        if (searchLength === 1 && searchStartTime === null) {
+          searchStartTime = Date.now();
+        }
+        
+        // Clear previous timeout
+        clearTimeout(searchTimeout);
+        
+        // Strategy 1: Track character typing with results count
+        if (searchLength > 0) {
+          // Get current filtered results
+          var filtered = items.filter(function(i) {
+            var searchableText = [
+              i.manufacturer,
+              i.model,
+              i.item,
+              i.tireSize || '',
+              i.sizeStripped || '',
+              i.tireType || '',
+              i.isWinterTire ? 'winter' : ''
+            ].join(' ').toLowerCase();
+            return searchableText.indexOf(searchTerm) !== -1;
+          });
+          
           if (typeof mixpanel !== 'undefined' && mixpanel.track) {
             try {
-              mixpanel.track('search_performed', {
-                'query': searchTerm,
-                'query_length': searchTerm.length,
-                'search_type': 'product_search',
+              mixpanel.track('search_typing', {
+                'current_query': searchTerm,
+                'query_length': searchLength,
+                'characters_typed': searchLength,
+                'results_count': filtered.length,
+                'has_results': filtered.length > 0,
+                'search_type': 'dynamic_filter',
                 'page': 'tire_bargain_bin'
               });
             } catch (error) {
-              console.log("⚠️ Mixpanel search tracking failed:", error);
+              console.log("⚠️ Mixpanel search typing tracking failed:", error);
             }
           }
         }
+        
+        // Strategy 2: Track search completion with context
+        searchTimeout = setTimeout(function() {
+          if (searchTerm !== lastSearchTerm && searchLength > 2) {
+            // Get final filtered results
+            var finalFiltered = items.filter(function(i) {
+              var searchableText = [
+                i.manufacturer,
+                i.model,
+                i.item,
+                i.tireSize || '',
+                i.sizeStripped || '',
+                i.tireType || '',
+                i.isWinterTire ? 'winter' : ''
+              ].join(' ').toLowerCase();
+              return searchableText.indexOf(searchTerm) !== -1;
+            });
+            
+            var searchDuration = searchStartTime ? Math.round((Date.now() - searchStartTime) / 1000) : 0;
+            
+            if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+              try {
+                mixpanel.track('search_completed', {
+                  'final_query': searchTerm,
+                  'query_length': searchLength,
+                  'results_count': finalFiltered.length,
+                  'has_results': finalFiltered.length > 0,
+                  'search_duration_seconds': searchDuration,
+                  'search_type': 'dynamic_filter',
+                  'page': 'tire_bargain_bin'
+                });
+              } catch (error) {
+                console.log("⚠️ Mixpanel search completed tracking failed:", error);
+              }
+            }
+            
+            // Store in search history
+            searchHistory.push({
+              query: searchTerm,
+              results: finalFiltered.length,
+              duration: searchDuration,
+              timestamp: new Date().toISOString()
+            });
+            
+            lastSearchTerm = searchTerm;
+            searchStartTime = null;
+          }
+        }, 1000); // Wait 1 second after user stops typing
+        
         render();
       });
+      
+      // Strategy 3: Track search clearing with context
+      searchBar.addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        if (searchTerm.length === 0 && lastSearchTerm.length > 0) {
+          if (typeof mixpanel !== 'undefined' && mixpanel.track) {
+            try {
+              mixpanel.track('search_cleared', {
+                'previous_query': lastSearchTerm,
+                'previous_query_length': lastSearchTerm.length,
+                'search_type': 'dynamic_filter',
+                'page': 'tire_bargain_bin'
+              });
+            } catch (error) {
+              console.log("⚠️ Mixpanel search cleared tracking failed:", error);
+            }
+          }
+          lastSearchTerm = '';
+          searchStartTime = null;
+        }
+      });
+      
+      // Strategy 4: Track search patterns on page exit
+      function trackSearchPatterns() {
+        if (searchHistory.length > 0 && typeof mixpanel !== 'undefined' && mixpanel.track) {
+          try {
+            var totalSearches = searchHistory.length;
+            var searchesWithResults = searchHistory.filter(function(s) { return s.results > 0; }).length;
+            var averageResults = searchHistory.reduce(function(sum, s) { return sum + s.results; }, 0) / totalSearches;
+            var uniqueQueries = [...new Set(searchHistory.map(function(s) { return s.query; }))].length;
+            var averageSearchDuration = searchHistory.reduce(function(sum, s) { return sum + s.duration; }, 0) / totalSearches;
+            
+            mixpanel.track('search_session_summary', {
+              'total_searches': totalSearches,
+              'searches_with_results': searchesWithResults,
+              'searches_without_results': totalSearches - searchesWithResults,
+              'success_rate': (searchesWithResults / totalSearches * 100).toFixed(1),
+              'average_results_per_search': Math.round(averageResults),
+              'average_search_duration_seconds': Math.round(averageSearchDuration),
+              'unique_queries': uniqueQueries,
+              'search_history': searchHistory.slice(-5), // Last 5 searches
+              'page': 'tire_bargain_bin'
+            });
+          } catch (error) {
+            console.log("⚠️ Mixpanel search patterns tracking failed:", error);
+          }
+        }
+      }
         
         // Track manufacturer filter changes
         manufacturerSelect.addEventListener('change', function() {
@@ -842,12 +972,16 @@ function generateHTML(items) {
       
       // Track page exit events
       function trackPageExit(reason) {
+        // Track search patterns before exit
+        trackSearchPatterns();
+        
         if (typeof mixpanel !== 'undefined' && mixpanel.track) {
           try {
             mixpanel.track('page_exit', {
               'exit_reason': reason,
               'time_on_page_seconds': Math.round((Date.now() - window.pageLoadTime) / 1000),
               'items_in_quote': quoteItems.length,
+              'total_searches_performed': searchHistory.length,
               'page': 'tire_bargain_bin'
             });
           } catch (error) {
