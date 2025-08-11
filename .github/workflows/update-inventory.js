@@ -86,18 +86,12 @@ function generateHTML(items) {
     })(window, document, "clarity", "script", "rtts9836eo");
   </script>
   
-  <!-- Mixpanel (official loader) -->
-  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js" defer></script>
-  <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      if (!window.mixpanel) { console.warn('Mixpanel failed to load'); return; }
-      mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
-        debug: true,
-        track_pageview: true,
-        persistence: 'localStorage'
-      });
-    });
-  </script>
+  <!-- Mixpanel: loader + init in one -->
+  <script
+    src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"
+    onload="mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5',{debug:true,track_pageview:true,persistence:'localStorage'})"
+    defer
+  ></script>
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
