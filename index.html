@@ -22,12 +22,15 @@
     })(window, document, "clarity", "script", "rtts9836eo");
   </script>
   
-  <!-- Mixpanel: loader + init in one -->
-  <script
-    src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"
-    onload="mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5',{debug:true,track_pageview:true,persistence:'localStorage'})"
-    defer
-  ></script>
+  <!-- Mixpanel: load and init before main script -->
+  <script src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js"></script>
+  <script>
+    mixpanel.init('e0a9e7e2b021ad4a993df32823d7c0c5', {
+      debug: true,
+      track_pageview: true,
+      persistence: 'localStorage'
+    });
+  </script>
   <style>
     :root{--primary:#2e6fa3;--dark:#182742;--bg:#f0f8ff;--accent:#ffa726}
     body{margin:0;font-family:'Segoe UI',sans-serif;background:var(--bg)}
@@ -248,7 +251,7 @@
   <div class="container">
     <div class="header">
       <h1><img src="Logo.png" alt="Sturgeon Tire" class="company-logo" onerror="this.style.display='none'">Sturgeon Tire Bargain Bin</h1>
-      <div class="update-time">Updated: 2025-08-11, 1:31 p.m.</div>
+      <div class="update-time">Updated: 2025-08-11, 1:37 p.m.</div>
     </div>
     
     <div class="stats">
@@ -321,7 +324,7 @@
         '<div class="pricing">' + priceHtml + '</div>' +
         '<div class="save">Save $' + item.save + '</div>' +
         '<div class="stock stock-' + stockClass + '">Qty: ' + item.stock + '</div>' +
-        '<button class="btn-add-quote" onclick="addToQuote(\'' + escapeHtml(item.item) + '\')">Add to Quote</button>' +
+        '<button class="btn-add-quote" onclick="addToQuote(\\'' + escapeHtml(item.item) + '\\')">Add to Quote</button>' +
         '</div></div>';
     }
 
@@ -440,11 +443,11 @@
         html += '<div class="quote-item">' +
           '<div><strong>' + escapeHtml(item.manufacturer) + ' ' + escapeHtml(item.model) + '</strong><br>Item: ' + escapeHtml(item.item) + ' • $' + item.sale + ' each</div>' +
           '<div class="quantity-controls">' +
-          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity - 1) + ')">−</button>' +
-          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\'' + escapeHtml(item.item) + '\', this.value)">' +
-          '<button class="qty-btn" onclick="updateQuantity(\'' + escapeHtml(item.item) + '\', ' + (item.quantity + 1) + ')">+</button>' +
+          '<button class="qty-btn" onclick="updateQuantity(\\'' + escapeHtml(item.item) + '\\', ' + (item.quantity - 1) + ')">−</button>' +
+          '<input type="number" class="qty-input" min="1" max="' + item.stock + '" value="' + item.quantity + '" onchange="updateQuantity(\\'' + escapeHtml(item.item) + '\\', this.value)">' +
+          '<button class="qty-btn" onclick="updateQuantity(\\'' + escapeHtml(item.item) + '\\', ' + (item.quantity + 1) + ')">+</button>' +
           '<small style="margin-left:8px">/ ' + item.stock + '</small>' +
-          '<button class="remove-item" onclick="removeFromQuote(\'' + escapeHtml(item.item) + '\')">×</button>' +
+          '<button class="remove-item" onclick="removeFromQuote(\\'' + escapeHtml(item.item) + '\\')">×</button>' +
           '</div></div>';
       });
       container.innerHTML = html;
@@ -531,27 +534,15 @@
       
       var tireDetails = quoteItems.map(function(item, index) {
         return (index + 1) + '. Item: ' + item.item + ' - Qty: ' + item.quantity;
-      }).join('
-');
+      }).join('\n');
       
-      var quoteSummary = 'TIRE QUOTE REQUEST
-
-' +
-        'CUSTOMER:
-' +
-        'Name: ' + name + '
-' +
-        'Email: ' + email + '
-' +
-        'Phone: ' + (phone || 'Not provided') + '
-' +
-        'Company: ' + (company || 'Not provided') + '
-
-' +
-        'ITEMS:
-' + tireDetails + '
-
-' +
+      var quoteSummary = 'TIRE QUOTE REQUEST\n\n' +
+        'CUSTOMER:\n' +
+        'Name: ' + name + '\n' +
+        'Email: ' + email + '\n' +
+        'Phone: ' + (phone || 'Not provided') + '\n' +
+        'Company: ' + (company || 'Not provided') + '\n\n' +
+        'ITEMS:\n' + tireDetails + '\n\n' +
         'NOTES: ' + (notes || 'None');
       
       var formData = new FormData();
@@ -603,9 +594,7 @@
           }, 5000);
         } else {
           var subject = 'Tire Quote - ' + name;
-          var simpleBody = 'Customer: ' + name + ' (' + email + ')
-Items: ' + tireDetails + (notes ? '
-Notes: ' + notes : '');
+          var simpleBody = 'Customer: ' + name + ' (' + email + ')\nItems: ' + tireDetails + (notes ? '\nNotes: ' + notes : '');
           var mailtoLink = 'mailto:sales@sturgeontire.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(simpleBody);
           window.open(mailtoLink, '_blank');
           submitBtn.innerHTML = 'Request Quote';
