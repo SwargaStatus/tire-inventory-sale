@@ -27,7 +27,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 14,58,28,132,💵 ON SALE,2,$347 (reg $405),Save $58 per tire!,58,14,58,0,1,Yes,09068,LTX A/T 2,479,405,347,1,0,https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg,MICHELIN,LT265/70R18/E,2657018,Light Truck,False
 21,38,0,-140,⭐ GOOD DEAL,3,$140 (reg $178),Save $38 per tire!,38,21,38,0,1,Yes,110140614,ADVAN SPORT A/S+,0,178,140,1,0,https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg,Yokohama,215/45R17,2154517,Passenger,False
 7,15,20,49,,1,$198 (reg $213),Save $15 per tire!,15,7,15,0,1,Yes,18563,Tiger Paw Touring A/S,247,213,198,1,0,https://lirp.cdn-website.com/f295dd4f/dms3rep/multi/opt/Uniroyal_Logo-640w.png,UNIROYAL,255/60R18,2556018,Passenger,False
-0,0,31,98,,1,$218,,0,0,0,0,1,Yes,2020473,LD01,316,218,218,1,0,,LAUFENN,LT245/75R17,2457517,Light Truck,False
+0,0,31,98,,1,$218,,0,0,0,0,1,Yes,2020473,LD01,316,218,218,1,0,,Laufenn,LT245/75R17,2457517,Light Truck,False
 18,88,33,202,💵 ON SALE,2,$412 (reg $500),Save $88 per tire!,88,18,88,0,1,Yes,79245,PILOT SUPER SPORT ZP,614,500,412,1,0,https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg,MICHELIN,P245/40ZR18,2454018,Performance,False
 7,15,20,47,,1,$186 (reg $201),Save $15 per tire!,15,7,15,0,1,Yes,68386,LAREDO CROSS COUNTRY TOURING,233,201,186,1,0,https://lirp.cdn-website.com/f295dd4f/dms3rep/multi/opt/Uniroyal_Logo-640w.png,UNIROYAL,265/70R16,2657016,Passenger,False
 26,90,36,145,⭐ GOOD DEAL,3,$258 (reg $348),Save $90 per tire!,90,26,90,0,1,Yes,10257,AGILIS CROSSCLIMATE,403,348,258,1,0,https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg,MICHELIN,LT265/75R16/E,2657516,ALL WEATHER PASSENGER,False
@@ -152,7 +152,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 16,52,30,120,💵 ON SALE,2,$281 (reg $333),Save $52 per tire!,418,16,52,0,1,Yes,08164,Trail-Terrain T/A,401,333,281,8,0,https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_bfgoodrich.jpg,BFG,P285/70R17,2857017,ALL WEATHER PASSENGER,False
 9,36,0,-375,,1,$375 (reg $411),Save $36 per tire!,291,9,36,0,1,Yes,110116015,GEOLANDAR X-AT,0,411,375,8,0,https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg,Yokohama,LT295/70R18,2957018,Light Truck,False
 11,17,0,-136,💵 ON SALE,2,$136 (reg $153),Save $17 per tire!,66,11,17,0,1,Yes,110133506,Avid S33B,0,153,136,4,0,https://cdn.worldvectorlogo.com/logos/yokohama-logo.svg,Yokohama,225/65R16,2256516,Passenger,False
-0,0,31,95,,1,$213,,0,0,0,0,1,Yes,2020462,LD01,308,213,213,7,0,,LAUFENN,LT265/75R16,2657516,Light Truck,False
+0,0,31,95,,1,$213,,0,0,0,0,1,Yes,2020462,LD01,308,213,213,7,0,,Laufenn,LT265/75R16,2657516,Light Truck,False
 11,30,24,74,💵 ON SALE,2,$238 (reg $269),Save $30 per tire!,242,11,30,0,1,Yes,09103,Tiger Paw Touring A/S,312,269,238,8,0,https://lirp.cdn-website.com/f295dd4f/dms3rep/multi/opt/Uniroyal_Logo-640w.png,UNIROYAL,245/50R18,2455018,Passenger,False
 15,22,50,129,💵 ON SALE,2,$131 (reg $153),Save $22 per tire!,180,15,22,0,1,Yes,15509360000,PureContact LS,260,153,131,8,0,https://1000logos.net/wp-content/uploads/2022/11/Continental-Logo.png,CONTINENTAL,195/55R16,1955516,Passenger,False
 5,16,20,69,,1,$274 (reg $290),Save $16 per tire!,126,5,16,0,1,Yes,37625,ADVANTAGE T/A SPORT LT,343,290,274,8,0,https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_bfgoodrich.jpg,BFG,255/55R18/XL,2555518,ALL WEATHER PASSENGER,False
@@ -231,7 +231,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 7,10,50,133,,1,$135 (reg $145),Save $10 per tire!,473,7,10,0,1,Yes,B586675,SASQUA H/T,269,145,135,49,0,https://be.fitandfix.com/media/brands/1681305666170.png,BOTO,265/65R17,2656517,Passenger,False
 27,445,0,-1229,⭐ GOOD DEAL,3,"$1,229 (reg $1,674)",Save $445 per tire!,3118,27,445,0,1,Yes,B101012,GCB3,0,1674,1229,7,0,https://be.fitandfix.com/media/brands/1681305666170.png,BOTO,14.00R24,140024,O.T.R.,False
 17,26,0,-124,💵 ON SALE,2,$124 (reg $150),Save $26 per tire!,4211,17,26,0,1,Yes,TR724090B,STR,0,150,124,162,0,,TRANSPORTER,ST235/80R16 E,2358016,Lawn/Garden/Trailer Tires,False
-8,16,50,173,,1,$175 (reg $191),Save $16 per tire!,431,8,16,0,1,Yes,B301521,BT926,348,191,175,27,0,https://be.fitandfix.com/media/brands/1681305666170.png,BOTO,235/75R17.5-16 132/129,2357517516132129,Medium Truck,False
+8,16,50,173,,1,$175 (reg $191),Save $16 per tire!,399,8,16,0,1,Yes,B301521,BT926,348,191,175,25,0,https://be.fitandfix.com/media/brands/1681305666170.png,BOTO,235/75R17.5-16 132/129,2357517516132129,Medium Truck,False
 7,14,49,192,,1,$202 (reg $217),Save $14 per tire!,246,7,14,0,1,Yes,B301531,BT926,394,217,202,17,0,https://be.fitandfix.com/media/brands/1681305666170.png,BOTO,245/70R19.5-14 133/131,2457019514133131,Medium Truck,False
 15,14,62,129,💵 ON SALE,2,$78 (reg $92),Save $14 per tire!,2344,15,14,0,1,Yes,X47556,RTX STEEL,207,92,78,169,0,https://rtxwheels.com/cdn/shop/files/logo.png?height=628&pad_color=ffffff&v=1680068013&width=1200,RTX,17x7 5x100 ET44 CB56.1,177510044561,Wheels - Steel,False
 0,0,46,188,,1,$221,,0,0,0,0,1,Yes,B572877,X-TERRAIN BA80+,409,221,221,97,0,https://be.fitandfix.com/media/brands/1681305666170.png,BOTO,LT285/70R17 10R (3MSF),285701710(3),ALL WEATHER LT,False
