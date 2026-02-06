@@ -25,7 +25,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 28,41,0,-107,⭐ GOOD DEAL,3,$107 (reg $148),Save $41 per tire!,164,28,41,0,1,Yes,12.47.18433,SM,0,148,107,4,0,,CAMSO,12X5X8,1258,Industrial Solid,False
 28,65,0,-169,⭐ GOOD DEAL,3,$169 (reg $233),Save $65 per tire!,259,28,65,0,1,Yes,12.99.18134,SM,0,233,169,4,0,,CAMSO,21X8X15,21815,Industrial Solid,False
 28,52,0,-135,⭐ GOOD DEAL,3,$135 (reg $186),Save $52 per tire!,207,28,52,0,1,Yes,9.351.15555,MAG,0,186,135,4,0,,CAMSO,16X6-8,1668,Industrial Solid,False
-28,62,0,-162,⭐ GOOD DEAL,3,$162 (reg $224),Save $62 per tire!,249,28,62,0,1,Yes,12.607.18453,SM,0,224,162,4,0,,CAMSO,18X6X12 1/8,1861218,Industrial Solid,False
+28,62,0,-162,⭐ GOOD DEAL,3,$162 (reg $224),Save $62 per tire!,249,28,62,0,1,Yes,12.607.18453,SM,0,224,162,4,0,,CAMSO,18x6x12 1/8,1861218,Industrial Solid,False
 28,74,0,-193,⭐ GOOD DEAL,3,$193 (reg $267),Save $74 per tire!,297,28,74,0,1,Yes,12.609.18105,SM,0,267,193,4,0,,CAMSO,21X7X15,21715,Industrial Solid,False
 28,143,0,-371,⭐ GOOD DEAL,3,$371 (reg $514),Save $143 per tire!,285,28,143,0,1,Yes,9.1307.14991,RES 330,0,514,371,2,0,,CAMSO,28X9-15,28915,Industrial Solid,False
 28,138,0,-358,⭐ GOOD DEAL,3,$358 (reg $496),Save $138 per tire!,551,28,138,0,1,Yes,12.99.18674,SM,0,496,358,4,0,,CAMSO,21X8X15,21815,Industrial Solid,False
@@ -84,7 +84,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 39,119,0,-186,💰 GREAT DEAL,4,$186 (reg $305),Save $119 per tire!,357,39,119,1,1,Yes,1012102,H426,0,305,186,3,0,https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hankook_Logo_2024.svg/2560px-Hankook_Logo_2024.svg.png,HANKOOK,P245/45R18V,2454518,Passenger,False
 32,101,0,-215,💰 GREAT DEAL,4,$215 (reg $316),Save $101 per tire!,304,32,101,1,1,Yes,06367,ADVANTAGE T/A SPORT LT,0,316,215,3,0,https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_bfgoodrich.jpg,BFG,265/70R18,2657018,ALL WEATHER PASSENGER,False
 32,132,0,-279,💰 GREAT DEAL,4,$279 (reg $410),Save $132 per tire!,528,32,132,1,1,Yes,05791,AGILIS CROSSCLIMATE,0,410,279,4,0,https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg,MICHELIN,LT265/70R18/E,2657018,ALL WEATHER PASSENGER,False
-31,21,0,-46,💰 GREAT DEAL,4,$46 (reg $68),Save $21 per tire!,2990,31,21,1,1,Yes,X99154N,RTX STEEL,0,68,46,142,0,https://rtxwheels.com/cdn/shop/files/logo.png?height=628&pad_color=ffffff&v=1680068013&width=1200,RTX,16x6.5 5x114.3 ET40 CB67.1,16655114340671,Wheels - Steel,False
+31,21,0,-46,💰 GREAT DEAL,4,$46 (reg $68),Save $21 per tire!,2969,31,21,1,1,Yes,X99154N,RTX STEEL,0,68,46,141,0,https://rtxwheels.com/cdn/shop/files/logo.png?height=628&pad_color=ffffff&v=1680068013&width=1200,RTX,16x6.5 5x114.3 ET40 CB67.1,16655114340671,Wheels - Steel,False
 18,42,0,-195,💵 ON SALE,2,$195 (reg $237),Save $42 per tire!,42,18,42,0,1,Yes,1015251,K120,0,237,195,1,0,https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hankook_Logo_2024.svg/2560px-Hankook_Logo_2024.svg.png,HANKOOK,255/35ZR18,2553518,Performance,False
 6,18,0,-285,,1,$285 (reg $304),Save $18 per tire!,18,6,18,0,1,Yes,1010505,H426,0,304,285,1,0,https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hankook_Logo_2024.svg/2560px-Hankook_Logo_2024.svg.png,HANKOOK,P255/50R20H,2555020,Passenger,False
 13,34,0,-239,💵 ON SALE,2,$239 (reg $273),Save $34 per tire!,34,13,34,0,1,Yes,38379,PREMIER A/S (V/H),0,273,239,1,0,https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg,MICHELIN,245/45R19,2454519,Passenger,False
