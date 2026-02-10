@@ -25,7 +25,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 28,41,0,-107,⭐ GOOD DEAL,3,$107 (reg $148),Save $41 per tire!,164,28,41,0,1,Yes,12.47.18433,SM,0,148,107,4,0,,CAMSO,12X5X8,1258,Industrial Solid,False
 28,65,0,-169,⭐ GOOD DEAL,3,$169 (reg $233),Save $65 per tire!,259,28,65,0,1,Yes,12.99.18134,SM,0,233,169,4,0,,CAMSO,21X8X15,21815,Industrial Solid,False
 28,52,0,-135,⭐ GOOD DEAL,3,$135 (reg $186),Save $52 per tire!,207,28,52,0,1,Yes,9.351.15555,MAG,0,186,135,4,0,,CAMSO,16X6-8,1668,Industrial Solid,False
-28,62,0,-162,⭐ GOOD DEAL,3,$162 (reg $224),Save $62 per tire!,249,28,62,0,1,Yes,12.607.18453,SM,0,224,162,4,0,,CAMSO,18X6X12 1/8,1861218,Industrial Solid,False
+28,62,0,-162,⭐ GOOD DEAL,3,$162 (reg $224),Save $62 per tire!,249,28,62,0,1,Yes,12.607.18453,SM,0,224,162,4,0,,CAMSO,18x6x12 1/8,1861218,Industrial Solid,False
 28,74,0,-193,⭐ GOOD DEAL,3,$193 (reg $267),Save $74 per tire!,297,28,74,0,1,Yes,12.609.18105,SM,0,267,193,4,0,,CAMSO,21X7X15,21715,Industrial Solid,False
 28,143,0,-371,⭐ GOOD DEAL,3,$371 (reg $514),Save $143 per tire!,285,28,143,0,1,Yes,9.1307.14991,RES 330,0,514,371,2,0,,CAMSO,28X9-15,28915,Industrial Solid,False
 28,138,0,-358,⭐ GOOD DEAL,3,$358 (reg $496),Save $138 per tire!,551,28,138,0,1,Yes,12.99.18674,SM,0,496,358,4,0,,CAMSO,21X8X15,21815,Industrial Solid,False
@@ -59,7 +59,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 28,48,0,-125,⭐ GOOD DEAL,3,$125 (reg $173),Save $48 per tire!,144,28,48,0,1,Yes,012.73.544,SMOOTH,0,173,125,3,0,,CAMSO,16 1/4 x5x 11¼,1614511¼,Industrial Solid,False
 26,113,0,-327,⭐ GOOD DEAL,3,$327 (reg $440),Save $113 per tire!,451,26,113,0,1,Yes,34499,CROSSCLIMATE SUV HV,0,440,327,4,0,https://michelinmedia.com/site/user/images/Michelin_Corporate_Logo___color.jpg,MICHELIN,275/55R19,2755519,ALL WEATHER PASSENGER,False
 28,26,0,-69,⭐ GOOD DEAL,3,$69 (reg $95),Save $26 per tire!,211,28,26,0,1,Yes,012.43.175,SMOOTH,0,95,69,8,0,,CAMSO,10 1/2 x5x 6 1/2,10125612,Industrial Solid,False
-23,69,0,-234,⭐ GOOD DEAL,3,$234 (reg $302),Save $69 per tire!,137,23,69,0,1,Yes,37585,ADVANTAGE T/A SPORT LT,0,302,234,2,0,https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_bfgoodrich.jpg,BFG,265/70R17,2657017,ALL WEATHER PASSENGER,False
+23,69,0,-234,⭐ GOOD DEAL,3,$234 (reg $302),Save $69 per tire!,69,23,69,0,1,Yes,37585,ADVANTAGE T/A SPORT LT,0,302,234,1,0,https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_bfgoodrich.jpg,BFG,265/70R17,2657017,ALL WEATHER PASSENGER,False
 20,26,0,-106,⭐ GOOD DEAL,3,$106 (reg $132),Save $26 per tire!,155,20,26,0,1,Yes,2100333,121,0,132,106,6,0,https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Kumho_Tire_logo_%282023%29.svg/2560px-Kumho_Tire_logo_%282023%29.svg.png,KUMHO,T135/80R18,1358018,Passenger,False
 28,171,0,-445,⭐ GOOD DEAL,3,$445 (reg $616),Save $171 per tire!,684,28,171,0,1,Yes,9.181.15515,MAG,0,616,445,4,0,,CAMSO,23X10-12,231012,Industrial Solid,False
 28,44,0,-115,⭐ GOOD DEAL,3,$115 (reg $159),Save $44 per tire!,265,28,44,0,1,Yes,12.686.18146,SM,0,159,115,6,0,,CAMSO,16X5X10 1/2,1651012,Industrial Solid,False
@@ -70,7 +70,7 @@ FlyerData[B2B_Discount_Percentage],FlyerData[B2B_Savings_Amount],FlyerData[Consu
 22,35,0,-125,⭐ GOOD DEAL,3,$125 (reg $160),Save $35 per tire!,2782,22,35,0,1,Yes,082590,Frost,0,160,125,80,0,https://rtxwheels.com/cdn/shop/files/logo.png?height=628&pad_color=ffffff&v=1680068013&width=1200,RTX,17x7 5x114.3 42P C64.1,1775114342641,Wheels - Alloy/Aluminum,False
 27,445,0,-1229,⭐ GOOD DEAL,3,"$1,229 (reg $1,674)",Save $445 per tire!,445,27,445,0,1,Yes,B101012,GCB3,0,1674,1229,1,0,https://be.fitandfix.com/media/brands/1681305666170.png,BOTO,14.00R24,140024,O.T.R.,False
 29,107,0,-262,⭐ GOOD DEAL,3,$262 (reg $369),Save $107 per tire!,1181,29,107,0,1,Yes,04785,ALL TERRAIN TA KO2,0,369,262,11,0,https://upload.wikimedia.org/wikipedia/commons/a/ac/Logo_bfgoodrich.jpg,BFG,LT255/55R18/D,2555518,ALL WEATHER LT,False
-22,26,0,-89,⭐ GOOD DEAL,3,$89 (reg $115),Save $26 per tire!,1812,22,26,0,1,Yes,X99147N,RTX STEEL,0,115,89,71,0,https://rtxwheels.com/cdn/shop/files/logo.png?height=628&pad_color=ffffff&v=1680068013&width=1200,RTX,17x7.5 6x139.7 ET30 CB78.1,17756139730781,Wheels - Steel,False
+22,26,0,-89,⭐ GOOD DEAL,3,$89 (reg $115),Save $26 per tire!,1710,22,26,0,1,Yes,X99147N,RTX STEEL,0,115,89,67,0,https://rtxwheels.com/cdn/shop/files/logo.png?height=628&pad_color=ffffff&v=1680068013&width=1200,RTX,17x7.5 6x139.7 ET30 CB78.1,17756139730781,Wheels - Steel,False
 20,16,0,-63,⭐ GOOD DEAL,3,$63 (reg $79),Save $16 per tire!,383,20,16,0,1,Yes,X40709,RTX STEEL,0,79,63,24,0,https://rtxwheels.com/cdn/shop/files/logo.png?height=628&pad_color=ffffff&v=1680068013&width=1200,RTX,15x6 5x114.3 ET7 CB70.6,156511437706,Wheels - Steel,False
 28,53,0,-138,⭐ GOOD DEAL,3,$138 (reg $191),Save $53 per tire!,530,28,53,0,1,Yes,9.319.15551,MAG,0,191,138,10,0,,CAMSO,5.00-8,5008,Industrial Solid,False
 28,27,0,-71,⭐ GOOD DEAL,3,$71 (reg $98),Save $27 per tire!,300,28,27,0,1,Yes,12.43.18426C,PON 555,0,98,71,11,0,,CAMSO,10 1/2 x5x 6 1/2,10125612,Industrial Solid,False
